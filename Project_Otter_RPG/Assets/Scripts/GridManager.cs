@@ -15,6 +15,9 @@ public class GridManager : MonoBehaviour
     // Variables for the tiles themselves
     [SerializeField] Tile tile;
     [SerializeField] LayerMask mask;
+    [SerializeField] string enemyTileTag;
+    [SerializeField] string playerTileTag;
+
     private int tileCount;
 
     // Variables for the player actions
@@ -54,6 +57,7 @@ public class GridManager : MonoBehaviour
                 // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
                 var currentTile = Instantiate(tile, new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
                 currentTile.name = $"EnemyTile({i},{j})";
+                currentTile.tag = enemyTileTag;
                 currentTile.init(true);
                 tileDictionary.Add(tileCount, currentTile);
                 tileCount++;
@@ -69,6 +73,7 @@ public class GridManager : MonoBehaviour
             {
                 var currentTile = Instantiate(tile, new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
                 currentTile.name = $"PlayerTile({i},{j})";
+                currentTile.tag = playerTileTag;
                 currentTile.init(false);
                 tileDictionary.Add(tileCount, currentTile);
                 tileCount++;
