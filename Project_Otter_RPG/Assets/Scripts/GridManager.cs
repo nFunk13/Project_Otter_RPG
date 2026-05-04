@@ -5,20 +5,24 @@ using UnityEngine.InputSystem;
 public class GridManager : MonoBehaviour
 {
     // Variables for creating enemy grid
-    [SerializeField] int width = 3, height = 3;
+    [SerializeField] int eWidth = 3, eHeight = 3;
     [SerializeField] Vector2 enemyGridStart = new Vector2(3.0f, 3.0f);
     [SerializeField] float offset = 1.0f;
+
+    [SerializeField] int pWidth = 3, pHeight = 3;
+    [SerializeField] Vector2 playerGridStart = new Vector2(-1.0f, 3.0f);
     
     // Variables for the tiles themselves
     [SerializeField] Tile tile;
     [SerializeField] LayerMask mask;
+    private int tileCount;
 
     // Variables for the player actions
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
     // Variables for storing the tiles
-    private Dictionary<Vector2, Tile> tileDictionary = new Dictionary<Vector2, Tile>();
+    private Dictionary<int, Tile> tileDictionary = new Dictionary<int, Tile>();
 
     private void Awake()
     {
@@ -31,21 +35,43 @@ public class GridManager : MonoBehaviour
 
     private void Start()
     {
-        createEnemyGrid();
+        createGrids();
     }
 
-    private void createEnemyGrid()
+    private void createGrids()
+    {
+        enemyGrid();
+        playerGrid();
+    }
+
+    private void enemyGrid()
     {
         // Generates a grid based on width and height
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < eWidth; i++)
         {
-            for(int j = 0; j < height; j++)
+            for (int j = 0; j < eHeight; j++)
             {
                 // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
                 var currentTile = Instantiate(tile, new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.init(true);
-                tileDictionary.Add(new Vector2(i, j), currentTile);
+                tileDictionary.Add(tileCount, currentTile);
+                tileCount++;
+            }
+        }
+    }
+
+    private void playerGrid()
+    {
+        for (int i = 0; i < pWidth; i++)
+        {
+            for (int j = 0; j < eHeight; j++)
+            {
+                var currentTile = Instantiate(tile, new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
+                currentTile.name = $"PlayerTile({i},{j})";
+                currentTile.init(false);
+                tileDictionary.Add(tileCount, currentTile);
+                tileCount++;
             }
         }
     }
