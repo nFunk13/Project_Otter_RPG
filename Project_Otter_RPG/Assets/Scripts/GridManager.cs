@@ -1,14 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GridManager : MonoBehaviour
 {
     [SerializeField] int width = 3, height = 3;
     [SerializeField] Vector2 enemyGridStart = new Vector2(3.0f, 3.0f);
     [SerializeField] float offset = 1.0f;
+    
     [SerializeField] Tile tile;
+    [SerializeField] LayerMask mask;
+
+    private PlayerActions playerActions;
+    private Vector2 mouseLocation;
 
     private Dictionary<Vector2, Tile> tileDictionary = new Dictionary<Vector2, Tile>();
+
+    private void Awake()
+    {
+        playerActions = new PlayerActions();
+
+        playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
+    }
+
+    private void onMouseMove(InputAction.CallbackContext ctx)
+    {
+        mouseLocation = ctx.ReadValue<Vector2>();
+    }
 
     private void Start()
     {
@@ -29,31 +47,43 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         getTileAtPosition(MouseToWorldPosition());
     }
 
     private Vector3 MouseToWorldPosition()
     {
-        Vector3 screenPosition = Input.mousePosition;
-        screenPosition.z = 10f;
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseLocation);
 
         return worldPosition;
     }
 
     private Tile getTileAtPosition(Vector3 pos)
     {
-        if (tileDictionary.ContainsKey(pos))
+        Vector3 newPos = pos;
+        newPos.z = 0.0f;
+        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
+        
+        foreach (var tile in tileDictionary.Values)
         {
-            Debug.Log("Tile name: " + tileDictionary[pos]);
-            return tileDictionary[pos];
+            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
+            {
+                Debug.Log("Tile: " + tile.name);
+                return tile;
+            }
         }
-        else
-        {
-            Debug.Log("No Tile!");
-            return null;
-        }
+
+        return null;
+    }
+
+    private void OnEnable()
+    {
+        playerActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerActions.Disable();
     }
 }
