@@ -386,13 +386,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a258179b040f09a42a4cb6f5cc5b97b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  eWidth: 3
-  eHeight: 3
-  enemyGridStart: {x: 6, y: -1}
+  eWidth: 4
+  eHeight: 4
+  enemyGridStart: {x: 4.5, y: -3}
   offset: 0.2
-  pWidth: 3
-  pHeight: 3
-  playerGridStart: {x: -9.5, y: -1}
+  pWidth: 4
+  pHeight: 4
+  playerGridStart: {x: -9.5, y: -3}
   tile: {fileID: -7251840230146712583, guid: 1948e7737e8e28b4da7d0a0fe26b9064, type: 3}
   mask:
     serializedVersion: 2

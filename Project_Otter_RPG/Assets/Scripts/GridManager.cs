@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Principal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -55,7 +56,8 @@ public class GridManager : MonoBehaviour
             for (int j = 0; j < eHeight; j++)
             {
                 // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
-                var currentTile = Instantiate(tile, new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
+                Vector2 currentPos = new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
+                var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.tag = enemyTileTag;
                 currentTile.init(true);
@@ -71,7 +73,8 @@ public class GridManager : MonoBehaviour
         {
             for (int j = 0; j < eHeight; j++)
             {
-                var currentTile = Instantiate(tile, new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j)), Quaternion.identity);
+                Vector2 currentPos = new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
+                var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"PlayerTile({i},{j})";
                 currentTile.tag = playerTileTag;
                 currentTile.init(false);
