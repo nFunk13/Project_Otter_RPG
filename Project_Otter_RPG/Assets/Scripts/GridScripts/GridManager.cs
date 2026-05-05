@@ -71,7 +71,7 @@ public class GridManager : MonoBehaviour
     {
         for (int i = 0; i < pWidth; i++)
         {
-            for (int j = 0; j < eHeight; j++)
+            for (int j = 0; j < pHeight; j++)
             {
                 Vector2 currentPos = new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
