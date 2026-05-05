@@ -54,7 +54,7 @@ public class PMovement : PlayerManager
 
     private void StartSpawn()
     {
-        int randomNumber = Random.Range(16, gridManager.GetTileDictionary().Count);
+        int randomNumber = Random.Range(16, gridManager.GetTileDictionary().Count - 1);
         GameObject startSpawn = playerTileDictionary[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
@@ -70,8 +70,13 @@ public class PMovement : PlayerManager
                 {
                     if (tileObj.Key == playerTile.Key - 1 || tileObj.Key == playerTile.Key + 1 || tileObj.Key == playerTile.Key - 4 || tileObj.Key == playerTile.Key + 4)
                     {
+                        if ((playerTile.Key % 4 == 0 && tileObj.Key == playerTile.Key - 1) || (tileObj.Key % 4 == 0 && (playerTile.Key - 1) != tileObj.Key))
+                        {
+                            break;
+                        }
                         this.gameObject.transform.position = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
                         playerTile = new KeyValuePair<int, GameObject>(tileObj.Key, tileObj.Value.gameObject);
+                        break;
                     }
                 }
             }
