@@ -35,11 +35,18 @@ public class GridManager : MonoBehaviour
 
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
+
+        createGrids();
+    }
+
+    private void MovePlayer(InputAction.CallbackContext ctx)
+    {
+
     }
 
     private void Start()
     {
-        createGrids();
+        
     }
 
     private void createGrids()
@@ -84,12 +91,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        getTileAtPosition(MouseToWorldPosition());
-    }
-
-    private Vector3 MouseToWorldPosition()
+    public Vector3 MouseToWorldPosition()
     {
         // Converst he mouse's position to it's world position value
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseLocation);
@@ -97,7 +99,7 @@ public class GridManager : MonoBehaviour
         return worldPosition;
     }
 
-    private Tile getTileAtPosition(Vector3 pos)
+    public Tile getTileAtPosition(Vector3 pos)
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
@@ -112,13 +114,30 @@ public class GridManager : MonoBehaviour
             // Checks if the hit collider has something and if the game objects are the same
             if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
             {
-                Debug.Log("Tile: " + tile.name);
                 return tile;
             }
         }
 
         // returns nothing otherwise
         return null;
+    }
+
+    // Gets the tile dictionary
+    public Dictionary<int, Tile> GetTileDictionary()
+    {
+        return tileDictionary;
+    }
+
+    // Gets the enemy tile tag name
+    public string GetEnemyTileTag()
+    {
+        return enemyTileTag;
+    }
+
+    // Gets the player tile tag name
+    public string GetPlayerTag()
+    {
+        return playerTileTag;
     }
 
     private void OnEnable()

@@ -100,6 +100,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""1aaabf8c-93a1-406d-a27a-dd49f6e1185f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -113,78 +122,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""MouseLocation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Test"",
-            ""id"": ""36a5e886-ca2c-43c0-a9a5-ddadf2ae626f"",
-            ""actions"": [
+                },
                 {
-                    ""name"": ""Movement"",
-                    ""type"": ""Value"",
-                    ""id"": ""a57bd8e9-9787-4224-bad9-e767f4511e68"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": ""WASD"",
-                    ""id"": ""057c1899-a47b-4495-9572-1984a68b910e"",
-                    ""path"": ""2DVector"",
+                    ""name"": """",
+                    ""id"": ""70a13a03-8c71-4c4b-8999-28511fe4d191"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
+                    ""action"": ""LeftClick"",
+                    ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""c7f153e1-7b6a-41b2-b92c-32f6c02a3e24"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""275d9e82-8174-4ebb-acc0-b673a040d91b"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""2a715b69-d3f9-4aa8-9d1b-e956596ce891"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""05b069fc-b2a0-4de8-8c05-cc4f1e178d09"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -194,15 +142,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         // MouseActions
         m_MouseActions = asset.FindActionMap("MouseActions", throwIfNotFound: true);
         m_MouseActions_MouseLocation = m_MouseActions.FindAction("MouseLocation", throwIfNotFound: true);
-        // Test
-        m_Test = asset.FindActionMap("Test", throwIfNotFound: true);
-        m_Test_Movement = m_Test.FindAction("Movement", throwIfNotFound: true);
+        m_MouseActions_LeftClick = m_MouseActions.FindAction("LeftClick", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
     {
         UnityEngine.Debug.Assert(!m_MouseActions.enabled, "This will cause a leak and performance issues, PlayerActions.MouseActions.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Test.enabled, "This will cause a leak and performance issues, PlayerActions.Test.Disable() has not been called.");
     }
 
     /// <summary>
@@ -279,6 +224,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_MouseActions;
     private List<IMouseActionsActions> m_MouseActionsActionsCallbackInterfaces = new List<IMouseActionsActions>();
     private readonly InputAction m_MouseActions_MouseLocation;
+    private readonly InputAction m_MouseActions_LeftClick;
     /// <summary>
     /// Provides access to input actions defined in input action map "MouseActions".
     /// </summary>
@@ -294,6 +240,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "MouseActions/MouseLocation".
         /// </summary>
         public InputAction @MouseLocation => m_Wrapper.m_MouseActions_MouseLocation;
+        /// <summary>
+        /// Provides access to the underlying input action "MouseActions/LeftClick".
+        /// </summary>
+        public InputAction @LeftClick => m_Wrapper.m_MouseActions_LeftClick;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -323,6 +273,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @MouseLocation.started += instance.OnMouseLocation;
             @MouseLocation.performed += instance.OnMouseLocation;
             @MouseLocation.canceled += instance.OnMouseLocation;
+            @LeftClick.started += instance.OnLeftClick;
+            @LeftClick.performed += instance.OnLeftClick;
+            @LeftClick.canceled += instance.OnLeftClick;
         }
 
         /// <summary>
@@ -337,6 +290,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @MouseLocation.started -= instance.OnMouseLocation;
             @MouseLocation.performed -= instance.OnMouseLocation;
             @MouseLocation.canceled -= instance.OnMouseLocation;
+            @LeftClick.started -= instance.OnLeftClick;
+            @LeftClick.performed -= instance.OnLeftClick;
+            @LeftClick.canceled -= instance.OnLeftClick;
         }
 
         /// <summary>
@@ -370,102 +326,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="MouseActionsActions" /> instance referencing this action map.
     /// </summary>
     public MouseActionsActions @MouseActions => new MouseActionsActions(this);
-
-    // Test
-    private readonly InputActionMap m_Test;
-    private List<ITestActions> m_TestActionsCallbackInterfaces = new List<ITestActions>();
-    private readonly InputAction m_Test_Movement;
-    /// <summary>
-    /// Provides access to input actions defined in input action map "Test".
-    /// </summary>
-    public struct TestActions
-    {
-        private @PlayerActions m_Wrapper;
-
-        /// <summary>
-        /// Construct a new instance of the input action map wrapper class.
-        /// </summary>
-        public TestActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "Test/Movement".
-        /// </summary>
-        public InputAction @Movement => m_Wrapper.m_Test_Movement;
-        /// <summary>
-        /// Provides access to the underlying input action map instance.
-        /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Test; }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
-        public void Enable() { Get().Enable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
-        public void Disable() { Get().Disable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-        public bool enabled => Get().enabled;
-        /// <summary>
-        /// Implicitly converts an <see ref="TestActions" /> to an <see ref="InputActionMap" /> instance.
-        /// </summary>
-        public static implicit operator InputActionMap(TestActions set) { return set.Get(); }
-        /// <summary>
-        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <param name="instance">Callback instance.</param>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
-        /// </remarks>
-        /// <seealso cref="TestActions" />
-        public void AddCallbacks(ITestActions instance)
-        {
-            if (instance == null || m_Wrapper.m_TestActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_TestActionsCallbackInterfaces.Add(instance);
-            @Movement.started += instance.OnMovement;
-            @Movement.performed += instance.OnMovement;
-            @Movement.canceled += instance.OnMovement;
-        }
-
-        /// <summary>
-        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <remarks>
-        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
-        /// </remarks>
-        /// <seealso cref="TestActions" />
-        private void UnregisterCallbacks(ITestActions instance)
-        {
-            @Movement.started -= instance.OnMovement;
-            @Movement.performed -= instance.OnMovement;
-            @Movement.canceled -= instance.OnMovement;
-        }
-
-        /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TestActions.UnregisterCallbacks(ITestActions)" />.
-        /// </summary>
-        /// <seealso cref="TestActions.UnregisterCallbacks(ITestActions)" />
-        public void RemoveCallbacks(ITestActions instance)
-        {
-            if (m_Wrapper.m_TestActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        /// <summary>
-        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
-        /// </summary>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
-        /// </remarks>
-        /// <seealso cref="TestActions.AddCallbacks(ITestActions)" />
-        /// <seealso cref="TestActions.RemoveCallbacks(ITestActions)" />
-        /// <seealso cref="TestActions.UnregisterCallbacks(ITestActions)" />
-        public void SetCallbacks(ITestActions instance)
-        {
-            foreach (var item in m_Wrapper.m_TestActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_TestActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    /// <summary>
-    /// Provides a new <see cref="TestActions" /> instance referencing this action map.
-    /// </summary>
-    public TestActions @Test => new TestActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MouseActions" which allows adding and removing callbacks.
     /// </summary>
@@ -480,20 +340,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMouseLocation(InputAction.CallbackContext context);
-    }
-    /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Test" which allows adding and removing callbacks.
-    /// </summary>
-    /// <seealso cref="TestActions.AddCallbacks(ITestActions)" />
-    /// <seealso cref="TestActions.RemoveCallbacks(ITestActions)" />
-    public interface ITestActions
-    {
         /// <summary>
-        /// Method invoked when associated input action "Movement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "LeftClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnMovement(InputAction.CallbackContext context);
+        void OnLeftClick(InputAction.CallbackContext context);
     }
 }

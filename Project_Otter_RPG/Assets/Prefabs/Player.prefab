@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 696022732840880400}
   - component: {fileID: 2592937508198718799}
   - component: {fileID: 6911348025703291380}
+  - component: {fileID: 5356642772034316864}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3355810267956730788}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.22111, y: -0.20496, z: 0}
+  m_LocalPosition: {x: 0.22111, y: -0.20496, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -131,3 +132,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PHealth
   maxHealth: 10
+--- !u!114 &5356642772034316864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3355810267956730788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3aee1986e375340be351ae2316f5ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PMovement
