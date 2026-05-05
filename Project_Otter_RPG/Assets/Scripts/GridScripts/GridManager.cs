@@ -39,11 +39,6 @@ public class GridManager : MonoBehaviour
         createGrids();
     }
 
-    private void MovePlayer(InputAction.CallbackContext ctx)
-    {
-
-    }
-
     private void Start()
     {
         
@@ -57,7 +52,7 @@ public class GridManager : MonoBehaviour
 
     private void enemyGrid()
     {
-        // Generates a grid based on width and height
+        // Generates a grid based on width and height for the enemy
         for (int i = 0; i < eWidth; i++)
         {
             for (int j = 0; j < eHeight; j++)
@@ -76,10 +71,12 @@ public class GridManager : MonoBehaviour
 
     private void playerGrid()
     {
+        // Generates a grid based on width and height for the player
         for (int i = 0; i < pWidth; i++)
         {
             for (int j = 0; j < pHeight; j++)
             {
+                // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
                 Vector2 currentPos = new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"PlayerTile({i},{j})";
