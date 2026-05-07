@@ -21,6 +21,8 @@ public class GridManager : MonoBehaviour
 
     private int tileCount;
 
+    private EventSystem eventSystem;
+
     // Variables for the player actions
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
@@ -33,15 +35,13 @@ public class GridManager : MonoBehaviour
         // Creates a new PlayerActions
         playerActions = new PlayerActions();
 
+        eventSystem = GetComponent<EventSystem>();
+
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
+        playerActions.TestActions.PlayerHealthTest.performed += emty => DamagePlayer();
 
         createGrids();
-    }
-
-    private void Start()
-    {
-        
     }
 
     private void createGrids()
@@ -117,6 +117,12 @@ public class GridManager : MonoBehaviour
 
         // returns nothing otherwise
         return null;
+    }
+
+    private void DamagePlayer()
+    {
+        PHealth playerHealth = GameObject.Find("Player").GetComponent<PHealth>();
+        playerHealth.OnDamage(3);
     }
 
     // Gets the tile dictionary

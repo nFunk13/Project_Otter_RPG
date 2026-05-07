@@ -10,6 +10,12 @@ public class PHealth : PlayerManager
     public override void Init(PlayerSystems system)
     {
         base.Init(system);
+        currentHealth = maxHealth;
+    }
+
+    public override void Tick()
+    {
+        Debug.Log(currentHealth);
     }
 
     public void OnDamage(int damage)

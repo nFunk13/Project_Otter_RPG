@@ -49,6 +49,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "TestActions",
+            "id": "155ccbba-0609-4821-a0eb-9c75d41e9f7a",
+            "actions": [
+                {
+                    "name": "PlayerHealthTest",
+                    "type": "PassThrough",
+                    "id": "404bc0ba-62c9-4f48-a11b-231bb12d34bf",
+                    "expectedControlType": "Key",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "794d93d9-b836-415a-8fc6-953f47af768f",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayerHealthTest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
