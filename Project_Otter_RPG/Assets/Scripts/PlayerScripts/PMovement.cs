@@ -9,6 +9,7 @@ public class PMovement : PlayerManager
 
     private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> playerTile;
+    private List<GameObject> tilesToMoveTo = new List<GameObject>();
 
     private PlayerActions playerActions;
 
@@ -67,6 +68,21 @@ public class PMovement : PlayerManager
     // Moves the player when a tile is clicked
     private void MovePlayerOnGrid(Tile tile)
     {
+        int playerKey = playerTile.Key;
+        List<int> potentialKeys = new List<int>();
+        potentialKeys.Add(playerKey - 4);
+        potentialKeys.Add(playerKey + 4);
+        potentialKeys.Add(playerKey - 1);
+        potentialKeys.Add(playerKey + 1);
+
+        foreach (var potentailKey in potentialKeys)
+        {
+            if (playerTileDictionary.TryGetValue(playerKey, out GameObject tileObject))
+            {
+                tilesToMoveTo.Add(tileObject);
+            }
+        }
+
         // Checks to see if the click was on the player's grid
         if (tile != null && tile.gameObject.tag == gridManager.GetPlayerTag())
         {
