@@ -9,7 +9,6 @@ public class PMovement : PlayerManager
 
     private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> playerTile;
-    private List<GameObject> tilesToMoveTo = new List<GameObject>();
 
     private PlayerActions playerActions;
 
@@ -59,7 +58,7 @@ public class PMovement : PlayerManager
     private void StartSpawn()
     {
         // Places the player on a random tile
-        int randomNumber = Random.Range(16, gridManager.GetTileDictionary().Count - 1);
+        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight()) - 1), gridManager.GetTileDictionary().Count - 1);
         GameObject startSpawn = playerTileDictionary[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
@@ -68,44 +67,45 @@ public class PMovement : PlayerManager
     // Moves the player when a tile is clicked
     private void MovePlayerOnGrid(Tile tile)
     {
+        // Dictionary contains the potential tiles the player can move to
+        Dictionary<int, GameObject> potentialSpots = new Dictionary<int, GameObject>();
         int playerKey = playerTile.Key;
+
+        // Adds the potential keys to a list of integers
         List<int> potentialKeys = new List<int>();
-        potentialKeys.Add(playerKey - 4);
-        potentialKeys.Add(playerKey + 4);
+        potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
+        potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
         potentialKeys.Add(playerKey - 1);
         potentialKeys.Add(playerKey + 1);
 
+        // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
         foreach (var potentailKey in potentialKeys)
         {
-            if (playerTileDictionary.TryGetValue(playerKey, out GameObject tileObject))
+            if (playerTileDictionary.TryGetValue(potentailKey, out GameObject tileObject))
             {
-                tilesToMoveTo.Add(tileObject);
+                potentialSpots.Add(potentailKey, tileObject);
             }
         }
 
-        // Checks to see if the click was on the player's grid
-        if (tile != null && tile.gameObject.tag == gridManager.GetPlayerTag())
+        // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
+        if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
         {
-            // Gets the specific dictionary entry of the tile that the player clicked on
-            foreach (var tileObj in playerTileDictionary)
-            {
-                if (tile.gameObject == tileObj.Value.gameObject)
-                {
-                    // Checks if the desired tile to move to is good
-                    if (tileObj.Key == playerTile.Key - 1 || tileObj.Key == playerTile.Key + 1 || tileObj.Key == playerTile.Key - 4 || tileObj.Key == playerTile.Key + 4)
-                    {
-                        // Prevents from going from bottom tile to the left column's left tile and the top tile to the left column's bottom tile
-                        if ((playerTile.Key % 4 == 0 && tileObj.Key == playerTile.Key - 1) || (tileObj.Key % 4 == 0 && (playerTile.Key - 1) != tileObj.Key))
-                        {
-                            break;
-                        }
+            potentialSpots.Remove(playerKey - 1);
+        }
+        else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 1)
+        {
+            potentialSpots.Remove(playerKey + 1);
+        }
 
-                        // Moves the player
-                        this.gameObject.transform.position = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
-                        playerTile = new KeyValuePair<int, GameObject>(tileObj.Key, tileObj.Value.gameObject);
-                        break;
-                    }
-                }
+        // Checks if the selected tile is valid and moves the player if so
+        foreach (var potentialTile in potentialSpots)
+        {
+            if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
+            {
+                // Moves the player
+                this.gameObject.transform.position = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
+                playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
+                break;
             }
         }
     }

@@ -137,6 +137,26 @@ public class GridManager : MonoBehaviour
         return playerTileTag;
     }
 
+    public int GetPlayerGridWidth()
+    {
+        return pWidth;
+    }
+
+    public int GetPlayerGridHeight()
+    {
+        return pHeight;
+    }
+
+    public int GetEnemyGridWidth()
+    {
+        return eWidth;
+    }
+
+    public int GetEnemyGridHeight()
+    {
+        return eHeight;
+    }
+
     private void OnEnable()
     {
         playerActions.Enable();
