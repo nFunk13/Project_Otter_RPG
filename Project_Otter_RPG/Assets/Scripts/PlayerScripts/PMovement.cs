@@ -58,7 +58,7 @@ public class PMovement : PlayerManager
     private void StartSpawn()
     {
         // Places the player on a random tile
-        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight()) - 1), gridManager.GetTileDictionary().Count - 1);
+        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetTileDictionary().Count - 1);
         GameObject startSpawn = playerTileDictionary[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
