@@ -108,7 +108,8 @@ public class PMovement : PlayerManager
             {
                 // Moves the player
                 Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
-                transform.DOMove(endPosition, moveTime);
+                transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
+                CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
                 break;

@@ -104,7 +104,7 @@ public class Enemy : MonoBehaviour
             potentialSpots.TryGetValue(potentialKeys[randomNumber], out GameObject desiredTile);
             
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
-            transform.DOMove(endPosition, moveTime);
+            transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
             enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
             enemyActionCount--;
         }
