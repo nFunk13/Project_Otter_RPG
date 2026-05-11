@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] EnemyScriptableObject enemyScriptableObject;
+    //[SerializeField] EnemyScriptableObject enemyScriptableObject;
 
     private GridManager gridManager;
 
