@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
 
     private bool canMove = false;
     private float moveTime = 0.25f;
+    private int enemyActionCount = 0;
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class Enemy : MonoBehaviour
     {
         PopulateTiles();
         startSpawn();
-        StartCoroutine(DelayMove(5.0f));
+        //StartCoroutine(DelayMove(5.0f));
     }
 
     private void PopulateTiles()
@@ -60,7 +61,7 @@ public class Enemy : MonoBehaviour
 
     private void MoveEnemyOnGrid()
     {
-        if (canMove)
+        if (enemyActionCount > 0)
         {
             canMove = false;
             Dictionary<int, GameObject> potentialSpots = new Dictionary<int, GameObject>();
@@ -105,14 +106,24 @@ public class Enemy : MonoBehaviour
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
             transform.DOMove(endPosition, moveTime);
             enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
-            StartCoroutine(DelayMove(2.0f));
+            enemyActionCount--;
         }
     }
 
-    private IEnumerator DelayMove(float delay)
+    public int GetEnemyActionCount()
     {
-        yield return new WaitForSeconds(delay);
-        canMove = true;
-        Debug.Log("CAN MOVE NOW");
+        return enemyActionCount;
     }
+
+    public void SetEnemyActionCount(int actionCount)
+    {
+        enemyActionCount = actionCount;
+    }
+
+    //private IEnumerator DelayMove(float delay)
+    //{
+    //    yield return new WaitForSeconds(delay);
+    //    canMove = true;
+    //    Debug.Log("CAN MOVE NOW");
+    //}
 }

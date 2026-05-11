@@ -14,6 +14,7 @@ public class PMovement : PlayerManager
     private PlayerActions playerActions;
     
     private float moveTime = 0.25f;
+    private int playerActionCount = 0;
 
     private void Awake()
     {
@@ -109,6 +110,7 @@ public class PMovement : PlayerManager
                 Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
                 transform.DOMove(endPosition, moveTime);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
+                playerActionCount--;
                 break;
             }
         }
@@ -116,7 +118,10 @@ public class PMovement : PlayerManager
 
     private void MovePlayer(InputAction.CallbackContext ctx)
     {
-        MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
+        if (playerActionCount > 0)
+        {
+            MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
+        }
     }
 
     private void OnEnable()
@@ -127,5 +132,15 @@ public class PMovement : PlayerManager
     private void OnDisable()
     {
         playerActions.Disable();
+    }
+
+    public int getPlayerActionCount()
+    {
+        return playerActionCount;
+    }
+
+    public void SetPlayerActionCount(int countValue)
+    {
+        playerActionCount = countValue;
     }
 }

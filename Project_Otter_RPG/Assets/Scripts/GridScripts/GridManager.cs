@@ -27,6 +27,8 @@ public class GridManager : MonoBehaviour
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
+    int playerActionCount = 0;
+
     // Variables for storing the tiles
     private Dictionary<int, Tile> tileDictionary = new Dictionary<int, Tile>();
 

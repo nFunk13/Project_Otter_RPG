@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 26921058}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc72d42a60686849aa33306041da22b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyScriptableObject: {fileID: 0}
 --- !u!212 &26921059
 SpriteRenderer:
   serializedVersion: 2
@@ -472,6 +473,7 @@ GameObject:
   - component: {fileID: 1008754786}
   - component: {fileID: 1008754785}
   - component: {fileID: 1008754787}
+  - component: {fileID: 1008754788}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -531,6 +533,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89dde92400e279249b0c8fec04bde838, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventSystem
+--- !u!114 &1008754788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008754784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f133cab7ab10f842993a02f5838ea83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  playerCombatActions: 2
+  enemyCombatActions: 1
+  playerMovement: {fileID: 2092434778546207103}
+  enemyList: []
 --- !u!1001 &2092434778546207101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -604,6 +622,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
+--- !u!114 &2092434778546207103 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5356642772034316864, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
+  m_PrefabInstance: {fileID: 2092434778546207101}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3aee1986e375340be351ae2316f5ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PMovement
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
