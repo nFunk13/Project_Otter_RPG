@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour
     private KeyValuePair<int, GameObject> enemyTile;
 
     private bool canMove = false;
+    private float moveTime = 0.25f;
 
     private void Awake()
     {
@@ -98,35 +100,13 @@ public class Enemy : MonoBehaviour
             }
 
             int randomNumber = Random.Range(0, potentialSpots.Count);
-            Debug.Log("Number for Key" + randomNumber);
-            GameObject tile = TileToMoveTo(potentialSpots, potentialKeys, ref randomNumber);
-
-            this.gameObject.transform.position = new Vector3(tile.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
-            enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], tile);
+            potentialSpots.TryGetValue(potentialKeys[randomNumber], out GameObject desiredTile);
+            
+            Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
+            transform.DOMove(endPosition, moveTime);
+            enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
             StartCoroutine(DelayMove(2.0f));
         }
-    }
-
-    private GameObject TileToMoveTo(Dictionary<int, GameObject> spots, List<int> keys, ref int randomNum)
-    {
-        if (spots.TryGetValue(keys[randomNum], out GameObject desiredTile))
-        {
-            return desiredTile;
-        }
-        else
-        {
-            randomNum = 0;
-            foreach (var key in keys)
-            {
-                randomNum++;
-                if (spots.TryGetValue(key, out GameObject closestTile))
-                {
-                    Debug.Log("New number for key:" + randomNum);
-                    return closestTile;
-                }
-            }
-        }
-        return null;
     }
 
     private IEnumerator DelayMove(float delay)

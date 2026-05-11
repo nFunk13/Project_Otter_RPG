@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +12,8 @@ public class PMovement : PlayerManager
     private KeyValuePair<int, GameObject> playerTile;
 
     private PlayerActions playerActions;
+    
+    private float moveTime = 0.25f;
 
     private void Awake()
     {
@@ -103,7 +106,8 @@ public class PMovement : PlayerManager
             if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
             {
                 // Moves the player
-                this.gameObject.transform.position = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
+                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
+                transform.DOMove(endPosition, moveTime);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 break;
             }
