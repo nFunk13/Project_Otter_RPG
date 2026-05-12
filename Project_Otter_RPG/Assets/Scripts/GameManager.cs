@@ -11,9 +11,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int enemyCombatActions = 1;
     [SerializeField] private PMovement playerMovement;
     [SerializeField] private List<Enemy> enemyList = new List<Enemy>();
+    [SerializeField] private GridManager gridManager;
     private bool playersTurn = true;
 
-    public void CreateInstance()
+    public static void CreateInstance()
     {
         if (gameManagerInstance == null)
         {
@@ -21,12 +22,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameManager GetInstance()
+    public static GameManager GetInstance()
     {
         return gameManagerInstance;
     }
 
-    public void DestroyInstance()
+    public static void DestroyInstance()
     {
         if (gameManagerInstance != null)
         {
@@ -74,5 +75,10 @@ public class GameManager : MonoBehaviour
     public int GetPlayerActions()
     {
         return playerCombatActions;
+    }
+
+    public GridManager GetGridManager()
+    {
+        return gridManager;
     }
 }

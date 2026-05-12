@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    //[SerializeField] EnemyScriptableObject enemyScriptableObject;
+    [SerializeField] EnemyScriptableObject enemyScriptableObject;
 
     private GridManager gridManager;
 
@@ -37,7 +37,6 @@ public class Enemy : MonoBehaviour
     {
         PopulateTiles();
         startSpawn();
-        //StartCoroutine(DelayMove(5.0f));
     }
 
     private void PopulateTiles()
@@ -119,11 +118,4 @@ public class Enemy : MonoBehaviour
     {
         enemyActionCount = actionCount;
     }
-
-    //private IEnumerator DelayMove(float delay)
-    //{
-    //    yield return new WaitForSeconds(delay);
-    //    canMove = true;
-    //    Debug.Log("CAN MOVE NOW");
-    //}
 }

@@ -21,13 +21,9 @@ public class GridManager : MonoBehaviour
 
     private int tileCount;
 
-    private EventSystem eventSystem;
-
     // Variables for the player actions
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
-
-    int playerActionCount = 0;
 
     // Variables for storing the tiles
     private Dictionary<int, Tile> tileDictionary = new Dictionary<int, Tile>();
@@ -36,8 +32,6 @@ public class GridManager : MonoBehaviour
     {
         // Creates a new PlayerActions
         playerActions = new PlayerActions();
-
-        eventSystem = GetComponent<EventSystem>();
 
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
@@ -98,7 +92,7 @@ public class GridManager : MonoBehaviour
         return worldPosition;
     }
 
-    public Tile getTileAtPosition(Vector3 pos)
+    public KeyValuePair<int, Tile>? getTileAtPosition(Vector3 pos)
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
@@ -108,10 +102,10 @@ public class GridManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
         
         // Checks each tile in the dictionary
-        foreach (var tile in tileDictionary.Values)
+        foreach (var tile in tileDictionary)
         {
             // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
+            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
             {
                 return tile;
             }

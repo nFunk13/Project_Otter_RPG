@@ -121,7 +121,12 @@ public class PMovement : PlayerManager
     {
         if (playerActionCount > 0)
         {
-            MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
+            var nullableTile = gridManager.getTileAtPosition(gridManager.MouseToWorldPosition());
+            if (nullableTile != null)
+            {
+                MovePlayerOnGrid(nullableTile.Value);
+            }
+            //MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()).Value);
         }
     }
 
