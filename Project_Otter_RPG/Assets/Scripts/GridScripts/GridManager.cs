@@ -21,9 +21,13 @@ public class GridManager : MonoBehaviour
 
     private int tileCount;
 
+    private EventSystem eventSystem;
+
     // Variables for the player actions
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
+
+    int playerActionCount = 0;
 
     // Variables for storing the tiles
     private Dictionary<int, Tile> tileDictionary = new Dictionary<int, Tile>();
@@ -32,6 +36,8 @@ public class GridManager : MonoBehaviour
     {
         // Creates a new PlayerActions
         playerActions = new PlayerActions();
+
+        eventSystem = GetComponent<EventSystem>();
 
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
@@ -92,7 +98,7 @@ public class GridManager : MonoBehaviour
         return worldPosition;
     }
 
-    public KeyValuePair<int, Tile>? getTileAtPosition(Vector3 pos)
+    public Tile getTileAtPosition(Vector3 pos)
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
@@ -102,10 +108,10 @@ public class GridManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
         
         // Checks each tile in the dictionary
-        foreach (var tile in tileDictionary)
+        foreach (var tile in tileDictionary.Values)
         {
             // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
+            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
             {
                 return tile;
             }
@@ -113,6 +119,31 @@ public class GridManager : MonoBehaviour
 
         // returns nothing otherwise
         return null;
+    }
+
+    // Gets the key of the tile
+    public int getTileKeyAtPosition(Vector3 pos)
+    {
+        // Takes the mouse position and sets the z component to zero
+        Vector3 newPos = pos;
+        newPos.z = 0.0f;
+
+        // Takes the position to be a RaycastHit2D, with the direction going to the right
+        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
+
+        // Checks each tile in the dictionary
+        foreach (var tile in tileDictionary)
+        {
+            // Checks if the hit collider has something and if the game objects are the same
+            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
+            {
+                // Returns the key of the tile
+                return tile.Key;
+            }
+        }
+
+        // returns nothing otherwise
+        return -1;
     }
 
     private void DamagePlayer()

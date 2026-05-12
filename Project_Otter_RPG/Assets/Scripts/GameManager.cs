@@ -35,6 +35,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        CreateInstance();
+    }
+
     private void Start()
     {
         playerMovement.SetPlayerActionCount(GetPlayerActions());
