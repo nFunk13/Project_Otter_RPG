@@ -5,26 +5,9 @@ using UnityEngine.InputSystem;
 
 public class PAttack : PlayerManager
 {
-    private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> lastTile = new KeyValuePair<int, GameObject>();
 
     [SerializeField] List<MoveData> moves = new List<MoveData>();
-
-    private void Start()
-    {
-        PopulateTiles();
-    }
-
-    private void PopulateTiles()
-    {
-        foreach (var tile in GameManager.GetInstance().GetGridManager().GetTileDictionary())
-        {
-            if (tile.Value.gameObject.tag == GameManager.GetInstance().GetGridManager().GetEnemyTileTag())
-            {
-                enemyTileDictionary.Add(tile.Key, tile.Value.gameObject);
-            }
-        }
-    }
 
     public override void Tick()
     {
@@ -34,39 +17,40 @@ public class PAttack : PlayerManager
 
     private void SeeAttackPattern()
     {
-        int keyAddition = GameManager.GetInstance().GetGridManager().getTileKeyAtPosition(GameManager.GetInstance().GetGridManager().MouseToWorldPosition());
-        if (keyAddition > 15)
+        GridManager gridManager = GameManager.GetInstance().GetGridManager();
+        int keyAddition = gridManager.getTileKeyAtPosition(GameManager.GetInstance().GetGridManager().MouseToWorldPosition());
+        if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
         {
-            keyAddition = 15;
+            keyAddition = gridManager.GetPlayerTileDictionary().Count;
         }
-        else if (keyAddition < 0)
+        else if (keyAddition < 1)
         {
-            keyAddition = 0;
+            keyAddition = 1;
         }
         int backOne = 0;
 
-        if (moves[0].tileKeys[0] >= 0 && moves[0].tileKeys[moves[0].tileKeys.Count - 1] < (enemyTileDictionary.Count - 1) && keyAddition < 16)
+        if (moves[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count)
         {
-            foreach (var tileKey in enemyTileDictionary.Keys)
+            foreach (var tileKey in gridManager.GetEnemyTileDictionary().Keys)
             {
                 foreach (var moveKey in moves[0].tileKeys)
                 {
-                    if ((keyAddition + 1) % GameManager.GetInstance().GetGridManager().GetEnemyGridWidth() == 0 && keyAddition > 0)
+                    if (keyAddition % GameManager.GetInstance().GetGridManager().GetEnemyGridWidth() == 0 && keyAddition > 0)
                     {
                         backOne = -1;
                     }
-                    enemyTileDictionary[(moveKey + keyAddition) + backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
                     continue;
                 }
-                enemyTileDictionary[tileKey].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                lastTile = new KeyValuePair<int, GameObject>(keyAddition, enemyTileDictionary[keyAddition]);
+                gridManager.GetEnemyTileDictionary()[tileKey].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                lastTile = new KeyValuePair<int, GameObject>(keyAddition, gridManager.GetEnemyTileDictionary()[keyAddition]);
             }
         }
         else
         {
             foreach (var moveKey in moves[0].tileKeys)
             {
-                enemyTileDictionary[(moveKey + lastTile.Key) - backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                gridManager.GetEnemyTileDictionary()[(moveKey + lastTile.Key) - backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
             }
         }
     }

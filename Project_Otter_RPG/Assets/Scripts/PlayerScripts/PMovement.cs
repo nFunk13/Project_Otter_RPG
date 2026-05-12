@@ -8,7 +8,7 @@ public class PMovement : PlayerManager
 {
     private GridManager gridManager;
 
-    private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
+    //private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> playerTile;
 
     private PlayerActions playerActions;
@@ -43,34 +43,22 @@ public class PMovement : PlayerManager
 
     private void StartGame()
     {
-        PopulateTiles();
         StartSpawn();
-    }
-
-    private void PopulateTiles()
-    {
-        // Places each player tile from the grid manager into the player tile dictionary
-        foreach (var tile in gridManager.GetTileDictionary())
-        {
-            if (tile.Value.gameObject.tag == gridManager.GetPlayerTag())
-            {
-                playerTileDictionary.Add(tile.Key, tile.Value.gameObject);
-            }
-        }
     }
 
     private void StartSpawn()
     {
         // Places the player on a random tile
-        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetTileDictionary().Count - 1);
-        GameObject startSpawn = playerTileDictionary[randomNumber];
+        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
+        GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
-        playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
+        playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
     }
 
     // Moves the player when a tile is clicked
-    private void MovePlayerOnGrid(Tile tile)
+    private void MovePlayerOnGrid(GameObject tile)
     {
+        Dictionary<int, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
         // Dictionary contains the potential tiles the player can move to
         Dictionary<int, GameObject> potentialSpots = new Dictionary<int, GameObject>();
         int playerKey = playerTile.Key;
@@ -85,7 +73,7 @@ public class PMovement : PlayerManager
         // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
         foreach (var potentailKey in potentialKeys)
         {
-            if (playerTileDictionary.TryGetValue(potentailKey, out GameObject tileObject))
+            if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
             {
                 potentialSpots.Add(potentailKey, tileObject);
             }
@@ -94,11 +82,11 @@ public class PMovement : PlayerManager
         // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
         if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
         {
-            potentialSpots.Remove(playerKey - 1);
-        }
-        else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 1)
-        {
             potentialSpots.Remove(playerKey + 1);
+        }
+        else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 3)
+        {
+            potentialSpots.Remove(playerKey - 1);
         }
 
         // Checks if the selected tile is valid and moves the player if so

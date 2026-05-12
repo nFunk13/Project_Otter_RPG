@@ -14,12 +14,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] Vector2 playerGridStart = new Vector2(-1.0f, 3.0f);
     
     // Variables for the tiles themselves
-    [SerializeField] Tile tile;
+    [SerializeField] GameObject tile;
     [SerializeField] LayerMask mask;
     [SerializeField] string enemyTileTag;
     [SerializeField] string playerTileTag;
 
-    private int tileCount;
+    private int tileCount = 1;
 
     private EventSystem eventSystem;
 
@@ -30,7 +30,8 @@ public class GridManager : MonoBehaviour
     int playerActionCount = 0;
 
     // Variables for storing the tiles
-    private Dictionary<int, Tile> tileDictionary = new Dictionary<int, Tile>();
+    private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class GridManager : MonoBehaviour
 
     private void enemyGrid()
     {
+        int eTileCount = 1;
         // Generates a grid based on width and height for the enemy
         for (int i = 0; i < eWidth; i++)
         {
@@ -64,15 +66,17 @@ public class GridManager : MonoBehaviour
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.tag = enemyTileTag;
-                currentTile.init(true);
-                tileDictionary.Add(tileCount, currentTile);
-                tileCount++;
+                currentTile.GetComponent<Tile>().init(true);
+                enemyTileDictionary.Add(eTileCount, currentTile);
+                eTileCount++;
             }
         }
     }
 
     private void playerGrid()
     {
+        int pTileCount = 1;
+
         // Generates a grid based on width and height for the player
         for (int i = 0; i < pWidth; i++)
         {
@@ -83,9 +87,9 @@ public class GridManager : MonoBehaviour
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"PlayerTile({i},{j})";
                 currentTile.tag = playerTileTag;
-                currentTile.init(false);
-                tileDictionary.Add(tileCount, currentTile);
-                tileCount++;
+                currentTile.GetComponent<Tile>().init(false);
+                playerTileDictionary.Add(pTileCount, currentTile);
+                pTileCount++;
             }
         }
     }
@@ -98,7 +102,7 @@ public class GridManager : MonoBehaviour
         return worldPosition;
     }
 
-    public Tile getTileAtPosition(Vector3 pos)
+    public GameObject getTileAtPosition(Vector3 pos)
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
@@ -108,7 +112,16 @@ public class GridManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
         
         // Checks each tile in the dictionary
-        foreach (var tile in tileDictionary.Values)
+        foreach (var tile in enemyTileDictionary.Values)
+        {
+            // Checks if the hit collider has something and if the game objects are the same
+            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
+            {
+                return tile;
+            }
+        }
+
+        foreach (var tile in playerTileDictionary.Values)
         {
             // Checks if the hit collider has something and if the game objects are the same
             if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
@@ -132,7 +145,17 @@ public class GridManager : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
 
         // Checks each tile in the dictionary
-        foreach (var tile in tileDictionary)
+        foreach (var tile in enemyTileDictionary)
+        {
+            // Checks if the hit collider has something and if the game objects are the same
+            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
+            {
+                // Returns the key of the tile
+                return tile.Key;
+            }
+        }
+
+        foreach (var tile in playerTileDictionary)
         {
             // Checks if the hit collider has something and if the game objects are the same
             if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
@@ -153,9 +176,14 @@ public class GridManager : MonoBehaviour
     }
 
     // Gets the tile dictionary
-    public Dictionary<int, Tile> GetTileDictionary()
+    public Dictionary<int, GameObject> GetEnemyTileDictionary()
     {
-        return tileDictionary;
+        return enemyTileDictionary;
+    }
+
+    public Dictionary<int, GameObject> GetPlayerTileDictionary()
+    {
+        return playerTileDictionary;
     }
 
     // Gets the enemy tile tag name

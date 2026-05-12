@@ -406,7 +406,7 @@ MonoBehaviour:
   pWidth: 4
   pHeight: 4
   playerGridStart: {x: -9.5, y: -3}
-  tile: {fileID: -7251840230146712583, guid: 1948e7737e8e28b4da7d0a0fe26b9064, type: 3}
+  tile: {fileID: 3220352794225669200, guid: 1948e7737e8e28b4da7d0a0fe26b9064, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 64

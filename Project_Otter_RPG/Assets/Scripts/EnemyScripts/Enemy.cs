@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
 
     private GridManager gridManager;
 
-    private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
+    //private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> enemyTile;
 
     private bool canMove = false;
@@ -35,31 +35,33 @@ public class Enemy : MonoBehaviour
 
     private void StartGame()
     {
-        PopulateTiles();
+        //PopulateTiles();
         startSpawn();
     }
 
-    private void PopulateTiles()
-    {
-        foreach (var tile in gridManager.GetTileDictionary())
-        {
-            if (tile.Value.gameObject.tag == gridManager.GetEnemyTileTag())
-            {
-                enemyTileDictionary.Add(tile.Key, tile.Value.gameObject);
-            }
-        }
-    }
+    //private void PopulateTiles()
+    //{
+    //    foreach (var tile in gridManager.GetTileDictionary())
+    //    {
+    //        if (tile.Value.gameObject.tag == gridManager.GetEnemyTileTag())
+    //        {
+    //            enemyTileDictionary.Add(tile.Key, tile.Value.gameObject);
+    //        }
+    //    }
+    //}
 
     private void startSpawn()
     {
         int randomNumber = Random.Range(0, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()) - 1);
-        GameObject startSpawn = enemyTileDictionary[randomNumber];
+        GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
     private void MoveEnemyOnGrid()
     {
+        Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
+
         if (enemyActionCount > 0)
         {
             canMove = false;
@@ -74,7 +76,7 @@ public class Enemy : MonoBehaviour
 
             for (int i = potentialKeys.Count - 1; i >= 0; i--)
             {
-                if (potentialKeys[i] < 0)
+                if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
                 {
                     potentialKeys.Remove(potentialKeys[i]);
                 }
@@ -82,7 +84,7 @@ public class Enemy : MonoBehaviour
 
             foreach (var potentialKey in potentialKeys)
             {
-                if (enemyTileDictionary.TryGetValue(potentialKey, out GameObject tileObject))
+                if (enemyTiles.TryGetValue(potentialKey, out GameObject tileObject))
                 {
                     potentialSpots.Add(potentialKey, tileObject);
                 }
@@ -90,13 +92,23 @@ public class Enemy : MonoBehaviour
 
             if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
             {
+                potentialSpots.Remove(enemyKey + 1);
+                potentialKeys.Remove(enemyKey + 1);
+            }
+            else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
+            {
                 potentialSpots.Remove(enemyKey - 1);
                 potentialKeys.Remove(enemyKey - 1);
             }
-            else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == gridManager.GetEnemyGridWidth() - 1)
+            else if (enemyTile.Key <= 4)
             {
-                potentialSpots.Remove(enemyKey + 1);
-                potentialKeys.Remove(enemyKey + 1);
+                potentialSpots.Remove(enemyKey - 4);
+                potentialKeys.Remove(enemyKey - 4);
+            }
+            else if (enemyTile.Key >= 13 && enemyTile.Key <= GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().Count)
+            {
+                potentialSpots.Remove(enemyKey - 4);
+                potentialKeys.Remove(enemyKey - 4);
             }
 
             int randomNumber = Random.Range(0, potentialSpots.Count);
