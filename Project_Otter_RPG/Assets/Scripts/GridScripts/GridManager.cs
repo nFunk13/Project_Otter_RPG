@@ -166,7 +166,7 @@ public class GridManager : MonoBehaviour
         }
 
         // returns nothing otherwise
-        return -1;
+        return 0;
     }
 
     private void DamagePlayer()

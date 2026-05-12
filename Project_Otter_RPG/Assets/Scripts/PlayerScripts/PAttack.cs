@@ -23,11 +23,16 @@ public class PAttack : PlayerManager
         {
             keyAddition = gridManager.GetPlayerTileDictionary().Count;
         }
-        else if (keyAddition < 1)
+        if (keyAddition > 0)
         {
-            keyAddition = 1;
+            keyAddition -= 1;
         }
         int backOne = 0;
+
+        foreach (GameObject tile in gridManager.GetEnemyTileDictionary().Values)
+        {
+            tile.GetComponent<SpriteRenderer>().color = Color.red;
+        }
 
         if (moves[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count)
         {
@@ -35,22 +40,16 @@ public class PAttack : PlayerManager
             {
                 foreach (var moveKey in moves[0].tileKeys)
                 {
-                    if (keyAddition % GameManager.GetInstance().GetGridManager().GetEnemyGridWidth() == 0 && keyAddition > 0)
+                    if ((keyAddition + 1) % GameManager.GetInstance().GetGridManager().GetEnemyGridWidth() == 0 && keyAddition > 0)
                     {
                         backOne = -1;
                     }
+
                     gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition) + backOne, gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne]);
                     continue;
                 }
-                gridManager.GetEnemyTileDictionary()[tileKey].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                lastTile = new KeyValuePair<int, GameObject>(keyAddition, gridManager.GetEnemyTileDictionary()[keyAddition]);
-            }
-        }
-        else
-        {
-            foreach (var moveKey in moves[0].tileKeys)
-            {
-                gridManager.GetEnemyTileDictionary()[(moveKey + lastTile.Key) - backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                //gridManager.GetEnemyTileDictionary()[tileKey].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
             }
         }
     }
