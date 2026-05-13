@@ -22,8 +22,8 @@ public class PMovement : PlayerManager
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
 
         // Gets the Player Actions for clicking
-        playerActions = new PlayerActions();
-        playerActions.MouseActions.LeftClick.performed += MovePlayer;
+        //playerActions = new PlayerActions();
+        //playerActions.MouseActions.LeftClick.performed += MovePlayer;
     }
 
     public override void Tick()
@@ -56,7 +56,7 @@ public class PMovement : PlayerManager
     }
 
     // Moves the player when a tile is clicked
-    private void MovePlayerOnGrid(GameObject tile)
+    public bool MovePlayerOnGrid(GameObject tile)
     {
         Dictionary<int, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
         // Dictionary contains the potential tiles the player can move to
@@ -100,28 +100,29 @@ public class PMovement : PlayerManager
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    private void MovePlayer(InputAction.CallbackContext ctx)
-    {
-        if (playerActionCount > 0)
-        {
-            MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
-        }
-    }
+    //public void MovePlayer(InputAction.CallbackContext ctx)
+    //{
+    //    if (playerActionCount > 0)
+    //    {
+    //        MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
+    //    }
+    //}
 
-    private void OnEnable()
-    {
-        playerActions.Enable();
-    }
+    //private void OnEnable()
+    //{
+    //    playerActions.Enable();
+    //}
 
-    private void OnDisable()
-    {
-        playerActions.Disable();
-    }
+    //private void OnDisable()
+    //{
+    //    playerActions.Disable();
+    //}
 
     public int getPlayerActionCount()
     {

@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,7 +14,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PMovement playerMovement;
     [SerializeField] private List<Enemy> enemyList = new List<Enemy>();
     [SerializeField] private GridManager gridManager;
+    PlayerActions playerActions;
     private bool playersTurn = true;
+
+    List<ActionTypes> playerActionsTypes = new List<ActionTypes>();
+
+    public enum ActionTypes
+    {
+        NO_ACTION,
+        MOVE,
+        ATTACK
+    }
+
 
     public static void CreateInstance()
     {
@@ -38,6 +51,10 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         CreateInstance();
+
+        // Gets the Player Actions for clicking
+        playerActions = new PlayerActions();
+        playerActions.MouseActions.LeftClick.performed += PerformAction;
     }
 
     private void Start()
@@ -54,6 +71,12 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        UpdateTurn();
+        Debug.Log("Action Count: " + playerActionsTypes.Count);
+    }
+
+    private void UpdateTurn()
+    {
         if (playersTurn == true && playerMovement.getPlayerActionCount() <= 0)
         {
             foreach (var enemyScript in enemyList)
@@ -68,13 +91,48 @@ public class GameManager : MonoBehaviour
             {
                 if (enemyScript.GetEnemyActionCount() <= 0)
                 {
-                    playerMovement.SetPlayerActionCount(playerCombatActions);
-                    playersTurn = true;
+                    continue;
+                }
+                else
+                {
+                    break;
                 }
             }
+            playerMovement.SetPlayerActionCount(playerCombatActions);
+            playersTurn = true;
         }
 
         Debug.Log("Whose turn is it (T=Player | F=Enemy: " + playersTurn);
+    }
+
+    private void PerformAction(InputAction.CallbackContext ctx)
+    {
+        PMovement playerMovement = GameObject.Find("Player").GetComponent<PMovement>();
+        if (playerActionsTypes.Count != 0)
+        {
+            if (playerActionsTypes[0] == ActionTypes.MOVE && (playerMovement.getPlayerActionCount() <= 2 && playerMovement.getPlayerActionCount() > 0))
+            {
+                MovePlayer();
+            }
+        }
+    }
+
+    public void MovePlayer()
+    {
+        PMovement playerMovement = GameObject.Find("Player").GetComponent<PMovement>();
+        if(playerMovement.MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
+        {
+            playerActionsTypes.RemoveAt(0);
+        }
+    }
+
+    public void SetPlayerAction(ActionTypes action)
+    {
+        int performedActions = playerActionsTypes.Count;
+        if (performedActions < playerCombatActions)
+        {
+            playerActionsTypes.Add(action);
+        }
     }
 
     public int GetPlayerActions()
@@ -85,5 +143,15 @@ public class GameManager : MonoBehaviour
     public GridManager GetGridManager()
     {
         return gridManager;
+    }
+
+    private void OnEnable()
+    {
+        playerActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerActions.Disable();
     }
 }
