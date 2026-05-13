@@ -17,8 +17,13 @@ public class PAttack : PlayerManager
 
     private void SeeAttackPattern()
     {
+        int keyAddition = 0;
         GridManager gridManager = GameManager.GetInstance().GetGridManager();
-        int keyAddition = gridManager.getTileKeyAtPosition(GameManager.GetInstance().GetGridManager().MouseToWorldPosition());
+        GameObject testTile = gridManager.getTileAtPosition(gridManager.MouseToWorldPosition());
+        if (testTile != null && testTile.tag == gridManager.GetEnemyTileTag())
+        {
+            keyAddition = gridManager.getTileKeyAtPosition(gridManager.MouseToWorldPosition());
+        }
         if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
         {
             keyAddition = gridManager.GetPlayerTileDictionary().Count;
@@ -49,7 +54,6 @@ public class PAttack : PlayerManager
                     lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition) + backOne, gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne]);
                     continue;
                 }
-                //gridManager.GetEnemyTileDictionary()[tileKey].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
             }
         }
     }
