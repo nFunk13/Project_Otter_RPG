@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
 
     private void startSpawn()
     {
-        int randomNumber = Random.Range(0, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
+        int randomNumber = Random.Range(1, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
