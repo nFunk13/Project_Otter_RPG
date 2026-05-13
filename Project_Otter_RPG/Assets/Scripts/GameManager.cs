@@ -128,6 +128,7 @@ public class GameManager : MonoBehaviour
             {
                 if (playerAttack.Attack(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
                 {
+                    playerMovement.SetPlayerActionCount(-1);
                     ResetEnemyGrid();
                     playerActionsTypes.RemoveAt(0);
                 }

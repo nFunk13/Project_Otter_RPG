@@ -124,6 +124,6 @@ public class PMovement : PlayerManager
     // Sets the Player Action Count
     public void SetPlayerActionCount(int countValue)
     {
-        playerActionCount = countValue;
+        playerActionCount += countValue;
     }
 }
