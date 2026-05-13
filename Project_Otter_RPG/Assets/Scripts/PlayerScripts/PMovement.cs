@@ -106,29 +106,22 @@ public class PMovement : PlayerManager
         return false;
     }
 
-    //public void MovePlayer(InputAction.CallbackContext ctx)
-    //{
-    //    if (playerActionCount > 0)
-    //    {
-    //        MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition()));
-    //    }
-    //}
+    public void MovePlayer()
+    {
+        // Removes the first action from the player action list if the player has moved
+        if (MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
+        {
+            GameManager.GetInstance().GetActionTypesList().RemoveAt(0);
+        }
+    }
 
-    //private void OnEnable()
-    //{
-    //    playerActions.Enable();
-    //}
-
-    //private void OnDisable()
-    //{
-    //    playerActions.Disable();
-    //}
-
+    // Gets the Player Action Count
     public int getPlayerActionCount()
     {
         return playerActionCount;
     }
 
+    // Sets the Player Action Count
     public void SetPlayerActionCount(int countValue)
     {
         playerActionCount = countValue;

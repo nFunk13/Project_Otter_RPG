@@ -19,15 +19,11 @@ public class GridManager : MonoBehaviour
     [SerializeField] string enemyTileTag;
     [SerializeField] string playerTileTag;
 
-    private int tileCount = 1;
-
-    private EventSystem eventSystem;
-
     // Variables for the player actions
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
-    int playerActionCount = 0;
+    //int playerActionCount = 0;
 
     // Variables for storing the tiles
     private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
@@ -37,8 +33,6 @@ public class GridManager : MonoBehaviour
     {
         // Creates a new PlayerActions
         playerActions = new PlayerActions();
-
-        eventSystem = GetComponent<EventSystem>();
 
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
@@ -169,18 +163,20 @@ public class GridManager : MonoBehaviour
         return 0;
     }
 
+    // Decreases player health by a certain amount
     private void DamagePlayer()
     {
         PHealth playerHealth = GameObject.Find("Player").GetComponent<PHealth>();
         playerHealth.OnDamage(3);
     }
 
-    // Gets the tile dictionary
+    // Gets the dictionary containing the enemy grid tiles
     public Dictionary<int, GameObject> GetEnemyTileDictionary()
     {
         return enemyTileDictionary;
     }
 
+    // Gets the dictionary containing the player grid tiles
     public Dictionary<int, GameObject> GetPlayerTileDictionary()
     {
         return playerTileDictionary;
@@ -198,21 +194,26 @@ public class GridManager : MonoBehaviour
         return playerTileTag;
     }
 
+    // Gets player grid width
     public int GetPlayerGridWidth()
     {
         return pWidth;
     }
 
+    // Gets player grid height
     public int GetPlayerGridHeight()
     {
         return pHeight;
     }
 
+    // Gets enemy grid width
     public int GetEnemyGridWidth()
     {
         return eWidth;
     }
 
+
+    // Gets enemy grid height
     public int GetEnemyGridHeight()
     {
         return eHeight;
