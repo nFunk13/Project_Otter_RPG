@@ -10,10 +10,24 @@ public class PAttack : PlayerManager
     [SerializeField] List<MoveData> moves = new List<MoveData>();
     private List<GameObject> attackTiles = new List<GameObject>();
 
+    MoveData chosenMove;
+
     public override void Tick()
     {
         base.Tick();
         SeeAttackPattern();
+    }
+
+    public MoveData ChosenMove(string nameOfMove)
+    {
+        foreach (var move in moves)
+        {
+            if (move.moveName == nameOfMove)
+            {
+                return move;
+            }
+        }
+        return null;
     }
 
     public void SeeAttackPattern()
@@ -39,6 +53,8 @@ public class PAttack : PlayerManager
                 keyAddition -= 1;
             }
             int backOne = 0; // Variable to move back one
+
+            //MoveData chosenMove = chosenMove()
 
             // Gets the tiles based on the mouse's position
             if (moves[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null)
@@ -86,5 +102,15 @@ public class PAttack : PlayerManager
         }
 
         return false;
+    }
+
+    public void SetChosenMoveData(MoveData move)
+    {
+        chosenMove = move;
+    }
+
+    public List<MoveData> GetMoves()
+    {
+        return moves;
     }
 }
