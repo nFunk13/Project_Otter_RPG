@@ -26,6 +26,7 @@ public class ButtonManager : MonoBehaviour
             {
                 break;
             }
+            moveButtons[i].gameObject.SetActive(true);
             moveButtons[i].transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = playerAttack.GetMoves()[i].moveName;
         }
     }
@@ -35,5 +36,18 @@ public class ButtonManager : MonoBehaviour
         PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
         playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveButtons[0].name));
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
+        foreach (var button in moveButtons)
+        {
+            if (button.activeInHierarchy)
+            {
+                button.SetActive(false);
+            }
+            else
+            {
+                break;
+            }
+        }
+        gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
     }
 }

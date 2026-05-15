@@ -49,6 +49,7 @@ public class GridManager : MonoBehaviour
 
     private void enemyGrid()
     {
+        GameObject enemyGridContainer = new GameObject("Enemy_Grid");
         int eTileCount = 1;
         // Generates a grid based on width and height for the enemy
         for (int i = 0; i < eWidth; i++)
@@ -59,6 +60,7 @@ public class GridManager : MonoBehaviour
                 Vector2 currentPos = new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"EnemyTile({i},{j})";
+                currentTile.transform.parent = enemyGridContainer.transform;
                 currentTile.tag = enemyTileTag;
                 currentTile.GetComponent<Tile>().init(true);
                 enemyTileDictionary.Add(eTileCount, currentTile);
@@ -69,8 +71,8 @@ public class GridManager : MonoBehaviour
 
     private void playerGrid()
     {
+        GameObject playerGridContainer = new GameObject("Player_Grid");
         int pTileCount = 1;
-
         // Generates a grid based on width and height for the player
         for (int i = 0; i < pWidth; i++)
         {
@@ -80,6 +82,7 @@ public class GridManager : MonoBehaviour
                 Vector2 currentPos = new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
                 var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
                 currentTile.name = $"PlayerTile({i},{j})";
+                currentTile.transform.parent = playerGridContainer.transform;
                 currentTile.tag = playerTileTag;
                 currentTile.GetComponent<Tile>().init(false);
                 playerTileDictionary.Add(pTileCount, currentTile);
