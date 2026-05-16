@@ -34,8 +34,8 @@ public class ButtonManager : MonoBehaviour
     public void MoveOne()
     {
         PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
-        playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveButtons[0].name));
-        GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        string moveName = moveButtons[0].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+        playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
         foreach (var button in moveButtons)
         {
@@ -49,5 +49,69 @@ public class ButtonManager : MonoBehaviour
             }
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
+        GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+    }
+
+    public void MoveTwo()
+    {
+        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        string moveName = moveButtons[1].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+        playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
+        gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
+        foreach (var button in moveButtons)
+        {
+            if (button.activeInHierarchy)
+            {
+                button.SetActive(false);
+            }
+            else
+            {
+                break;
+            }
+        }
+        gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
+        GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+    }
+
+    public void MoveThree()
+    {
+        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        string moveName = moveButtons[2].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+        playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
+        gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
+        foreach (var button in moveButtons)
+        {
+            if (button.activeInHierarchy)
+            {
+                button.SetActive(false);
+            }
+            else
+            {
+                break;
+            }
+        }
+        gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
+        GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+    }
+
+    public void MoveFour()
+    {
+        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        string moveName = moveButtons[3].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+        playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
+        gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
+        foreach (var button in moveButtons)
+        {
+            if (button.activeInHierarchy)
+            {
+                button.SetActive(false);
+            }
+            else
+            {
+                break;
+            }
+        }
+        gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
+        GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
     }
 }

@@ -15,3 +15,7 @@ MonoBehaviour:
   moveName: TestMove1
   attackDamage: 3
   tileKeys: 0100000002000000
+  leftMostTileKey: 1
+  centerTileKey: 1
+  rightMostTileKey: 2
+  tileSpillage: 1

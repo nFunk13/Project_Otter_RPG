@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MoveData
   moveName: TestMove2
   attackDamage: 7
-  tileKeys: 0000000005000000
+  tileKeys: 0100000005000000
+  leftMostTileKey: 1
+  centerTileKey: 1
+  rightMostTileKey: 5

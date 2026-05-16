@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ public class PAttack : PlayerManager
     [SerializeField] List<MoveData> moves = new List<MoveData>();
     private List<GameObject> attackTiles = new List<GameObject>();
 
-    MoveData chosenMove;
+    private List<MoveData> chosenMove = new List<MoveData>();
 
     public override void Tick()
     {
@@ -34,6 +35,16 @@ public class PAttack : PlayerManager
     {
         if (GameManager.GetInstance().GetActionTypesList().Count != 0 && GameManager.GetInstance().GetActionTypesList()[0] == GameManager.ActionTypes.ATTACK)
         {
+            if (attackTiles.Count == 0)
+            {
+                foreach (var key in chosenMove[0].tileKeys)
+                {
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[key];
+                    tile.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    attackTiles.Add(tile);
+                }
+            }
+
             // Sets up variables for setting the correct colors
             int keyAddition = 0; // Added value to the base tile index
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
@@ -48,16 +59,17 @@ public class PAttack : PlayerManager
             {
                 keyAddition = gridManager.GetPlayerTileDictionary().Count;
             }
+            if (keyAddition < chosenMove[0].centerTileKey)
+            {
+                keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
+            }
             if (keyAddition > 0)
             {
                 keyAddition -= 1;
             }
-            int backOne = 0; // Variable to move back one
-
-            //MoveData chosenMove = chosenMove()
 
             // Gets the tiles based on the mouse's position
-            if (moves[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null)
+            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null)
             {
                 attackTiles.Clear();
 
@@ -68,23 +80,32 @@ public class PAttack : PlayerManager
                 foreach (var tileKey in gridManager.GetEnemyTileDictionary().Keys)
                 {
                     bool firstTime = true; // Checks to see if the moveKey is the first one in the moves array
-                    foreach (var moveKey in moves[0].tileKeys)
+                    foreach (var moveKey in chosenMove[0].tileKeys)
                     {
                         // Sets the lastTile key value pair
                         if (firstTime)
                         {
-                            lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition) + backOne, gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne]);
+                            lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition), gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
                             firstTime = false;
                         }
-                        if ((keyAddition + 1) % GameManager.GetInstance().GetGridManager().GetEnemyGridWidth() == 0 && keyAddition > 0)
+                        if (chosenMove[0].rightMostTileKey + keyAddition > 16)
                         {
-                            backOne = -1;
+                            keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
+                        }
+                        else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
+                        {
+                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
+                        }
+                        else if ((keyAddition + 1) % gridManager.GetEnemyGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
+                        {
+                            keyAddition--;
                         }
 
-                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne]);
-                        gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition) + backOne].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
+                        gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
                         continue;
                     }
+                    break;
                 }
             }
         }
@@ -97,6 +118,8 @@ public class PAttack : PlayerManager
         {
             if (tile.Value.gameObject == attackTile)
             {
+                chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
+                attackTiles = new List<GameObject>();
                 return true;
             }
         }
@@ -106,7 +129,7 @@ public class PAttack : PlayerManager
 
     public void SetChosenMoveData(MoveData move)
     {
-        chosenMove = move;
+        chosenMove.Add(move);
     }
 
     public List<MoveData> GetMoves()
