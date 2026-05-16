@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -11,6 +12,11 @@ public class Enemy : MonoBehaviour
     private GridManager gridManager;
 
     private KeyValuePair<int, GameObject> enemyTile;
+
+    private List<GameObject> attackTiles = new List<GameObject>();
+    [SerializeField] private List<MoveData> moves = new List<MoveData>();
+    private List<MoveData> chosenMove = new List<MoveData>();
+    private bool attackVisualized = false;
 
     private float moveTime = 0.25f;
     private int enemyActionCount = 0;
@@ -28,7 +34,8 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        MoveEnemyOnGrid();
+        //MoveEnemyOnGrid();
+        //visualizeAttack();
     }
 
     // Places the enemy on a random spot on their grid
@@ -40,7 +47,7 @@ public class Enemy : MonoBehaviour
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
-    private void MoveEnemyOnGrid()
+    public void MoveEnemyOnGrid()
     {
         if (enemyActionCount > 0)
         {
@@ -88,6 +95,72 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void visualizeAttack()
+    {
+        if (GameManager.GetInstance().GetEnemyActionTypesList().Count != 0 && GameManager.GetInstance().GetEnemyActionTypesList()[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
+        {
+            SetChosenMove();
+
+            if (attackTiles.Count == 0)
+            {
+                foreach (var key in chosenMove[0].tileKeys)
+                {
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[key];
+                    tile.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    attackTiles.Add(tile);
+                }
+            }
+
+            // Sets up variables for setting the correct colors
+            GridManager gridManager = GameManager.GetInstance().GetGridManager();
+            int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count) - 1; // Added value to the base tile index
+
+            if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
+            {
+                keyAddition = gridManager.GetPlayerTileDictionary().Count;
+            }
+            if (keyAddition < chosenMove[0].centerTileKey)
+            {
+                keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
+            }
+
+            // Gets the tiles based on the mouse's position
+            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count)
+            {
+                attackTiles.Clear();
+
+                // Resets tile color to red
+                GameManager.GetInstance().ResetPlayerGrid();
+
+                // Sets the desired tiles to hotpink for visualization purposes
+                foreach (var tileKey in gridManager.GetPlayerTileDictionary().Keys)
+                {
+                    foreach (var moveKey in chosenMove[0].tileKeys)
+                    {
+                        if (chosenMove[0].rightMostTileKey + keyAddition > 16)
+                        {
+                            keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
+                        }
+                        else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
+                        {
+                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
+                        }
+                        else if ((keyAddition + 1) % gridManager.GetPlayerGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
+                        {
+                            keyAddition--;
+                        }
+
+                        attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
+                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                        continue;
+                    }
+                    break;
+                }
+                attackVisualized = true;
+            }
+        }
+    }
+
     // Gets the enemy action count
     public int GetEnemyActionCount()
     {
@@ -97,6 +170,12 @@ public class Enemy : MonoBehaviour
     // Sets the enemy action count
     public void SetEnemyActionCount(int actionCount)
     {
-        enemyActionCount = actionCount;
+        enemyActionCount += actionCount;
+    }
+
+    private void SetChosenMove()
+    {
+        int moveKey = Random.Range(0, moves.Count - 1);
+        chosenMove.Add(moves[moveKey]);
     }
 }

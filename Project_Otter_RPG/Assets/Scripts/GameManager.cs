@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     private bool playersTurn = true;
 
     private List<ActionTypes> playerActionsTypes = new List<ActionTypes>();
+    private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     public enum ActionTypes
     {
@@ -73,6 +74,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        PerformEnemyAction();
         UpdateTurn();
         Debug.Log("Action Count: " + playerActionsTypes.Count);
     }
@@ -90,19 +92,23 @@ public class GameManager : MonoBehaviour
         }
         else if (playersTurn == false)
         {
+            bool shouldBePlayersTurn = false;
             foreach (var enemyScript in enemyList)
             {
-                if (enemyScript.GetEnemyActionCount() <= 0)
+                if (enemyScript.GetEnemyActionCount() <= 0 && enemyScript.GetEnemyActionCount() == 0)
                 {
-                    continue;
+                    shouldBePlayersTurn = true;
                 }
                 else
                 {
-                    break;
+                    shouldBePlayersTurn = false;
                 }
             }
-            playerMovement.SetPlayerActionCount(playerCombatActions);
-            playersTurn = true;
+            if (shouldBePlayersTurn)
+            {
+                playerMovement.SetPlayerActionCount(playerCombatActions);
+                playersTurn = true;
+            }
         }
 
         Debug.Log("Whose turn is it (T=Player | F=Enemy: " + playersTurn);
@@ -115,13 +121,14 @@ public class GameManager : MonoBehaviour
         PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
         
         // Checks to make sure list is not empty
-        if (playerActionsTypes.Count != 0)
+        if (playerActionsTypes.Count != 0 && playersTurn)
         {
             bool actionRange = (playerMovement.getPlayerActionCount() <= 2 && playerMovement.getPlayerActionCount() > 0); // Range for acceptable actions
             // What to do with the movement action
             if (playerActionsTypes[0] == ActionTypes.MOVE && actionRange)
             {
                 playerMovement.MovePlayer();
+
             }
             // What to do with the attack action
             else if (playerActionsTypes[0] == ActionTypes.ATTACK && actionRange)
@@ -133,6 +140,28 @@ public class GameManager : MonoBehaviour
                     playerActionsTypes.RemoveAt(0);
                 }
             }
+        }
+    }
+
+    private void PerformEnemyAction()
+    {
+        if (!playersTurn)
+        {
+            foreach (var enemy in enemyList)
+            {
+                int randomAction = Random.Range((int)ActionTypes.ATTACK, (int)ActionTypes.ATTACK);
+                enemyActionTypes.Add((ActionTypes)randomAction);
+                if (enemyActionTypes[0] == ActionTypes.MOVE)
+                {
+                    enemy.MoveEnemyOnGrid();
+                }
+                else if (enemyActionTypes[0] == ActionTypes.ATTACK)
+                {
+                    enemy.visualizeAttack();
+                }
+                enemy.SetEnemyActionCount(-1);
+            }
+
         }
     }
 
@@ -148,6 +177,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ResetPlayerGrid()
+    {
+        foreach (var tile in gridManager.GetPlayerTileDictionary().Values)
+        {
+            if (tile.GetComponent<SpriteRenderer>().color != Color.green)
+            {
+                tile.GetComponent<SpriteRenderer>().color = Color.green;
+            }
+        }
+    }
+
     // Sets the next action the player will perform
     public void SetPlayerAction(ActionTypes action)
     {
@@ -156,6 +196,11 @@ public class GameManager : MonoBehaviour
         {
             playerActionsTypes.Add(action);
         }
+    }
+
+    public void SetEnemyAction(ActionTypes action)
+    {
+        enemyActionTypes.Add(action);
     }
 
     public int GetPlayerActions()
@@ -168,9 +213,14 @@ public class GameManager : MonoBehaviour
         return gridManager;
     }
 
-    public List<ActionTypes> GetActionTypesList()
+    public List<ActionTypes> GetPlayerActionTypesList()
     {
         return playerActionsTypes;
+    }
+
+    public List<ActionTypes> GetEnemyActionTypesList()
+    {
+        return enemyActionTypes;
     }
 
     private void OnEnable()

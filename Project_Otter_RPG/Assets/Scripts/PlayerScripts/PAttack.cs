@@ -33,7 +33,7 @@ public class PAttack : PlayerManager
 
     public void SeeAttackPattern()
     {
-        if (GameManager.GetInstance().GetActionTypesList().Count != 0 && GameManager.GetInstance().GetActionTypesList()[0] == GameManager.ActionTypes.ATTACK)
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count != 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK)
         {
             if (attackTiles.Count == 0)
             {

@@ -8,10 +8,7 @@ public class PMovement : PlayerManager
 {
     private GridManager gridManager;
 
-    //private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
     private KeyValuePair<int, GameObject> playerTile;
-
-    private PlayerActions playerActions;
     
     private float moveTime = 0.25f;
     private int playerActionCount = 0;
@@ -20,10 +17,6 @@ public class PMovement : PlayerManager
     {
         // Gets the GridManager script
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
-
-        // Gets the Player Actions for clicking
-        //playerActions = new PlayerActions();
-        //playerActions.MouseActions.LeftClick.performed += MovePlayer;
     }
 
     public override void Tick()
@@ -111,7 +104,7 @@ public class PMovement : PlayerManager
         // Removes the first action from the player action list if the player has moved
         if (MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
         {
-            GameManager.GetInstance().GetActionTypesList().RemoveAt(0);
+            GameManager.GetInstance().GetPlayerActionTypesList().RemoveAt(0);
         }
     }
 
