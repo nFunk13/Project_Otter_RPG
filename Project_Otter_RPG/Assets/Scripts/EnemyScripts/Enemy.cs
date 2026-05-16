@@ -97,6 +97,7 @@ public class Enemy : MonoBehaviour
 
     public void visualizeAttack()
     {
+        attackVisualized = false;
         if (GameManager.GetInstance().GetEnemyActionTypesList().Count != 0 && GameManager.GetInstance().GetEnemyActionTypesList()[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
         {
             SetChosenMove();
@@ -113,7 +114,7 @@ public class Enemy : MonoBehaviour
 
             // Sets up variables for setting the correct colors
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
-            int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count) - 1; // Added value to the base tile index
+            int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count); // Added value to the base tile index
 
             if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
             {
@@ -122,6 +123,10 @@ public class Enemy : MonoBehaviour
             if (keyAddition < chosenMove[0].centerTileKey)
             {
                 keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
+            }
+            if (keyAddition > 0)
+            {
+                keyAddition -= 1;
             }
 
             // Gets the tiles based on the mouse's position
