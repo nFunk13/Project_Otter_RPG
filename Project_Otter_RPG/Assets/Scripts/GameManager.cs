@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int playerCombatActions = 2;
     [SerializeField] private int enemyCombatActions = 1;
     [SerializeField] private PMovement playerMovement;
-    [SerializeField] private List<Enemy> enemyList = new List<Enemy>();
+    [SerializeField] private List<Enemy> enemyList;// = new List<Enemy>();
     [SerializeField] private GridManager gridManager;
     PlayerActions playerActions;
     private bool playersTurn = true;
@@ -62,10 +62,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        enemyList = new List<Enemy>();
         playerMovement.SetPlayerActionCount(GetPlayerActions());
-        
         List<GameObject> enemyObjects = new List<GameObject>();
-        enemyObjects.Add(GameObject.FindWithTag("Enemy"));
+        GameObject.FindGameObjectsWithTag("Enemy", enemyObjects);
         foreach (GameObject enemy in enemyObjects)
         {
             enemyList.Add(enemy.GetComponent<Enemy>());
@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         PerformEnemyAction();
         UpdateTurn();
         Debug.Log("Action Count: " + playerActionsTypes.Count);
+        Debug.Log("ENEMY COUNT: " +  enemyList.Count);
     }
 
     // Updates whether it is the player or enemies turn
@@ -161,7 +162,7 @@ public class GameManager : MonoBehaviour
                 }
                 enemy.SetEnemyActionCount(-1);
             }
-
+            ResetEnemyGrid();
         }
     }
 

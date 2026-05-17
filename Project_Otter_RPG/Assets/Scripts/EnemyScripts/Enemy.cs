@@ -106,7 +106,7 @@ public class Enemy : MonoBehaviour
             {
                 foreach (var key in chosenMove[0].tileKeys)
                 {
-                    GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[key];
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
                     tile.GetComponent<SpriteRenderer>().color = Color.hotPink;
                     attackTiles.Add(tile);
                 }
@@ -130,7 +130,7 @@ public class Enemy : MonoBehaviour
             }
 
             // Gets the tiles based on the mouse's position
-            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count)
+            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetPlayerTileDictionary().Count)
             {
                 attackTiles.Clear();
 
