@@ -69,7 +69,7 @@ public class PAttack : PlayerManager
             }
 
             // Gets the tiles based on the mouse's position
-            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null)
+            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null && testTile.gameObject.tag == gridManager.GetEnemyTileTag())
             {
                 attackTiles.Clear();
 
