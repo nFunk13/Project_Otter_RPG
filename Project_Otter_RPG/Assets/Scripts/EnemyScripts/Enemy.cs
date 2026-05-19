@@ -32,20 +32,13 @@ public class Enemy : MonoBehaviour
         StartSpawn();
     }
 
-    private void Update()
-    {
-        foreach (var tileObj in gridManager.GetPlayerTileDictionary().Values)
-        {
-            Debug.Log("Does Tile have a character on it" + tileObj.name + " " + tileObj.GetComponent<Tile>().GetCharacterOn());
-        }
-    }
-
     // Places the enemy on a random spot on their grid
     private void StartSpawn()
     {
         int randomNumber = Random.Range(1, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
+        startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
@@ -92,8 +85,9 @@ public class Enemy : MonoBehaviour
             // Moves the enemy object to the desired tile
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
             transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
+            enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+            desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
-            enemyActionCount--;
         }
     }
 

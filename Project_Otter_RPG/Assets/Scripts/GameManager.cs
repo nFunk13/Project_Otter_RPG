@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         PerformEnemyAction();
         UpdateTurn();
         Debug.Log("Action Count: " + playerActionsTypes.Count);
-        Debug.Log("ENEMY COUNT: " +  enemyList.Count);
+        Debug.Log("Player Action Count: " + playerMovement.getPlayerActionCount());
     }
 
     // Updates whether it is the player or enemies turn
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
         {
             foreach (var enemy in enemyList)
             {
-                int randomAction = Random.Range((int)ActionTypes.ATTACK, (int)ActionTypes.ATTACK);
+                int randomAction = Random.Range((int)ActionTypes.MOVE, (int)ActionTypes.ATTACK);
                 enemyActionTypes.Add((ActionTypes)randomAction);
                 if (enemyActionTypes[0] == ActionTypes.MOVE)
                 {
