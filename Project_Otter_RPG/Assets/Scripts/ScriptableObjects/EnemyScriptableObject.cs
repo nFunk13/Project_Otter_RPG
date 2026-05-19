@@ -9,7 +9,8 @@ public class EnemyScriptableObject : ScriptableObject
     public string enemyName = "";
 
     [Tooltip("Enemy Health")]
-    public int enemyHealth = 0;
+    public int enemyMaxHealth = 0;
+    [HideInInspector] public int enemyCurrentHealth = 0;
 
     [Tooltip("Enemy Moves")]
     [SerializeField] public List<MoveData> moveList = new List<MoveData>();

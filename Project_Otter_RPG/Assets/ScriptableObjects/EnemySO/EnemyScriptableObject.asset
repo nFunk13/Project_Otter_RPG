@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: EnemyScriptableObject
   m_EditorClassIdentifier: Assembly-CSharp::EnemyScriptableObject
   enemyName: Selina
-  enemyHealth: 10
+  enemyMaxHealth: 10
+  enemyCurrentHealth: -3
   moveList:
   - {fileID: 11400000, guid: 6c8fc9d1595f3aa4e8d3bfc5bc763469, type: 2}
   - {fileID: 11400000, guid: ed302fe6fd680ac49b4cdb4668b2534e, type: 2}

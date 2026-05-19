@@ -25,11 +25,17 @@ public class Enemy : MonoBehaviour
     {
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
 
+        enemyScriptableObject.enemyCurrentHealth = enemyScriptableObject.enemyMaxHealth;
     }
 
     private void Start()
     {
         StartSpawn();
+    }
+
+    private void Update()
+    {
+        Debug.Log("ENEMY HEALTH: " + enemyScriptableObject.enemyCurrentHealth);
     }
 
     // Places the enemy on a random spot on their grid
@@ -39,6 +45,7 @@ public class Enemy : MonoBehaviour
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
+        startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
@@ -87,6 +94,7 @@ public class Enemy : MonoBehaviour
             transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
+            desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
             enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
         }
     }
@@ -160,6 +168,11 @@ public class Enemy : MonoBehaviour
                 attackVisualized = true;
             }
         }
+    }
+
+    public EnemyScriptableObject GetEnemyScriptableObject()
+    {
+        return enemyScriptableObject;
     }
 
     // Gets the enemy action count

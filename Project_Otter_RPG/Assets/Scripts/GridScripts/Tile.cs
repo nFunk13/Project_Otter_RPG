@@ -6,6 +6,7 @@ public class Tile : MonoBehaviour
     [SerializeField] Color enemyColor;
     [SerializeField] Color playerColor;
     private bool characterOn = false;
+    private GameObject characterOnTile;
 
     private void Awake()
     {
@@ -25,5 +26,15 @@ public class Tile : MonoBehaviour
     public bool GetCharacterOn()
     {
         return characterOn;
+    }
+
+    public void SetCharacterOnTile(GameObject character)
+    {
+        characterOnTile = character;
+    }
+
+    public GameObject GetCharacterOnTile()
+    {
+        return characterOnTile;
     }
 }

@@ -114,10 +114,11 @@ public class PAttack : PlayerManager
     public bool Attack(GameObject attackTile)
     {
         // Checks to make sure the tile is acceptable
-        foreach (var tile in GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary())
+        foreach (var tile in attackTiles)
         {
-            if (tile.Value.gameObject == attackTile)
+            if (tile.GetComponent<Tile>().GetCharacterOn())
             {
+                tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<Enemy>().GetEnemyScriptableObject().enemyCurrentHealth -= chosenMove.FirstOrDefault().attackDamage;
                 chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
                 attackTiles = new List<GameObject>();
                 return true;
