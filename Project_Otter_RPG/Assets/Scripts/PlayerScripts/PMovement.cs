@@ -45,7 +45,9 @@ public class PMovement : PlayerManager
         int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
+        startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
+        
     }
 
     // Moves the player when a tile is clicked
@@ -91,6 +93,8 @@ public class PMovement : PlayerManager
                 Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
                 transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
+                playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+                potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(true);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
                 return true;

@@ -34,8 +34,10 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        //MoveEnemyOnGrid();
-        //visualizeAttack();
+        foreach (var tileObj in gridManager.GetPlayerTileDictionary().Values)
+        {
+            Debug.Log("Does Tile have a character on it" + tileObj.name + " " + tileObj.GetComponent<Tile>().GetCharacterOn());
+        }
     }
 
     // Places the enemy on a random spot on their grid
