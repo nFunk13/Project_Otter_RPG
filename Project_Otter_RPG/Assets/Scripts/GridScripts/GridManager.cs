@@ -36,8 +36,7 @@ public class GridManager : MonoBehaviour
 
         // Gets the current mouse position
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
-        playerActions.TestActions.PlayerHealthTest.performed += emty => DamagePlayer();
-
+        
         createGrids();
     }
 
@@ -164,13 +163,6 @@ public class GridManager : MonoBehaviour
 
         // returns nothing otherwise
         return 0;
-    }
-
-    // Decreases player health by a certain amount
-    private void DamagePlayer()
-    {
-        PHealth playerHealth = GameObject.Find("Player").GetComponent<PHealth>();
-        playerHealth.OnDamage(3);
     }
 
     // Gets the dictionary containing the enemy grid tiles

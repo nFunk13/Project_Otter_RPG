@@ -135,34 +135,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
-        },
-        {
-            ""name"": ""TestActions"",
-            ""id"": ""155ccbba-0609-4821-a0eb-9c75d41e9f7a"",
-            ""actions"": [
-                {
-                    ""name"": ""PlayerHealthTest"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""404bc0ba-62c9-4f48-a11b-231bb12d34bf"",
-                    ""expectedControlType"": ""Key"",
-                    ""processors"": """",
-                    ""interactions"": ""Press"",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""794d93d9-b836-415a-8fc6-953f47af768f"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""PlayerHealthTest"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
         }
     ],
     ""controlSchemes"": []
@@ -171,15 +143,11 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_MouseActions = asset.FindActionMap("MouseActions", throwIfNotFound: true);
         m_MouseActions_MouseLocation = m_MouseActions.FindAction("MouseLocation", throwIfNotFound: true);
         m_MouseActions_LeftClick = m_MouseActions.FindAction("LeftClick", throwIfNotFound: true);
-        // TestActions
-        m_TestActions = asset.FindActionMap("TestActions", throwIfNotFound: true);
-        m_TestActions_PlayerHealthTest = m_TestActions.FindAction("PlayerHealthTest", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
     {
         UnityEngine.Debug.Assert(!m_MouseActions.enabled, "This will cause a leak and performance issues, PlayerActions.MouseActions.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_TestActions.enabled, "This will cause a leak and performance issues, PlayerActions.TestActions.Disable() has not been called.");
     }
 
     /// <summary>
@@ -358,102 +326,6 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="MouseActionsActions" /> instance referencing this action map.
     /// </summary>
     public MouseActionsActions @MouseActions => new MouseActionsActions(this);
-
-    // TestActions
-    private readonly InputActionMap m_TestActions;
-    private List<ITestActionsActions> m_TestActionsActionsCallbackInterfaces = new List<ITestActionsActions>();
-    private readonly InputAction m_TestActions_PlayerHealthTest;
-    /// <summary>
-    /// Provides access to input actions defined in input action map "TestActions".
-    /// </summary>
-    public struct TestActionsActions
-    {
-        private @PlayerActions m_Wrapper;
-
-        /// <summary>
-        /// Construct a new instance of the input action map wrapper class.
-        /// </summary>
-        public TestActionsActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "TestActions/PlayerHealthTest".
-        /// </summary>
-        public InputAction @PlayerHealthTest => m_Wrapper.m_TestActions_PlayerHealthTest;
-        /// <summary>
-        /// Provides access to the underlying input action map instance.
-        /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_TestActions; }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
-        public void Enable() { Get().Enable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
-        public void Disable() { Get().Disable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-        public bool enabled => Get().enabled;
-        /// <summary>
-        /// Implicitly converts an <see ref="TestActionsActions" /> to an <see ref="InputActionMap" /> instance.
-        /// </summary>
-        public static implicit operator InputActionMap(TestActionsActions set) { return set.Get(); }
-        /// <summary>
-        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <param name="instance">Callback instance.</param>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
-        /// </remarks>
-        /// <seealso cref="TestActionsActions" />
-        public void AddCallbacks(ITestActionsActions instance)
-        {
-            if (instance == null || m_Wrapper.m_TestActionsActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_TestActionsActionsCallbackInterfaces.Add(instance);
-            @PlayerHealthTest.started += instance.OnPlayerHealthTest;
-            @PlayerHealthTest.performed += instance.OnPlayerHealthTest;
-            @PlayerHealthTest.canceled += instance.OnPlayerHealthTest;
-        }
-
-        /// <summary>
-        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <remarks>
-        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
-        /// </remarks>
-        /// <seealso cref="TestActionsActions" />
-        private void UnregisterCallbacks(ITestActionsActions instance)
-        {
-            @PlayerHealthTest.started -= instance.OnPlayerHealthTest;
-            @PlayerHealthTest.performed -= instance.OnPlayerHealthTest;
-            @PlayerHealthTest.canceled -= instance.OnPlayerHealthTest;
-        }
-
-        /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TestActionsActions.UnregisterCallbacks(ITestActionsActions)" />.
-        /// </summary>
-        /// <seealso cref="TestActionsActions.UnregisterCallbacks(ITestActionsActions)" />
-        public void RemoveCallbacks(ITestActionsActions instance)
-        {
-            if (m_Wrapper.m_TestActionsActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        /// <summary>
-        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
-        /// </summary>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
-        /// </remarks>
-        /// <seealso cref="TestActionsActions.AddCallbacks(ITestActionsActions)" />
-        /// <seealso cref="TestActionsActions.RemoveCallbacks(ITestActionsActions)" />
-        /// <seealso cref="TestActionsActions.UnregisterCallbacks(ITestActionsActions)" />
-        public void SetCallbacks(ITestActionsActions instance)
-        {
-            foreach (var item in m_Wrapper.m_TestActionsActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_TestActionsActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    /// <summary>
-    /// Provides a new <see cref="TestActionsActions" /> instance referencing this action map.
-    /// </summary>
-    public TestActionsActions @TestActions => new TestActionsActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MouseActions" which allows adding and removing callbacks.
     /// </summary>
@@ -475,20 +347,5 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftClick(InputAction.CallbackContext context);
-    }
-    /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "TestActions" which allows adding and removing callbacks.
-    /// </summary>
-    /// <seealso cref="TestActionsActions.AddCallbacks(ITestActionsActions)" />
-    /// <seealso cref="TestActionsActions.RemoveCallbacks(ITestActionsActions)" />
-    public interface ITestActionsActions
-    {
-        /// <summary>
-        /// Method invoked when associated input action "PlayerHealthTest" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPlayerHealthTest(InputAction.CallbackContext context);
     }
 }

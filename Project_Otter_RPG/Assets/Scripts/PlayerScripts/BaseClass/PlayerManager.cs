@@ -4,10 +4,11 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     protected PlayerSystems playerManager;
+    [SerializeField] private PlayableCharacterData characterData;
 
     private void Awake()
     {
-        
+        characterData.characterCurrentHealth = characterData.characterMaxHealth;
     }
 
     public virtual void Init(PlayerSystems system)
@@ -28,5 +29,10 @@ public class PlayerManager : MonoBehaviour
     public virtual void LateTick()
     {
 
+    }
+
+    public PlayableCharacterData GetPlayableCharacterData()
+    {
+        return characterData;
     }
 }

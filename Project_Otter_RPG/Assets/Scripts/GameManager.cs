@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -70,14 +71,30 @@ public class GameManager : MonoBehaviour
         {
             enemyList.Add(enemy.GetComponent<Enemy>());
         }
+       
+
+        foreach (var enemy in enemyList)
+        {
+            if (enemyActionTypes.Count != enemyCombatActions)
+            {
+                int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
+                enemyActionTypes.Add((ActionTypes)randomAction);
+                enemy.visualizeAttack();
+            }
+        }
     }
 
     private void Update()
     {
         PerformEnemyAction();
         UpdateTurn();
-        Debug.Log("Action Count: " + playerActionsTypes.Count);
-        Debug.Log("Player Action Count: " + playerMovement.getPlayerActionCount());
+        Debug.Log("Player Action Types: " + playerActionsTypes.Count);
+        Debug.Log("Enemy Action Types: " + enemyActionTypes.Count);
+        Debug.Log("Players Turn? " + playersTurn);
+        if (enemyActionTypes.Count >= 1)
+        {
+            Debug.Log("Enemy Action Move: " + enemyActionTypes[0].ToString());
+        }
     }
 
     // Updates whether it is the player or enemies turn
@@ -91,7 +108,7 @@ public class GameManager : MonoBehaviour
                 playersTurn = false;
             }
         }
-        else if (playersTurn == false)
+        if (playersTurn == false)
         {
             bool shouldBePlayersTurn = false;
             foreach (var enemyScript in enemyList)
@@ -107,12 +124,19 @@ public class GameManager : MonoBehaviour
             }
             if (shouldBePlayersTurn)
             {
-                playerMovement.SetPlayerActionCount(playerCombatActions);
+                foreach (var enemy in enemyList)
+                {
+                    if (enemyActionTypes.Count != enemyCombatActions)
+                    {
+                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
+                        enemyActionTypes.Add((ActionTypes)randomAction);
+                        enemy.visualizeAttack();
+                    }
+                }
                 playersTurn = true;
+                playerMovement.SetPlayerActionCount(playerCombatActions);
             }
         }
-
-        Debug.Log("Whose turn is it (T=Player | F=Enemy: " + playersTurn);
     }
 
     // Performs actions based on the player's action list
@@ -146,19 +170,25 @@ public class GameManager : MonoBehaviour
 
     private void PerformEnemyAction()
     {
-        if (!playersTurn)
+        if (!playersTurn && enemyActionTypes.Count != 0)
         {
             foreach (var enemy in enemyList)
             {
-                int randomAction = Random.Range((int)ActionTypes.MOVE, (int)ActionTypes.ATTACK);
-                enemyActionTypes.Add((ActionTypes)randomAction);
                 if (enemyActionTypes[0] == ActionTypes.MOVE)
                 {
+                    //enemy.SetEnemyActionCount(-1);
                     enemy.MoveEnemyOnGrid();
+                    enemyActionTypes.RemoveAt(0);
                 }
                 else if (enemyActionTypes[0] == ActionTypes.ATTACK)
                 {
                     enemy.visualizeAttack();
+                    if (enemy.Attack())
+                    {
+                        enemy.SetEnemyActionCount(-1);
+                        ResetPlayerGrid();
+                        enemyActionTypes.RemoveAt(0);
+                    }
                 }
                 enemy.SetEnemyActionCount(-1);
             }

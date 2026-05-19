@@ -46,6 +46,7 @@ public class PMovement : PlayerManager
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
+        startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
         
     }
@@ -95,6 +96,7 @@ public class PMovement : PlayerManager
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(true);
+                potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
                 return true;

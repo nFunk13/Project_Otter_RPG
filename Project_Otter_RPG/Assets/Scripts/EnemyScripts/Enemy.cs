@@ -33,11 +33,6 @@ public class Enemy : MonoBehaviour
         StartSpawn();
     }
 
-    private void Update()
-    {
-        Debug.Log("ENEMY HEALTH: " + enemyScriptableObject.enemyCurrentHealth);
-    }
-
     // Places the enemy on a random spot on their grid
     private void StartSpawn()
     {
@@ -168,6 +163,22 @@ public class Enemy : MonoBehaviour
                 attackVisualized = true;
             }
         }
+    }
+
+    public bool Attack()
+    {
+        foreach (var tile in attackTiles)
+        {
+            if (tile.GetComponent<Tile>().GetCharacterOn())
+            {
+                tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<PlayerManager>().GetPlayableCharacterData().characterCurrentHealth -= chosenMove.FirstOrDefault().attackDamage;
+                chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
+                attackTiles = new List<GameObject>();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public EnemyScriptableObject GetEnemyScriptableObject()

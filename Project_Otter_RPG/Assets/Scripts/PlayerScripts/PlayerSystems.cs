@@ -5,8 +5,6 @@ public class PlayerSystems : MonoBehaviour
 {
     PlayerManager[] managers;
 
-    [NonSerialized] public PHealth myHealthSystem;
-
     public T GetSystems<T>() where T : PlayerManager
     {
         foreach (var manager in managers)
@@ -21,7 +19,7 @@ public class PlayerSystems : MonoBehaviour
 
     private void OnEnable()
     {
-        myHealthSystem = GetSystems<PHealth>();
+        
     }
 
     private void Awake()
