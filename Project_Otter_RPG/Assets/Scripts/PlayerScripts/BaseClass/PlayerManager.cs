@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     public virtual void Tick()
     {
+        Debug.Log("Harte Health: " + characterData.characterCurrentHealth);
         healthBar.SetHealth(characterData.characterCurrentHealth);
     }
 
