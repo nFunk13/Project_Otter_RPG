@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
                     enemy.visualizeAttack();
                     if (enemy.Attack())
                     {
-                        enemy.SetEnemyActionCount(-1);
+                        //enemy.SetEnemyActionCount(-1);
                         ResetPlayerGrid();
                         enemyActionTypes.RemoveAt(0);
                     }

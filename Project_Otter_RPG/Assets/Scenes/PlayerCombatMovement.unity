@@ -2446,7 +2446,7 @@ PrefabInstance:
     - target: {fileID: 3985358126691841599, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
       propertyPath: characterData
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 0fd481aa70934af45a8fe3231c8fc35f, type: 2}
     - target: {fileID: 3985358126691841599, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
       propertyPath: moves.Array.size
       value: 2
@@ -2459,6 +2459,10 @@ PrefabInstance:
       propertyPath: 'moves.Array.data[1]'
       value: 
       objectReference: {fileID: 11400000, guid: ed302fe6fd680ac49b4cdb4668b2534e, type: 2}
+    - target: {fileID: 5356642772034316864, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
+      propertyPath: characterData
+      value: 
+      objectReference: {fileID: 11400000, guid: 0fd481aa70934af45a8fe3231c8fc35f, type: 2}
     - target: {fileID: 8711025508001933691, guid: 3b1f542d96008994a86376bc1fd27408, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.22111
