@@ -5,10 +5,13 @@ public class PlayerManager : MonoBehaviour
 {
     protected PlayerSystems playerManager;
     [SerializeField] private PlayableCharacterData characterData;
+    [SerializeField] protected static HealthBarUI healthBar;
 
     private void Awake()
     {
         characterData.characterCurrentHealth = characterData.characterMaxHealth;
+        healthBar = GameObject.Find("Harte_Health_Bar").GetComponent<HealthBarUI>();
+        healthBar.SetHaxHealth(characterData.characterMaxHealth);
     }
 
     public virtual void Init(PlayerSystems system)
@@ -18,7 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     public virtual void Tick()
     {
-
+        healthBar.SetHealth(characterData.characterCurrentHealth);
     }
 
     public virtual void FixedTick()
