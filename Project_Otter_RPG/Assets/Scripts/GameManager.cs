@@ -13,8 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int playerCombatActions = 2;
     [SerializeField] private int enemyCombatActions = 1;
     [SerializeField] private PMovement playerMovement;
-    [SerializeField] private List<Enemy> enemyList;// = new List<Enemy>();
+    [SerializeField] private List<Enemy> enemyList;
     [SerializeField] private GridManager gridManager;
+    [SerializeField] private float enemyActionDelayTime = 1.0f;
     PlayerActions playerActions;
     private bool playersTurn = true;
 
@@ -86,14 +87,15 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        PerformEnemyAction();
         UpdateTurn();
-        Debug.Log("Player Action Types: " + playerActionsTypes.Count);
-        Debug.Log("Enemy Action Types: " + enemyActionTypes.Count);
-        Debug.Log("Players Turn? " + playersTurn);
         if (enemyActionTypes.Count >= 1)
         {
             Debug.Log("Enemy Action Move: " + enemyActionTypes[0].ToString());
+        }
+
+        foreach (var enemy in enemyList)
+        {
+            enemy.visualizeAttack();
         }
     }
 
@@ -107,6 +109,8 @@ public class GameManager : MonoBehaviour
                 enemyScript.SetEnemyActionCount(enemyCombatActions);
                 playersTurn = false;
             }
+            Invoke("PerformEnemyAction", enemyActionDelayTime);
+            Debug.Log("ACTION DELAYED");
         }
         if (playersTurn == false)
         {
@@ -170,13 +174,17 @@ public class GameManager : MonoBehaviour
 
     private void PerformEnemyAction()
     {
+        DetermineAction();
+    }
+    
+    private void DetermineAction()
+    {
         if (!playersTurn && enemyActionTypes.Count != 0)
         {
             foreach (var enemy in enemyList)
             {
                 if (enemyActionTypes[0] == ActionTypes.MOVE)
                 {
-                    //enemy.SetEnemyActionCount(-1);
                     enemy.MoveEnemyOnGrid();
                     enemyActionTypes.RemoveAt(0);
                 }
@@ -185,7 +193,6 @@ public class GameManager : MonoBehaviour
                     enemy.visualizeAttack();
                     if (enemy.Attack())
                     {
-                        //enemy.SetEnemyActionCount(-1);
                         ResetPlayerGrid();
                         enemyActionTypes.RemoveAt(0);
                     }
@@ -242,6 +249,11 @@ public class GameManager : MonoBehaviour
     public GridManager GetGridManager()
     {
         return gridManager;
+    }
+
+    public bool GetPlayersTurn()
+    {
+        return playersTurn;
     }
 
     public List<ActionTypes> GetPlayerActionTypesList()

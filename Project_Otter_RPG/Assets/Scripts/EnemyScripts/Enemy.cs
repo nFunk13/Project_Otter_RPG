@@ -96,7 +96,6 @@ public class Enemy : MonoBehaviour
 
     public void visualizeAttack()
     {
-        attackVisualized = false;
         if (GameManager.GetInstance().GetEnemyActionTypesList().Count != 0 && GameManager.GetInstance().GetEnemyActionTypesList()[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
         {
             SetChosenMove();
@@ -167,18 +166,27 @@ public class Enemy : MonoBehaviour
 
     public bool Attack()
     {
+        bool hitPlayableCharacter = false;
         foreach (var tile in attackTiles)
         {
             if (tile.GetComponent<Tile>().GetCharacterOn())
             {
                 tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<PlayerManager>().GetPlayableCharacterData().characterCurrentHealth -= chosenMove.FirstOrDefault().attackDamage;
-                chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
-                attackTiles = new List<GameObject>();
-                return true;
+                hitPlayableCharacter = true;
             }
         }
+        attackTiles = new List<GameObject>();
+        attackVisualized = false;
+        chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
 
-        return false;
+        if (hitPlayableCharacter)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public EnemyScriptableObject GetEnemyScriptableObject()

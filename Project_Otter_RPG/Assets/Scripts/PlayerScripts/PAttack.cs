@@ -113,6 +113,7 @@ public class PAttack : PlayerManager
 
     public bool Attack(GameObject attackTile)
     {
+        Debug.Log("Chosen Move: " + chosenMove.FirstOrDefault().name);
         // Checks to make sure the tile is acceptable
         if (GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().ContainsValue(attackTile))
         {
@@ -121,10 +122,11 @@ public class PAttack : PlayerManager
                 if (tile.GetComponent<Tile>().GetCharacterOn())
                 {
                     tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<Enemy>().GetEnemyScriptableObject().enemyCurrentHealth -= chosenMove.FirstOrDefault().attackDamage;
-                    chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
                     attackTiles = new List<GameObject>();
                 }
             }
+            chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
+
             return true;
         }
 
