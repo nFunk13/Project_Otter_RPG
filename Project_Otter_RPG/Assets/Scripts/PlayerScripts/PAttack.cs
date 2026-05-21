@@ -77,6 +77,10 @@ public class PAttack : PlayerManager
                         if ((chosenMove[0].rightMostTileKey + (keyAddition - 1)) > gridManager.GetEnemyTileDictionary().Count)
                         {
                             keyAddition -= (chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey) + 1;
+                            while (chosenMove[0].rightMostTileKey + keyAddition > 16)
+                            {
+                                keyAddition--;
+                            } 
                             keyModified = true;
                         }
 
