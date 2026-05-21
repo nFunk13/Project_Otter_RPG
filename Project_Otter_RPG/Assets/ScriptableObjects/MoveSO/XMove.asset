@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86fbda0ea29100b4fb33c10e7b2114a9, type: 3}
-  m_Name: TestMove2
+  m_Name: XMove
   m_EditorClassIdentifier: Assembly-CSharp::MoveData
-  moveName: 2Hori
-  attackDamage: 7
-  tileKeys: 0100000005000000
+  moveName: XMove
+  attackDamage: 10
+  tileKeys: 010000000300000006000000090000000b000000
   leftMostTileKey: 1
-  centerTileKey: 1
-  rightMostTileKey: 5
-  tileSpillage: 0
+  centerTileKey: 6
+  rightMostTileKey: 11
+  tileSpillage: 1

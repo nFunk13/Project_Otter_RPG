@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86fbda0ea29100b4fb33c10e7b2114a9, type: 3}
   m_Name: TestMove1
   m_EditorClassIdentifier: Assembly-CSharp::MoveData
-  moveName: TestMove1
+  moveName: 2Vert
   attackDamage: 3
   tileKeys: 0100000002000000
   leftMostTileKey: 1

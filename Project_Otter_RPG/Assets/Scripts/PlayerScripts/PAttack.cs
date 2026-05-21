@@ -50,24 +50,6 @@ public class PAttack : PlayerManager
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
             GameObject testTile = gridManager.getTileAtPosition(gridManager.MouseToWorldPosition());
 
-            // Gets the number to add to the move tile keys and makes checks
-            if (testTile != null && testTile.tag == gridManager.GetEnemyTileTag())
-            {
-                keyAddition = gridManager.getTileKeyAtPosition(gridManager.MouseToWorldPosition());
-            }
-            if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
-            {
-                keyAddition = gridManager.GetPlayerTileDictionary().Count;
-            }
-            if (keyAddition < chosenMove[0].centerTileKey)
-            {
-                keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
-            }
-            if (keyAddition > 0)
-            {
-                keyAddition -= 1;
-            }
-
             // Gets the tiles based on the mouse's position
             if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null && testTile.gameObject.tag == gridManager.GetEnemyTileTag())
             {
@@ -82,23 +64,37 @@ public class PAttack : PlayerManager
                     bool firstTime = true; // Checks to see if the moveKey is the first one in the moves array
                     foreach (var moveKey in chosenMove[0].tileKeys)
                     {
+                        bool keyModified = false;
+                        keyAddition = gridManager.getTileKeyAtPosition(gridManager.MouseToWorldPosition());
+                        Debug.Log("Key Addition Value: " + keyAddition);
+
+                        if (keyAddition < chosenMove[0].centerTileKey)
+                        {
+                            keyAddition = 0;
+                            keyModified = true;
+                        }
+
+                        if ((chosenMove[0].rightMostTileKey + (keyAddition - 1)) > gridManager.GetEnemyTileDictionary().Count)
+                        {
+                            keyAddition -= (chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey) + 1;
+                            keyModified = true;
+                        }
+
+                        if (!keyModified)
+                        {
+                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
+                        }
+
+                        if ((keyAddition + 1) % gridManager.GetEnemyGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
+                        {
+                            keyAddition -= 1;
+                        }
+
                         // Sets the lastTile key value pair
                         if (firstTime)
                         {
                             lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition), gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
                             firstTime = false;
-                        }
-                        if (chosenMove[0].rightMostTileKey + keyAddition > 16)
-                        {
-                            keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
-                        }
-                        else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
-                        {
-                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
-                        }
-                        else if ((keyAddition + 1) % gridManager.GetEnemyGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
-                        {
-                            keyAddition--;
                         }
 
                         attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
