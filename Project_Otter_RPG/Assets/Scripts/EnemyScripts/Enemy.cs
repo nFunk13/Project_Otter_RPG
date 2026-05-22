@@ -4,6 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
+using static GameManager;
 
 public class Enemy : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private List<MoveData> moves = new List<MoveData>();
     private List<MoveData> chosenMove = new List<MoveData>();
     private bool attackVisualized = false;
+
+    private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     private float moveTime = 0.25f;
     private int enemyActionCount = 0;
@@ -36,13 +39,23 @@ public class Enemy : MonoBehaviour
     // Places the enemy on a random spot on their grid
     private void StartSpawn()
     {
-        int randomNumber = Random.Range(1, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
-        GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
+        GameObject startSpawn;
+        int randomNumber;
+        do
+        {
+            randomNumber = Random.Range(1, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
+            startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
+        } while (startSpawn.GetComponent<Tile>().GetCharacterOn());
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
+
+    //private void Update()
+    //{
+    //    visualizeAttack();
+    //}
 
     public void MoveEnemyOnGrid()
     {
@@ -96,7 +109,7 @@ public class Enemy : MonoBehaviour
 
     public void visualizeAttack()
     {
-        if (GameManager.GetInstance().GetEnemyActionTypesList().Count != 0 && GameManager.GetInstance().GetEnemyActionTypesList()[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
+        if (enemyActionTypes.Count != 0 && enemyActionTypes[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
         {
 
             if (attackTiles.Count == 0)
@@ -105,7 +118,6 @@ public class Enemy : MonoBehaviour
                 foreach (var key in chosenMove[0].tileKeys)
                 {
                     GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
-                    tile.GetComponent<SpriteRenderer>().color = Color.hotPink;
                     attackTiles.Add(tile);
                 }
             }
@@ -133,7 +145,7 @@ public class Enemy : MonoBehaviour
                 attackTiles.Clear();
 
                 // Resets tile color to red
-                GameManager.GetInstance().ResetPlayerGrid();
+                //GameManager.GetInstance().ResetPlayerGrid();
 
                 // Sets the desired tiles to hotpink for visualization purposes
                 foreach (var tileKey in gridManager.GetPlayerTileDictionary().Keys)
@@ -220,5 +232,15 @@ public class Enemy : MonoBehaviour
     public List<GameObject> GetAttackTiles()
     {
         return attackTiles;
+    }
+
+    public void SetEnemyActionTypes(GameManager.ActionTypes action)
+    {
+        enemyActionTypes.Add(action);
+    }
+
+    public List<GameManager.ActionTypes> GetEnemyActionTypes()
+    {
+        return enemyActionTypes;
     }
 }

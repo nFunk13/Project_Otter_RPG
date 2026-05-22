@@ -16,11 +16,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<Enemy> enemyList;
     [SerializeField] private GridManager gridManager;
     [SerializeField] private float enemyActionDelayTime = 1.0f;
+    [SerializeField] private GameObject enemyPrefab;
+
+    [Tooltip("X = min amount of enemies, Y = Max amount of enemies")]
+    [SerializeField] private Vector2 enemyRange;
+    
     PlayerActions playerActions;
     private bool playersTurn = true;
 
     private List<ActionTypes> playerActionsTypes = new List<ActionTypes>();
-    private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     public enum ActionTypes
     {
@@ -67,7 +71,12 @@ public class GameManager : MonoBehaviour
         enemyList = new List<Enemy>();
         playerMovement.SetPlayerActionCount(GetPlayerActions());
         List<GameObject> enemyObjects = new List<GameObject>();
-        GameObject.FindGameObjectsWithTag("Enemy", enemyObjects);
+        float numOfEnemies = Random.Range((int)enemyRange.x, ((int)enemyRange.y) + 1);
+        for (int i = 0; i < numOfEnemies; i++)
+        {
+            GameObject enemy = Instantiate(enemyPrefab, new Vector2(0, 0), Quaternion.identity);
+            enemyObjects.Add(enemy);
+        }
         foreach (GameObject enemy in enemyObjects)
         {
             enemyList.Add(enemy.GetComponent<Enemy>());
@@ -76,10 +85,10 @@ public class GameManager : MonoBehaviour
 
         foreach (var enemy in enemyList)
         {
-            if (enemyActionTypes.Count != enemyCombatActions)
+            if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
             {
                 int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
-                enemyActionTypes.Add((ActionTypes)randomAction);
+                enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                 enemy.visualizeAttack();
             }
         }
@@ -96,15 +105,8 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateTurn();
-        if (enemyActionTypes.Count >= 1)
-        {
-            Debug.Log("Enemy Action Move: " + enemyActionTypes[0].ToString());
-        }
 
-        foreach (var enemy in enemyList)
-        {
-            enemy.visualizeAttack();
-        }
+        VisualizeEnemyAttacks();
     }
 
     // Updates whether it is the player or enemies turn
@@ -132,16 +134,17 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     shouldBePlayersTurn = false;
+                    break;
                 }
             }
             if (shouldBePlayersTurn)
             {
                 foreach (var enemy in enemyList)
                 {
-                    if (enemyActionTypes.Count != enemyCombatActions)
+                    if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
                     {
                         int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
-                        enemyActionTypes.Add((ActionTypes)randomAction);
+                        enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                         enemy.visualizeAttack();
                     }
                 }
@@ -187,25 +190,28 @@ public class GameManager : MonoBehaviour
     
     private void DetermineAction()
     {
-        if (!playersTurn && enemyActionTypes.Count != 0)
+        if (!playersTurn)
         {
             foreach (var enemy in enemyList)
             {
-                if (enemyActionTypes[0] == ActionTypes.MOVE)
+                enemy.visualizeAttack();
+                if (enemy.GetEnemyActionTypes().Count != 0)
                 {
-                    enemy.MoveEnemyOnGrid();
-                    enemyActionTypes.RemoveAt(0);
-                }
-                else if (enemyActionTypes[0] == ActionTypes.ATTACK)
-                {
-                    enemy.visualizeAttack();
-                    if (enemy.Attack())
+                    if (enemy.GetEnemyActionTypes()[0] == ActionTypes.MOVE)
                     {
-                        ResetPlayerGrid();
-                        enemyActionTypes.RemoveAt(0);
+                        enemy.MoveEnemyOnGrid();
+                        enemy.GetEnemyActionTypes().RemoveAt(0);
                     }
+                    else if (enemy.GetEnemyActionTypes()[0] == ActionTypes.ATTACK)
+                    {
+                        enemy.Attack();
+                        
+                        ResetPlayerGrid();
+                        
+                        enemy.GetEnemyActionTypes().RemoveAt(0);
+                    }
+                    enemy.SetEnemyActionCount(-1);
                 }
-                enemy.SetEnemyActionCount(-1);
             }
             ResetEnemyGrid();
         }
@@ -244,11 +250,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetEnemyAction(ActionTypes action)
-    {
-        enemyActionTypes.Add(action);
-    }
-
     public int GetPlayerActions()
     {
         return playerCombatActions;
@@ -267,11 +268,6 @@ public class GameManager : MonoBehaviour
     public List<ActionTypes> GetPlayerActionTypesList()
     {
         return playerActionsTypes;
-    }
-
-    public List<ActionTypes> GetEnemyActionTypesList()
-    {
-        return enemyActionTypes;
     }
 
     public List<Enemy> GetEnemyList()
