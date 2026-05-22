@@ -98,10 +98,10 @@ public class Enemy : MonoBehaviour
     {
         if (GameManager.GetInstance().GetEnemyActionTypesList().Count != 0 && GameManager.GetInstance().GetEnemyActionTypesList()[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
         {
-            SetChosenMove();
 
             if (attackTiles.Count == 0)
             {
+                SetChosenMove();
                 foreach (var key in chosenMove[0].tileKeys)
                 {
                     GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
@@ -210,5 +210,10 @@ public class Enemy : MonoBehaviour
     {
         int moveKey = Random.Range(0, moves.Count - 1);
         chosenMove.Add(moves[moveKey]);
+    }
+
+    public void SetAttackVisualized(bool truthValue)
+    {
+        attackVisualized = truthValue;
     }
 }

@@ -85,6 +85,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void VisualizeEnemyAttacks()
+    {
+        foreach (var enemy in enemyList)
+        {
+            enemy.visualizeAttack();
+        }
+    }
+
     private void Update()
     {
         UpdateTurn();
@@ -223,6 +231,11 @@ public class GameManager : MonoBehaviour
             {
                 tile.GetComponent<SpriteRenderer>().color = Color.green;
             }
+        }
+
+        foreach (var enemy in enemyList)
+        {
+            enemy.SetAttackVisualized(false);
         }
     }
 

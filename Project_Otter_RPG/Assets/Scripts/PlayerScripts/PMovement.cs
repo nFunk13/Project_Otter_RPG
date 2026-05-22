@@ -9,7 +9,8 @@ public class PMovement : PlayerManager
     private GridManager gridManager;
 
     private KeyValuePair<int, GameObject> playerTile;
-    
+    Dictionary<int, GameObject> potentialMoveTiles = new Dictionary<int, GameObject>();
+
     private float moveTime = 0.25f;
     private int playerActionCount = 0;
 
@@ -27,6 +28,8 @@ public class PMovement : PlayerManager
     public override void FixedTick()
     {
         base.FixedTick();
+        VisualizeMovement();
+        GameManager.GetInstance().VisualizeEnemyAttacks();
     }
 
     public void Start()
@@ -51,42 +54,54 @@ public class PMovement : PlayerManager
         
     }
 
+    public void VisualizeMovement()
+    {
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count != 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.MOVE)
+        {
+            if (potentialMoveTiles.Count == 0)
+            {
+                Dictionary<int, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
+                int playerKey = playerTile.Key;
+
+                // Adds the potential keys to a list of integers
+                List<int> potentialKeys = new List<int>();
+                potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
+                potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
+                potentialKeys.Add(playerKey - 1);
+                potentialKeys.Add(playerKey + 1);
+
+                // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
+                foreach (var potentailKey in potentialKeys)
+                {
+                    if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
+                    {
+                        potentialMoveTiles.Add(potentailKey, tileObject);
+                    }
+                }
+
+                // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
+                if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
+                {
+                    potentialMoveTiles.Remove(playerKey + 1);
+                }
+                else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 3)
+                {
+                    potentialMoveTiles.Remove(playerKey - 1);
+                }
+            }
+
+            foreach (var tile in potentialMoveTiles.Values)
+            {
+                tile.GetComponent<SpriteRenderer>().color = Color.magenta;
+            }
+        }
+    }
+
     // Moves the player when a tile is clicked
     public bool MovePlayerOnGrid(GameObject tile)
     {
-        Dictionary<int, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
-        // Dictionary contains the potential tiles the player can move to
-        Dictionary<int, GameObject> potentialSpots = new Dictionary<int, GameObject>();
-        int playerKey = playerTile.Key;
-
-        // Adds the potential keys to a list of integers
-        List<int> potentialKeys = new List<int>();
-        potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
-        potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
-        potentialKeys.Add(playerKey - 1);
-        potentialKeys.Add(playerKey + 1);
-
-        // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
-        foreach (var potentailKey in potentialKeys)
-        {
-            if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
-            {
-                potentialSpots.Add(potentailKey, tileObject);
-            }
-        }
-
-        // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
-        if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
-        {
-            potentialSpots.Remove(playerKey + 1);
-        }
-        else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 3)
-        {
-            potentialSpots.Remove(playerKey - 1);
-        }
-
         // Checks if the selected tile is valid and moves the player if so
-        foreach (var potentialTile in potentialSpots)
+        foreach (var potentialTile in potentialMoveTiles)
         {
             if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
             {
@@ -99,6 +114,9 @@ public class PMovement : PlayerManager
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
+                potentialMoveTiles = new Dictionary<int, GameObject>();
+                GameManager.GetInstance().ResetPlayerGrid();
+                GameManager.GetInstance().VisualizeEnemyAttacks();
                 return true;
             }
         }
@@ -124,5 +142,10 @@ public class PMovement : PlayerManager
     public void SetPlayerActionCount(int countValue)
     {
         playerActionCount += countValue;
+    }
+
+    public Dictionary<int, GameObject> GetPotentialMoveTiles()
+    {
+        return potentialMoveTiles;
     }
 }
