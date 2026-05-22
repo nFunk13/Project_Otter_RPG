@@ -1765,7 +1765,7 @@ MonoBehaviour:
   gridManager: {fileID: 1008754785}
   enemyActionDelayTime: 1
   enemyPrefab: {fileID: 3581527483704797762, guid: 5950dedcbe5f43c4290d3c0d8d96c658, type: 3}
-  enemyRange: {x: 1, y: 4}
+  enemyRange: {x: 1, y: 3}
 --- !u!1 &1122105710
 GameObject:
   m_ObjectHideFlags: 0
