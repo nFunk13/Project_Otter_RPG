@@ -114,9 +114,23 @@ public class PMovement : PlayerManager
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
+                List<Enemy> eList = GameManager.GetInstance().GetEnemyList();
+                foreach (var removeTile in potentialMoveTiles)
+                {
+                    removeTile.Value.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                    foreach (Enemy enemy in eList)
+                    {
+                        foreach (var eAttackTile in enemy.GetAttackTiles())
+                        {
+                            if (removeTile.Value.gameObject == eAttackTile)
+                            {
+                                removeTile.Value.gameObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                                break;
+                            }
+                        }
+                    }
+                }
                 potentialMoveTiles = new Dictionary<int, GameObject>();
-                GameManager.GetInstance().ResetPlayerGrid();
-                GameManager.GetInstance().VisualizeEnemyAttacks();
                 return true;
             }
         }

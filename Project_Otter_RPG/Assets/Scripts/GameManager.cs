@@ -232,11 +232,6 @@ public class GameManager : MonoBehaviour
                 tile.GetComponent<SpriteRenderer>().color = Color.green;
             }
         }
-
-        foreach (var enemy in enemyList)
-        {
-            enemy.SetAttackVisualized(false);
-        }
     }
 
     // Sets the next action the player will perform
@@ -277,6 +272,11 @@ public class GameManager : MonoBehaviour
     public List<ActionTypes> GetEnemyActionTypesList()
     {
         return enemyActionTypes;
+    }
+
+    public List<Enemy> GetEnemyList()
+    {
+        return enemyList;
     }
 
     private void OnEnable()

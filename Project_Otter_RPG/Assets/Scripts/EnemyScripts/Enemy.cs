@@ -216,4 +216,9 @@ public class Enemy : MonoBehaviour
     {
         attackVisualized = truthValue;
     }
+
+    public List<GameObject> GetAttackTiles()
+    {
+        return attackTiles;
+    }
 }
