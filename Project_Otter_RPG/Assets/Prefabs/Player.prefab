@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6242623029963511705}
   - component: {fileID: 696022732840880400}
   - component: {fileID: 2592937508198718799}
-  - component: {fileID: 6911348025703291380}
   - component: {fileID: 5356642772034316864}
   - component: {fileID: 3985358126691841599}
   - component: {fileID: 7860464142696874725}
@@ -122,19 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d67f999890667847b7ab4acd72bf929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
---- !u!114 &6911348025703291380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3355810267956730788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89961815eecc8f548bab13b106f6cfc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PHealth
-  maxHealth: 10
+  characterData: {fileID: 11400000, guid: 0fd481aa70934af45a8fe3231c8fc35f, type: 2}
 --- !u!114 &5356642772034316864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3aee1986e375340be351ae2316f5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PMovement
+  characterData: {fileID: 11400000, guid: 0fd481aa70934af45a8fe3231c8fc35f, type: 2}
 --- !u!114 &3985358126691841599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f2c0ec05ae3f34b88d2d63c48f45de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PAttack
+  characterData: {fileID: 11400000, guid: 0fd481aa70934af45a8fe3231c8fc35f, type: 2}
+  moves: []
 --- !u!50 &7860464142696874725
 Rigidbody2D:
   serializedVersion: 5

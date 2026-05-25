@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
@@ -113,5 +114,15 @@ public class ButtonManager : MonoBehaviour
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene("PlayerCombatMovement");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

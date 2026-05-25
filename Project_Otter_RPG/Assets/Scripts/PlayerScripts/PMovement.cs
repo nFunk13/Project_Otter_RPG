@@ -110,6 +110,7 @@ public class PMovement : PlayerManager
                 transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+                playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(true);
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);

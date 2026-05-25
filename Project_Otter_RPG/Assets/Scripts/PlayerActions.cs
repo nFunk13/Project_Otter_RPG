@@ -135,6 +135,34 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Quit"",
+            ""id"": ""74111211-fb09-4015-b49f-0162f933f899"",
+            ""actions"": [
+                {
+                    ""name"": ""QuitGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""2df254d3-0ba4-4179-bfbd-095c6c9dc2a6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""398a1c21-f9ff-4eba-b65b-66beb80294ea"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuitGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -143,11 +171,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_MouseActions = asset.FindActionMap("MouseActions", throwIfNotFound: true);
         m_MouseActions_MouseLocation = m_MouseActions.FindAction("MouseLocation", throwIfNotFound: true);
         m_MouseActions_LeftClick = m_MouseActions.FindAction("LeftClick", throwIfNotFound: true);
+        // Quit
+        m_Quit = asset.FindActionMap("Quit", throwIfNotFound: true);
+        m_Quit_QuitGame = m_Quit.FindAction("QuitGame", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
     {
         UnityEngine.Debug.Assert(!m_MouseActions.enabled, "This will cause a leak and performance issues, PlayerActions.MouseActions.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Quit.enabled, "This will cause a leak and performance issues, PlayerActions.Quit.Disable() has not been called.");
     }
 
     /// <summary>
@@ -326,6 +358,102 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="MouseActionsActions" /> instance referencing this action map.
     /// </summary>
     public MouseActionsActions @MouseActions => new MouseActionsActions(this);
+
+    // Quit
+    private readonly InputActionMap m_Quit;
+    private List<IQuitActions> m_QuitActionsCallbackInterfaces = new List<IQuitActions>();
+    private readonly InputAction m_Quit_QuitGame;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Quit".
+    /// </summary>
+    public struct QuitActions
+    {
+        private @PlayerActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public QuitActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Quit/QuitGame".
+        /// </summary>
+        public InputAction @QuitGame => m_Wrapper.m_Quit_QuitGame;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Quit; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="QuitActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(QuitActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="QuitActions" />
+        public void AddCallbacks(IQuitActions instance)
+        {
+            if (instance == null || m_Wrapper.m_QuitActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_QuitActionsCallbackInterfaces.Add(instance);
+            @QuitGame.started += instance.OnQuitGame;
+            @QuitGame.performed += instance.OnQuitGame;
+            @QuitGame.canceled += instance.OnQuitGame;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="QuitActions" />
+        private void UnregisterCallbacks(IQuitActions instance)
+        {
+            @QuitGame.started -= instance.OnQuitGame;
+            @QuitGame.performed -= instance.OnQuitGame;
+            @QuitGame.canceled -= instance.OnQuitGame;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="QuitActions.UnregisterCallbacks(IQuitActions)" />.
+        /// </summary>
+        /// <seealso cref="QuitActions.UnregisterCallbacks(IQuitActions)" />
+        public void RemoveCallbacks(IQuitActions instance)
+        {
+            if (m_Wrapper.m_QuitActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="QuitActions.AddCallbacks(IQuitActions)" />
+        /// <seealso cref="QuitActions.RemoveCallbacks(IQuitActions)" />
+        /// <seealso cref="QuitActions.UnregisterCallbacks(IQuitActions)" />
+        public void SetCallbacks(IQuitActions instance)
+        {
+            foreach (var item in m_Wrapper.m_QuitActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_QuitActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="QuitActions" /> instance referencing this action map.
+    /// </summary>
+    public QuitActions @Quit => new QuitActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "MouseActions" which allows adding and removing callbacks.
     /// </summary>
@@ -347,5 +475,20 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftClick(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Quit" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="QuitActions.AddCallbacks(IQuitActions)" />
+    /// <seealso cref="QuitActions.RemoveCallbacks(IQuitActions)" />
+    public interface IQuitActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "QuitGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuitGame(InputAction.CallbackContext context);
     }
 }

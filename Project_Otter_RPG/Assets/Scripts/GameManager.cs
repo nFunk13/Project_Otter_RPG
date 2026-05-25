@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -64,6 +65,7 @@ public class GameManager : MonoBehaviour
         // Gets the Player Actions for clicking
         playerActions = new PlayerActions();
         playerActions.MouseActions.LeftClick.performed += PerformAction;
+        playerActions.Quit.QuitGame.performed += EndGame;
     }
 
     private void Start()
@@ -87,7 +89,7 @@ public class GameManager : MonoBehaviour
         {
             if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
             {
-                int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
+                int randomAction = UnityEngine.Random.Range((int)ActionTypes.ATTACK, ((int)ActionTypes.ATTACK + 1));
                 enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                 enemy.visualizeAttack();
             }
@@ -143,7 +145,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
                     {
-                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
+                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.ATTACK, ((int)ActionTypes.ATTACK + 1));
                         enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                         enemy.visualizeAttack();
                     }
@@ -175,9 +177,18 @@ public class GameManager : MonoBehaviour
             {
                 if (playerAttack.Attack(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
                 {
+                    foreach (var enemy in enemyList)
+                    {
+                        enemy.Death();
+                    }
+                    enemyList.RemoveAll(enemy => enemy.GetEnemyScriptableObject().enemyCurrentHealth <= 0);
                     playerMovement.SetPlayerActionCount(-1);
                     ResetEnemyGrid();
                     playerActionsTypes.RemoveAt(0);
+                    if (enemyList.Count <= 0)
+                    {
+                        SceneManager.LoadScene("EndScene");
+                    }
                 }
             }
         }
@@ -238,6 +249,12 @@ public class GameManager : MonoBehaviour
                 tile.GetComponent<SpriteRenderer>().color = Color.green;
             }
         }
+    }
+
+    private void EndGame(InputAction.CallbackContext context)
+    {
+        Debug.Log("Quit Game");
+        Application.Quit();
     }
 
     // Sets the next action the player will perform

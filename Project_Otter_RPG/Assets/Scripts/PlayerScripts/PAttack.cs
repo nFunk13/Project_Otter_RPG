@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PAttack : PlayerManager
 {
@@ -17,6 +18,7 @@ public class PAttack : PlayerManager
     {
         base.Tick();
         SeeAttackPattern();
+        Death();
     }
 
     public MoveData ChosenMove(string nameOfMove)
@@ -66,7 +68,6 @@ public class PAttack : PlayerManager
                     {
                         bool keyModified = false;
                         keyAddition = gridManager.getTileKeyAtPosition(gridManager.MouseToWorldPosition());
-                        Debug.Log("Key Addition Value: " + keyAddition);
 
                         if (keyAddition < chosenMove[0].centerTileKey)
                         {
@@ -131,6 +132,14 @@ public class PAttack : PlayerManager
         }
 
         return false;
+    }
+
+    public void Death()
+    {
+        if (this.gameObject.GetComponent<PlayerManager>().GetPlayableCharacterData().characterCurrentHealth <= 0)
+        {
+            SceneManager.LoadScene("EndScene");
+        }
     }
 
     public void SetChosenMoveData(MoveData move)

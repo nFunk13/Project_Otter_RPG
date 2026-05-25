@@ -8,7 +8,8 @@ using static GameManager;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] EnemyScriptableObject enemyScriptableObject;
+    [SerializeField] EnemyScriptableObject baseEnemyData;
+    private EnemyScriptableObject instanceEnemyData;
 
     private GridManager gridManager;
 
@@ -28,7 +29,9 @@ public class Enemy : MonoBehaviour
     {
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
 
-        enemyScriptableObject.enemyCurrentHealth = enemyScriptableObject.enemyMaxHealth;
+        instanceEnemyData = Instantiate(baseEnemyData);
+
+        instanceEnemyData.enemyCurrentHealth = instanceEnemyData.enemyMaxHealth;
     }
 
     private void Start()
@@ -51,11 +54,6 @@ public class Enemy : MonoBehaviour
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
-
-    //private void Update()
-    //{
-    //    visualizeAttack();
-    //}
 
     public void MoveEnemyOnGrid()
     {
@@ -101,6 +99,7 @@ public class Enemy : MonoBehaviour
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
             transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+            enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
             enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
@@ -201,9 +200,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void Death()
+    {
+        if (instanceEnemyData.enemyCurrentHealth <= 0)
+        {
+            enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+            enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
+            Destroy(this.gameObject);
+        }
+    }
+
     public EnemyScriptableObject GetEnemyScriptableObject()
     {
-        return enemyScriptableObject;
+        return instanceEnemyData;
     }
 
     // Gets the enemy action count
