@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
         {
             if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
             {
-                int randomAction = UnityEngine.Random.Range((int)ActionTypes.ATTACK, ((int)ActionTypes.ATTACK + 1));
+                int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
                 enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                 enemy.visualizeAttack();
             }
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
                     {
-                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.ATTACK, ((int)ActionTypes.ATTACK + 1));
+                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
                         enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                         enemy.visualizeAttack();
                     }
