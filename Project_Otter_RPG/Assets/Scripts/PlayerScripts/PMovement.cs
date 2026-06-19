@@ -3,10 +3,13 @@ using DG.Tweening;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PMovement : PlayerManager
 {
     private GridManager gridManager;
+    [SerializeField] private Canvas attackCanvas;
+    private float canvasScaleFactor;
 
     private KeyValuePair<int, GameObject> playerTile;
     Dictionary<int, GameObject> potentialMoveTiles = new Dictionary<int, GameObject>();
@@ -18,6 +21,7 @@ public class PMovement : PlayerManager
     {
         // Gets the GridManager script
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
+        canvasScaleFactor = attackCanvas.scaleFactor;
     }
 
     public override void Tick()
@@ -46,8 +50,12 @@ public class PMovement : PlayerManager
     {
         // Places the player on a random tile
         int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
+        Vector3 uiWorldPoint = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position;
+        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
+        screenPoint.z = 10.0f;
+        Vector3 targetPosition = Camera.main.ScreenToWorldPoint(screenPoint);
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
-        this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
+        this.gameObject.transform.position = new Vector3(targetPosition.x + 1.0f, targetPosition.y - 0.75f, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
@@ -92,7 +100,7 @@ public class PMovement : PlayerManager
 
             foreach (var tile in potentialMoveTiles.Values)
             {
-                tile.GetComponent<SpriteRenderer>().color = Color.magenta;
+                tile.GetComponent<Image>().color = Color.magenta;
             }
         }
     }
@@ -118,14 +126,14 @@ public class PMovement : PlayerManager
                 List<Enemy> eList = GameManager.GetInstance().GetEnemyList();
                 foreach (var removeTile in potentialMoveTiles)
                 {
-                    removeTile.Value.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                    removeTile.Value.gameObject.GetComponent<Image>().color = Color.green;
                     foreach (Enemy enemy in eList)
                     {
                         foreach (var eAttackTile in enemy.GetAttackTiles())
                         {
                             if (removeTile.Value.gameObject == eAttackTile)
                             {
-                                removeTile.Value.gameObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                                removeTile.Value.gameObject.GetComponent<Image>().color = Color.orange;
                                 break;
                             }
                         }

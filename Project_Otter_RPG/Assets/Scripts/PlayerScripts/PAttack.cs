@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PAttack : PlayerManager
 {
@@ -42,7 +43,7 @@ public class PAttack : PlayerManager
                 foreach (var key in chosenMove[0].tileKeys)
                 {
                     GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[key];
-                    tile.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                    tile.GetComponent<Image>().color = Color.hotPink;
                     attackTiles.Add(tile);
                 }
             }
@@ -103,7 +104,7 @@ public class PAttack : PlayerManager
                         }
 
                         attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<SpriteRenderer>().color = Color.hotPink;
+                        gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.hotPink;
                         continue;
                     }
                     break;

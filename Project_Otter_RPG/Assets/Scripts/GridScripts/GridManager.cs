@@ -7,8 +7,8 @@ public class GridManager : MonoBehaviour
 {
     // Variables for creating enemy grid
     [SerializeField] int eWidth = 3, eHeight = 3;
-    [SerializeField] Vector2 enemyGridStart = new Vector2(3.0f, 3.0f);
-    [SerializeField] float offset = 1.0f;
+    [SerializeField] Vector2 enemyGridStart = new Vector2(0.20f, 0.80f);
+    [SerializeField] float offset = 10.0f;
 
     [SerializeField] int pWidth = 3, pHeight = 3;
     [SerializeField] Vector2 playerGridStart = new Vector2(-1.0f, 3.0f);
@@ -48,18 +48,19 @@ public class GridManager : MonoBehaviour
 
     private void enemyGrid()
     {
-        GameObject enemyGridContainer = new GameObject("Enemy_Grid");
+        GameObject enemyGridContainer = GameObject.Find("Enemy_Grid_Container");
         int eTileCount = 1;
+
+        RectTransform rt = tile.GetComponent<RectTransform>();
         // Generates a grid based on width and height for the enemy
         for (int i = 0; i < eWidth; i++)
         {
             for (int j = 0; j < eHeight; j++)
             {
                 // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
-                Vector2 currentPos = new Vector2(enemyGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), enemyGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
-                var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
+                var currentTile = Instantiate(tile, GameObject.Find("Attack_Canvas").transform.Find("Enemy_Grid_Container").transform);
+                currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(enemyGridStart.x + ((rt.rect.width + offset) * i), enemyGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"EnemyTile({i},{j})";
-                currentTile.transform.parent = enemyGridContainer.transform;
                 currentTile.tag = enemyTileTag;
                 currentTile.GetComponent<Tile>().init(true);
                 enemyTileDictionary.Add(eTileCount, currentTile);
@@ -70,18 +71,19 @@ public class GridManager : MonoBehaviour
 
     private void playerGrid()
     {
-        GameObject playerGridContainer = new GameObject("Player_Grid");
+        GameObject playerGridContainer = GameObject.Find("Player_Grid_Container");
         int pTileCount = 1;
+
+        RectTransform rt = tile.GetComponent<RectTransform>();
         // Generates a grid based on width and height for the player
         for (int i = 0; i < pWidth; i++)
         {
             for (int j = 0; j < pHeight; j++)
             {
                 // Instantiates the tile object and renames it based on it's position, then adds it to the dictionary
-                Vector2 currentPos = new Vector2(playerGridStart.x + ((tile.GetComponent<SpriteRenderer>().bounds.size.x + offset) * i), playerGridStart.y + ((tile.GetComponent<SpriteRenderer>().bounds.size.y + offset) * j));
-                var currentTile = Instantiate(tile, currentPos, Quaternion.identity);
+                var currentTile = Instantiate(tile, GameObject.Find("Attack_Canvas").transform.Find("Player_Grid_Container").transform);
+                currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(playerGridStart.x + ((rt.rect.width + offset) * i), playerGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"PlayerTile({i},{j})";
-                currentTile.transform.parent = playerGridContainer.transform;
                 currentTile.tag = playerTileTag;
                 currentTile.GetComponent<Tile>().init(false);
                 playerTileDictionary.Add(pTileCount, currentTile);

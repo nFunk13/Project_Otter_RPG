@@ -1,21 +1,21 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tile : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
     [SerializeField] Color enemyColor;
     [SerializeField] Color playerColor;
     private bool characterOn = false;
     private GameObject characterOnTile;
-
+    Image image;
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
     }
 
     public void init(bool isEnemy)
     {
-        spriteRenderer.color = isEnemy ?  enemyColor : playerColor;
+        image.color = isEnemy ?  enemyColor : playerColor;
     }
 
     public void SetCharacterOn(bool truthValue)

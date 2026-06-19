@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -233,9 +234,9 @@ public class GameManager : MonoBehaviour
     {
         foreach (var tile in gridManager.GetEnemyTileDictionary().Values)
         {
-            if (tile.GetComponent<SpriteRenderer>().color != Color.red)
+            if (tile.GetComponent<Image>().color != Color.red)
             {
-                tile.GetComponent<SpriteRenderer>().color = Color.red;
+                tile.GetComponent<Image>().color = Color.red;
             }
         }
     }
@@ -244,9 +245,9 @@ public class GameManager : MonoBehaviour
     {
         foreach (var tile in gridManager.GetPlayerTileDictionary().Values)
         {
-            if (tile.GetComponent<SpriteRenderer>().color != Color.green)
+            if (tile.GetComponent<Image>().color != Color.green)
             {
-                tile.GetComponent<SpriteRenderer>().color = Color.green;
+                tile.GetComponent<Image>().color = Color.green;
             }
         }
     }

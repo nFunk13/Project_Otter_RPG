@@ -4,6 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using static GameManager;
 
 public class Enemy : MonoBehaviour
@@ -165,7 +166,7 @@ public class Enemy : MonoBehaviour
                         }
 
                         attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<SpriteRenderer>().color = Color.orange;
+                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.orange;
                         continue;
                     }
                     break;
