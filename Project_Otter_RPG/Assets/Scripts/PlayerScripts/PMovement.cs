@@ -9,7 +9,6 @@ public class PMovement : PlayerManager
 {
     private GridManager gridManager;
     [SerializeField] private Canvas attackCanvas;
-    private float canvasScaleFactor;
 
     private KeyValuePair<int, GameObject> playerTile;
     Dictionary<int, GameObject> potentialMoveTiles = new Dictionary<int, GameObject>();
@@ -21,7 +20,6 @@ public class PMovement : PlayerManager
     {
         // Gets the GridManager script
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
-        canvasScaleFactor = attackCanvas.scaleFactor;
     }
 
     public override void Tick()
@@ -50,16 +48,22 @@ public class PMovement : PlayerManager
     {
         // Places the player on a random tile
         int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
-        Vector3 uiWorldPoint = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position;
-        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
-        screenPoint.z = 10.0f;
-        Vector3 targetPosition = Camera.main.ScreenToWorldPoint(screenPoint);
+        Vector3 targetPosition;
+        GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(targetPosition.x + 1.0f, targetPosition.y - 0.75f, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
         
+    }
+
+    private void GetScreenPosOfTile(Vector3 worldPos, out Vector3 finalScreenPos)
+    {
+        Vector3 uiWorldPoint = worldPos;
+        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
+        screenPoint.z = 10.0f;
+        finalScreenPos = Camera.main.ScreenToWorldPoint(screenPoint);
     }
 
     public void VisualizeMovement()
