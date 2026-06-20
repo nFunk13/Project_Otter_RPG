@@ -51,7 +51,7 @@ public class PMovement : PlayerManager
         Vector3 targetPosition;
         GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
-        this.gameObject.transform.position = new Vector3(targetPosition.x + 0.75f, targetPosition.y - 0.75f, targetPosition.z);
+        this.gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
@@ -116,7 +116,7 @@ public class PMovement : PlayerManager
             if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
             {
                 // Moves the player
-                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x + 0.75f, tile.gameObject.transform.position.y - 0.75f, transform.position.z);
+                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, transform.position.z);
                 transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
