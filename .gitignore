@@ -93,6 +93,7 @@ sysinfo.txt
 *.unitypackage
 *.exe
 *.dll
+!Assets/Plugins/Demigiant/**/*.dll
 *.x86_64
 *.debug
 *.so
