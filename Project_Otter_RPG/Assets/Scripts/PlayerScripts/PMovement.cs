@@ -51,7 +51,7 @@ public class PMovement : PlayerManager
         Vector3 targetPosition;
         GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
-        this.gameObject.transform.position = new Vector3(targetPosition.x + 1.0f, targetPosition.y - 0.75f, targetPosition.z);
+        this.gameObject.transform.position = new Vector3(targetPosition.x + 0.75f, targetPosition.y - 0.75f, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
@@ -61,9 +61,7 @@ public class PMovement : PlayerManager
     private void GetScreenPosOfTile(Vector3 worldPos, out Vector3 finalScreenPos)
     {
         Vector3 uiWorldPoint = worldPos;
-        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
-        screenPoint.z = 10.0f;
-        finalScreenPos = Camera.main.ScreenToWorldPoint(screenPoint);
+        finalScreenPos = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
     }
 
     public void VisualizeMovement()
