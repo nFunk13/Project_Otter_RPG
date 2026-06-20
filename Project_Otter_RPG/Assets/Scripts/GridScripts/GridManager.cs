@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Security.Principal;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -95,10 +96,6 @@ public class GridManager : MonoBehaviour
 
     public Vector3 MouseToWorldPosition()
     {
-        // Converst he mouse's position to it's world position value
-        //Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseLocation);
-        //
-        //return worldPosition;
         return mouseLocation;
     }
 
@@ -107,36 +104,17 @@ public class GridManager : MonoBehaviour
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
 
-        // Takes the position to be a RaycastHit2D, with the direction going to the right
-        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 2.0f);
-        
-        // Checks each tile in the dictionary
-        foreach (var tile in enemyTileDictionary.Values)
-        {
-            // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
-            {
-                return tile;
-            }
-        }
-
-        foreach (var tile in playerTileDictionary.Values)
-        {
-            // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.gameObject)
-            {
-                return tile;
-            }
-        }
-
+        // EventSystem Raycast
         PointerEventData pressData = new PointerEventData(EventSystem.current);
         pressData.position = newPos;
 
+        // Stores the result of what the UI raycast hits
         List<RaycastResult> result = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pressData, result);
 
         if (result.Count > 0)
         {
+            // Gets the UI Game Object of where the player selected
             GameObject desiredTile = result[0].gameObject;
             return desiredTile;
         }
@@ -150,29 +128,40 @@ public class GridManager : MonoBehaviour
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
-        newPos.z = 0.0f;
+        GameObject desiredTile = null;
 
-        // Takes the position to be a RaycastHit2D, with the direction going to the right
-        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
+        // EventSystem Raycast
+        PointerEventData pressData = new PointerEventData(EventSystem.current);
+        pressData.position = newPos;
 
-        // Checks each tile in the dictionary
-        foreach (var tile in enemyTileDictionary)
+        // Stores the result of what the UI raycast hits
+        List<RaycastResult> result = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pressData, result);
+
+        if (result.Count > 0)
         {
-            // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
+            // Gets the UI Game Object of where the player selected
+            desiredTile = result[0].gameObject;
+            
+            if (desiredTile.tag == playerTileTag)
             {
-                // Returns the key of the tile
-                return tile.Key;
+                foreach (var tile in playerTileDictionary)
+                {
+                    if (tile.Value.gameObject == desiredTile)
+                    {
+                        return tile.Key;
+                    }
+                }
             }
-        }
-
-        foreach (var tile in playerTileDictionary)
-        {
-            // Checks if the hit collider has something and if the game objects are the same
-            if (hit.collider != null && hit.collider.gameObject == tile.Value.gameObject)
+            else if (desiredTile.tag == enemyTileTag)
             {
-                // Returns the key of the tile
-                return tile.Key;
+                foreach (var tile in enemyTileDictionary)
+                {
+                    if (tile.Value.gameObject == desiredTile)
+                    {
+                        return tile.Key;
+                    }
+                }
             }
         }
 

@@ -117,12 +117,17 @@ public class PMovement : PlayerManager
             {
                 // Moves the player
                 Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, transform.position.z);
+                
+                // Moving game object using DOTween
                 transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
+
+                // Changing where the player is on the tiles
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(true);
                 potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+                
                 playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
                 playerActionCount--;
                 List<Enemy> eList = GameManager.GetInstance().GetEnemyList();
