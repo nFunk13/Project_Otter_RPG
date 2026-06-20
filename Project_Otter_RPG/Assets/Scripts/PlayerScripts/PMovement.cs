@@ -116,7 +116,7 @@ public class PMovement : PlayerManager
             if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
             {
                 // Moves the player
-                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, -1.0f);
+                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x + 0.75f, tile.gameObject.transform.position.y - 0.75f, transform.position.z);
                 transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
                 CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
                 playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
