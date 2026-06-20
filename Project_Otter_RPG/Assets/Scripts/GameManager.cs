@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GridManager gridManager;
     [SerializeField] private float enemyActionDelayTime = 1.0f;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private EventSystem eventSystem;
 
     [Tooltip("X = min amount of enemies, Y = Max amount of enemies")]
     [SerializeField] private Vector2 enemyRange;
@@ -291,6 +293,11 @@ public class GameManager : MonoBehaviour
     public List<Enemy> GetEnemyList()
     {
         return enemyList;
+    }
+
+    public EventSystem GetEventSystem()
+    {
+        return eventSystem;
     }
 
     private void OnEnable()

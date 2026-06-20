@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Security.Principal;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class GridManager : MonoBehaviour
@@ -95,19 +96,19 @@ public class GridManager : MonoBehaviour
     public Vector3 MouseToWorldPosition()
     {
         // Converst he mouse's position to it's world position value
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseLocation);
-
-        return worldPosition;
+        //Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mouseLocation);
+        //
+        //return worldPosition;
+        return mouseLocation;
     }
 
     public GameObject getTileAtPosition(Vector3 pos)
     {
         // Takes the mouse position and sets the z component to zero
         Vector3 newPos = pos;
-        newPos.z = 0.0f;
 
         // Takes the position to be a RaycastHit2D, with the direction going to the right
-        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 1.0f);
+        RaycastHit2D hit = Physics2D.Raycast(newPos, Vector2.right, 2.0f);
         
         // Checks each tile in the dictionary
         foreach (var tile in enemyTileDictionary.Values)
@@ -126,6 +127,18 @@ public class GridManager : MonoBehaviour
             {
                 return tile;
             }
+        }
+
+        PointerEventData pressData = new PointerEventData(EventSystem.current);
+        pressData.position = newPos;
+
+        List<RaycastResult> result = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pressData, result);
+
+        if (result.Count > 0)
+        {
+            GameObject desiredTile = result[0].gameObject;
+            return desiredTile;
         }
 
         // returns nothing otherwise
