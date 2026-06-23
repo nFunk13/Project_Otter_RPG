@@ -1,48 +1,42 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SpriteBillboarder : MonoBehaviour
+public class BillboardManager : MonoBehaviour
 {
+    public static BillboardManager Instance { get; private set; }
+
     public enum Direction
     {
-        NORTH, SOUTH, EAST, WEST
+        NORTH, WEST, SOUTH, EAST
     }
 
-    [UnitHeaderInspectable("Sprites")]
-    private SpriteInstance[] spriteInstances;
+    public List<SpriteInstance> spriteInstances;
 
-    [UnitHeaderInspectable("Camera")]
-    [SerializeField] private Camera camera;
+    [Header("Camera")]
+    [SerializeField] private Camera cam;
 
-    private void OnEnable()
+    [Header("Direction Settings")]
+    [SerializeField] private int numOfDetectionWedges = 4;
+    [SerializeField] private int sizeOfDetectionWedges = 90; //degrees
+
+    private void Awake()
     {
-        spriteInstances = GameObject.FindObjectsByType<SpriteInstance>(FindObjectsSortMode.None);
+        Instance = this;
+        if (spriteInstances == null) spriteInstances = new List<SpriteInstance>();
     }
 
     private void LateUpdate()
     {
         foreach (var instance in spriteInstances)
         {
-            Vector3 facingAngle = instance.transform.forward;
-            Vector3 dirToCamera = (instance.transform.position - camera.transform.position).normalized;
-            float angle = Vector3.Angle(facingAngle, dirToCamera);
-            
-            if(angle >= 45 && angle <= 135)
-            {
-                instance.directionSet = Direction.EAST;
-            }
-            else if(angle >= 135 && angle <= 225)
-            {
-                instance.directionSet = Direction.SOUTH;
-            }
-            else if(angle >= 225 && angle <= 315)
-            {
-                instance.directionSet = Direction.WEST;
-            }
-            else if(angle >= 315 && angle <= 45)
-            {
-                instance.directionSet = Direction.NORTH;
-            }
+            Vector3 facingAngle = instance.transform.parent.forward;
+            Vector3 dirToCamera = (cam.transform.position - instance.transform.position).normalized;
+            facingAngle.y = 0;
+            dirToCamera.y = 0;
+            float angle = Vector3.SignedAngle(facingAngle, dirToCamera, Vector3.up);
+
+            instance.transform.rotation = cam.transform.rotation;
+            instance.directionSet = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
         }
     }
 }

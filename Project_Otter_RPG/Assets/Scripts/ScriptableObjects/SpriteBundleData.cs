@@ -11,6 +11,6 @@ public struct SpriteArrayWrapper
 [CreateAssetMenu(fileName = "SpriteBundleData", menuName = "Scriptable Objects/SpriteBundleData")]
 public class SpriteBundleData : ScriptableObject
 {
-    [Tooltip("The walk sprites for each direction: North, South, East, West.")]
-    public SpriteArrayWrapper[] walkSprites;
+    [Tooltip("Ordered from North -> West -> South -> East.")] public Sprite[] idleSprites;
+    public SpriteArrayWrapper[] walkSprites; // unused for now
 }

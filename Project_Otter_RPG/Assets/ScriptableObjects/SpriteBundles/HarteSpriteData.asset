@@ -12,20 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 495bf785e78ce1f4b9b46e4e0cb6d330, type: 3}
   m_Name: HarteSpriteData
   m_EditorClassIdentifier: Assembly-CSharp::SpriteBundleData
-  walkSprites:
-  - sprites:
-    - {fileID: 1390331679, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 2121057728, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-  - sprites:
-    - {fileID: 418060798, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 1159964739, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-  - sprites:
-    - {fileID: 1578725883, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 1204330759, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-  - sprites:
-    - {fileID: -1128021148, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - {fileID: 549500013, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  idleSprites:
+  - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  walkSprites: []

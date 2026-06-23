@@ -1,11 +1,41 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using static SpriteBillboarder;
+using static BillboardManager;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class SpriteInstance : MonoBehaviour
 {
-    [UnitHeaderInspectable("References")]
+    [Header("References")]
     public SpriteBundleData bundleData;
-    public SpriteRenderer spriteRenderer;
-    [Tooltip("Which set of directional sprites to use when animating")] public Direction directionSet;
+    private SpriteRenderer spriteRenderer;
+    private Direction _directionSet;
+    public Direction directionSet
+    {
+        set
+        {
+            if (value == _directionSet) return;
+            _directionSet = value;
+            spriteRenderer.sprite = bundleData.idleSprites[(int)(value)]; //only setting idle sprites for now but ideally walk sprites would also be changed here
+        }
+        get => _directionSet;
+    }
+
+    private void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        _directionSet = (Direction)(1);
+        if (BillboardManager.Instance != null)
+        {
+            BillboardManager.Instance.spriteInstances.Add(this);
+        }
+        else
+        {
+            Debug.Log("sd");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (BillboardManager.Instance != null)
+            BillboardManager.Instance.spriteInstances.Remove(this);
+    }
 }
