@@ -460,7 +460,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 49f2e548e23538348ac8b92c15534c9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1031,6 +1031,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 330536265}
+  - {fileID: 647967126}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &458107923
@@ -1207,6 +1208,170 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 545142153}
   m_CullTransparentMesh: 1
+--- !u!1 &647967125
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 647967126}
+  - component: {fileID: 647967127}
+  m_Layer: 0
+  m_Name: InputEventManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &647967126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647967125}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375918761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &647967127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647967125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5e1580938dc084ca4cd4a8d3ab9806, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputEventManager
+  verticalInput:
+    m_Name: Vertical Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 9446a190-e9f2-4c16-937b-5b08e1fda0e3
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: W/S
+      m_Id: d518cfd4-7735-4371-9eee-6d923493fed7
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 4
+    - m_Name: positive
+      m_Id: b07128d3-5ba8-4cac-b55a-55cb4029148b
+      m_Path: <Keyboard>/w
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 8
+    - m_Name: negative
+      m_Id: c653e3f2-e61d-4dd9-8be6-da1e6dab25dc
+      m_Path: <Keyboard>/s
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 8
+    - m_Name: Arrows
+      m_Id: ab54dde3-abae-4e9b-b7fa-f8a3eab7064f
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 4
+    - m_Name: positive
+      m_Id: fe8b895d-a7c0-4389-b1b2-57cef7ba76f4
+      m_Path: <Keyboard>/upArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 8
+    - m_Name: negative
+      m_Id: 9ed9c211-3c26-4ca4-aa24-6e3c07687555
+      m_Path: <Keyboard>/downArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Vertical Input
+      m_Flags: 8
+    m_Flags: 0
+  horizontalInput:
+    m_Name: Horizontal Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 537e599d-c581-412c-95da-68161c1ce441
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: D/A
+      m_Id: 31049d8f-36ee-44ca-8634-5e235eb6e1f3
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 4
+    - m_Name: positive
+      m_Id: 6e446924-9d35-4308-a236-56b85b7b2afc
+      m_Path: <Keyboard>/d
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 8
+    - m_Name: negative
+      m_Id: a2861f6e-a8f0-41b7-9bcc-e715bc7d94b7
+      m_Path: <Keyboard>/a
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 8
+    - m_Name: Arrows
+      m_Id: d1a7e120-3345-4be6-8dfe-1de355d4a121
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 4
+    - m_Name: positive
+      m_Id: e886d59d-0162-4b40-a025-c7f84e635ae3
+      m_Path: <Keyboard>/upArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 8
+    - m_Name: negative
+      m_Id: 30c5b4bf-d08e-4444-80fb-88ba75124f07
+      m_Path: <Keyboard>/downArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Horizontal Input
+      m_Flags: 8
+    m_Flags: 0
+  onVerticalInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onHorizontalInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!43 &868970778
 Mesh:
   m_ObjectHideFlags: 0
@@ -1461,7 +1626,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 49f2e548e23538348ac8b92c15534c9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1750,6 +1915,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1383519828}
+  - component: {fileID: 1383519830}
+  - component: {fileID: 1383519829}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1773,6 +1940,47 @@ Transform:
   - {fileID: 17173383}
   m_Father: {fileID: 56634961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1383519829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383519826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf50a885032ecbe499ca1aecde65d8cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  verticalInputRaw: 0
+  horizontalInputRaw: 0
+  moveSpeed: 0.05
+  speedDivider: 0
+--- !u!143 &1383519830
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383519826}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.4
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &1418005812
 GameObject:
   m_ObjectHideFlags: 0
@@ -1934,8 +2142,8 @@ Transform:
   - {fileID: 235277739}
   - {fileID: 1674276497}
   - {fileID: 458107924}
-  - {fileID: 1418005813}
   - {fileID: 105998304}
+  - {fileID: 1418005813}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1500036645
@@ -2014,7 +2222,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 49f2e548e23538348ac8b92c15534c9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3560,7 +3768,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 49f2e548e23538348ac8b92c15534c9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
