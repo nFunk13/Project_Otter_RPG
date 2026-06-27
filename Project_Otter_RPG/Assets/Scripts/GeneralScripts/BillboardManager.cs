@@ -11,18 +11,17 @@ public class BillboardManager : MonoBehaviour
     }
 
     public List<SpriteInstance> spriteInstances;
-
-    [Header("Camera")]
-    [SerializeField] private Camera cam;
+    private Camera cam;
 
     [Header("Direction Settings")]
-    [SerializeField] private int numOfDetectionWedges = 4;
-    [SerializeField] private int sizeOfDetectionWedges = 90; //degrees
+    public int numOfDetectionWedges = 4;
+    public int sizeOfDetectionWedges = 90; //degrees
 
     private void Awake()
     {
         Instance = this;
         if (spriteInstances == null) spriteInstances = new List<SpriteInstance>();
+        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
     private void LateUpdate()

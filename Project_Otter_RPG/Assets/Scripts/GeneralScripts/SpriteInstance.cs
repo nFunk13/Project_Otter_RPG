@@ -22,14 +22,14 @@ public class SpriteInstance : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _directionSet = (Direction)(1);
+        _directionSet = Direction.SOUTH;
         if (BillboardManager.Instance != null)
         {
             BillboardManager.Instance.spriteInstances.Add(this);
         }
         else
         {
-            Debug.Log("sd");
+            Debug.Log("billboard manager null");
         }
     }
 

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: HarteSpriteData
   m_EditorClassIdentifier: Assembly-CSharp::SpriteBundleData
   idleSprites:
-  - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-  - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
   - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
   - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
   walkSprites: []

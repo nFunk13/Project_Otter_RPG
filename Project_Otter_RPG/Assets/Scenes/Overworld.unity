@@ -998,7 +998,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardManager
   spriteInstances: []
-  cam: {fileID: 235277738}
   numOfDetectionWedges: 4
   sizeOfDetectionWedges: 90
 --- !u!1 &375918760
@@ -1952,10 +1951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf50a885032ecbe499ca1aecde65d8cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  verticalInputRaw: 0
-  horizontalInputRaw: 0
-  moveSpeed: 0.05
-  speedDivider: 0
+  moveSpeed: 5
 --- !u!143 &1383519830
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1974,8 +1970,8 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1
-  m_Radius: 0.4
+  m_Height: 0
+  m_Radius: 0.28
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
