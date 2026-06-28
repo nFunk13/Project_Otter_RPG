@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using static BillboardManager;
 
@@ -7,8 +8,11 @@ public class SpriteInstance : MonoBehaviour
 {
     [Header("References")]
     public SpriteBundleData bundleData;
+    private GameObject silhouette;
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer silhouetteRenderer;
     public Direction currentDirection;
+    
 
     [Header("Animation")]
     [SerializeField] private SpriteAnimation currentAnim;
@@ -18,9 +22,12 @@ public class SpriteInstance : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        silhouette = transform.parent.Find("Silhouette").gameObject;
+        silhouetteRenderer = silhouette.GetComponent<SpriteRenderer>();
         if (BillboardManager.Instance != null)
         {
             BillboardManager.Instance.spriteInstances.Add(this);
+            BillboardManager.Instance.silhouettes.Add(silhouette);
         }
         else
         {
@@ -36,6 +43,7 @@ public class SpriteInstance : MonoBehaviour
         var frames = currentAnim.sprites[dir].sprites;
         if (currentFrameIndex >= frames.Length) return;
         spriteRenderer.sprite = frames[currentFrameIndex];
+        silhouetteRenderer.sprite = frames[currentFrameIndex];
     }
 
     private void OnDestroy()
