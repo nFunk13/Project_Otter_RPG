@@ -7,7 +7,7 @@ public class BillboardManager : MonoBehaviour
 
     public enum Direction
     {
-        NORTH, WEST, SOUTH, EAST
+        SOUTH, EAST, NORTH, WEST
     }
 
     public List<SpriteInstance> spriteInstances;
@@ -35,7 +35,7 @@ public class BillboardManager : MonoBehaviour
             float angle = Vector3.SignedAngle(facingAngle, dirToCamera, Vector3.up);
 
             instance.transform.rotation = cam.transform.rotation;
-            instance.directionSet = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
+            instance.currentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
         }
     }
 }
