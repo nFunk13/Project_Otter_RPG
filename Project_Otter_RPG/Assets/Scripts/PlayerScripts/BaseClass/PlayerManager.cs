@@ -6,9 +6,11 @@ public class PlayerManager : MonoBehaviour
     protected PlayerSystems playerManager;
     [SerializeField] private PlayableCharacterData characterData;
     [SerializeField] protected static HealthBarUI healthBar;
+    protected PlayerActions playerActions;
 
     private void Awake()
     {
+        playerActions = new PlayerActions();
         characterData.characterCurrentHealth = characterData.characterMaxHealth;
         healthBar = GameObject.Find("Harte_Health_Bar").GetComponent<HealthBarUI>();
         healthBar.SetHaxHealth(characterData.characterMaxHealth);

@@ -109,6 +109,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AddTile"",
+                    ""type"": ""Button"",
+                    ""id"": ""39405327-4cbc-4263-809d-a3aa98291af4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -131,6 +140,50 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""620653a9-ae22-4e84-b57b-b7058d788d95"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddTile"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b03ad5a-2a8e-4b74-bf44-3a7d6d04a7bc"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddTile"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9feae2a7-993c-44d7-b079-9f9629b80118"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddTile"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""468ce615-ae89-435e-9b59-619aeee9a07f"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AddTile"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -171,6 +224,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_MouseActions = asset.FindActionMap("MouseActions", throwIfNotFound: true);
         m_MouseActions_MouseLocation = m_MouseActions.FindAction("MouseLocation", throwIfNotFound: true);
         m_MouseActions_LeftClick = m_MouseActions.FindAction("LeftClick", throwIfNotFound: true);
+        m_MouseActions_AddTile = m_MouseActions.FindAction("AddTile", throwIfNotFound: true);
         // Quit
         m_Quit = asset.FindActionMap("Quit", throwIfNotFound: true);
         m_Quit_QuitGame = m_Quit.FindAction("QuitGame", throwIfNotFound: true);
@@ -257,6 +311,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private List<IMouseActionsActions> m_MouseActionsActionsCallbackInterfaces = new List<IMouseActionsActions>();
     private readonly InputAction m_MouseActions_MouseLocation;
     private readonly InputAction m_MouseActions_LeftClick;
+    private readonly InputAction m_MouseActions_AddTile;
     /// <summary>
     /// Provides access to input actions defined in input action map "MouseActions".
     /// </summary>
@@ -276,6 +331,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "MouseActions/LeftClick".
         /// </summary>
         public InputAction @LeftClick => m_Wrapper.m_MouseActions_LeftClick;
+        /// <summary>
+        /// Provides access to the underlying input action "MouseActions/AddTile".
+        /// </summary>
+        public InputAction @AddTile => m_Wrapper.m_MouseActions_AddTile;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -308,6 +367,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @LeftClick.started += instance.OnLeftClick;
             @LeftClick.performed += instance.OnLeftClick;
             @LeftClick.canceled += instance.OnLeftClick;
+            @AddTile.started += instance.OnAddTile;
+            @AddTile.performed += instance.OnAddTile;
+            @AddTile.canceled += instance.OnAddTile;
         }
 
         /// <summary>
@@ -325,6 +387,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @LeftClick.started -= instance.OnLeftClick;
             @LeftClick.performed -= instance.OnLeftClick;
             @LeftClick.canceled -= instance.OnLeftClick;
+            @AddTile.started -= instance.OnAddTile;
+            @AddTile.performed -= instance.OnAddTile;
+            @AddTile.canceled -= instance.OnAddTile;
         }
 
         /// <summary>
@@ -475,6 +540,13 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLeftClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AddTile" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAddTile(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Quit" which allows adding and removing callbacks.

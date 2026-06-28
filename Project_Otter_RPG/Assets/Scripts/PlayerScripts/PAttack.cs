@@ -8,12 +8,25 @@ using UnityEngine.UI;
 
 public class PAttack : PlayerManager
 {
-    private KeyValuePair<int, GameObject> lastTile = new KeyValuePair<int, GameObject>();
-
     [SerializeField] List<MoveData> moves = new List<MoveData>();
     private List<GameObject> attackTiles = new List<GameObject>();
 
     private List<MoveData> chosenMove = new List<MoveData>();
+    private int tileAddition = 0;
+
+    public enum InputKeyNames
+    {
+        upArrow,
+        downArrow,
+        rightArrow,
+        leftArrow
+    }
+
+    public override void Init(PlayerSystems system)
+    {
+        base.Init(system);
+        base.playerActions.MouseActions.AddTile.performed += ChangeTileValue;
+    }
 
     public override void Tick()
     {
@@ -34,6 +47,31 @@ public class PAttack : PlayerManager
         return null;
     }
 
+    private void ChangeTileValue(InputAction.CallbackContext context)
+    {
+        if (chosenMove.Count != 0)
+        {
+            MoveData atk = chosenMove[0];
+            if (context.control.name == InputKeyNames.upArrow.ToString() && (atk.rightMostTileKey + tileAddition) % 4 != 0)
+            {
+                tileAddition += 1;
+            }
+            else if (context.control.name == InputKeyNames.downArrow.ToString() && chosenMove.Count != 0 && (((atk.leftMostTileKey + tileAddition) - 1) % 4) != 0)
+            {
+                tileAddition -= 1;
+            }
+            else if (context.control.name == InputKeyNames.rightArrow.ToString() && chosenMove.Count != 0 && (atk.rightMostTileKey + tileAddition) <= (16 - 4))
+            {
+                tileAddition += 4;
+            }
+            else if (context.control.name == InputKeyNames.leftArrow.ToString() && chosenMove.Count != 0 && (atk.leftMostTileKey + tileAddition) > 4)
+            {
+                tileAddition -= 4;
+            }
+        }
+        Debug.Log(tileAddition);
+    }
+
     public void SeeAttackPattern()
     {
         if (GameManager.GetInstance().GetPlayerActionTypesList().Count != 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK)
@@ -49,12 +87,12 @@ public class PAttack : PlayerManager
             }
 
             // Sets up variables for setting the correct colors
-            int keyAddition = 0; // Added value to the base tile index
+            //int keyAddition = 0; // Added value to the base tile index
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
             GameObject testTile = gridManager.getTileAtPosition(gridManager.MouseToWorldPosition());
 
             // Gets the tiles based on the mouse's position
-            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetEnemyTileDictionary().Count && testTile != lastTile.Value && testTile != null && testTile.gameObject.tag == gridManager.GetEnemyTileTag())
+            if (chosenMove[0].tileKeys[0] >= 1 && tileAddition <= gridManager.GetEnemyTileDictionary().Count)
             {
                 attackTiles.Clear();
 
@@ -64,47 +102,11 @@ public class PAttack : PlayerManager
                 // Sets the desired tiles to hotpink for visualization purposes
                 foreach (var tileKey in gridManager.GetEnemyTileDictionary().Keys)
                 {
-                    bool firstTime = true; // Checks to see if the moveKey is the first one in the moves array
                     foreach (var moveKey in chosenMove[0].tileKeys)
                     {
-                        bool keyModified = false;
-                        keyAddition = gridManager.getTileKeyAtPosition(gridManager.MouseToWorldPosition());
 
-                        if (keyAddition < chosenMove[0].centerTileKey)
-                        {
-                            keyAddition = 0;
-                            keyModified = true;
-                        }
-
-                        if ((chosenMove[0].rightMostTileKey + (keyAddition - 1)) > gridManager.GetEnemyTileDictionary().Count)
-                        {
-                            keyAddition -= (chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey) + 1;
-                            while (chosenMove[0].rightMostTileKey + keyAddition > 16)
-                            {
-                                keyAddition--;
-                            } 
-                            keyModified = true;
-                        }
-
-                        if (!keyModified)
-                        {
-                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
-                        }
-
-                        if ((keyAddition + 1) % gridManager.GetEnemyGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
-                        {
-                            keyAddition -= 1;
-                        }
-
-                        // Sets the lastTile key value pair
-                        if (firstTime)
-                        {
-                            lastTile = new KeyValuePair<int, GameObject>((moveKey + keyAddition), gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
-                            firstTime = false;
-                        }
-
-                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetEnemyTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.hotPink;
+                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + tileAddition)]);
+                        gridManager.GetEnemyTileDictionary()[(moveKey + tileAddition)].gameObject.GetComponent<Image>().color = Color.hotPink;
                         continue;
                     }
                     break;
@@ -128,7 +130,7 @@ public class PAttack : PlayerManager
                 }
             }
             chosenMove.RemoveAt(chosenMove.IndexOf(chosenMove.FirstOrDefault()));
-
+            tileAddition = 0;
             return true;
         }
 
@@ -151,5 +153,15 @@ public class PAttack : PlayerManager
     public List<MoveData> GetMoves()
     {
         return moves;
+    }
+
+    private void OnEnable()
+    {
+        base.playerActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        base.playerActions.Disable();
     }
 }
