@@ -14,7 +14,7 @@ public class PMovement : PlayerManager
     Dictionary<int, GameObject> potentialMoveTiles = new Dictionary<int, GameObject>();
 
     private float moveTime = 0.25f;
-    private int playerActionCount = 0;
+    [SerializeField] private int playerActionCount = 0;
 
     private void Awake()
     {
@@ -25,6 +25,7 @@ public class PMovement : PlayerManager
     public override void Tick()
     {
         base.Tick();
+        Debug.Log("PLAYER ACTION COUNT: " + playerActionCount);
     }
 
     public override void FixedTick()

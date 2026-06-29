@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour
                 playersTurn = false;
             }
             Invoke("PerformEnemyAction", enemyActionDelayTime);
-            Debug.Log("ACTION DELAYED");
         }
         if (playersTurn == false)
         {
@@ -162,8 +161,8 @@ public class GameManager : MonoBehaviour
     // Performs actions based on the player's action list
     private void PerformAction(InputAction.CallbackContext ctx)
     {
-        PMovement playerMovement = GameObject.Find("Player").GetComponent<PMovement>();
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PMovement playerMovement = GameObject.Find("Player_UI").GetComponentInChildren<PMovement>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         
         // Checks to make sure list is not empty
         if (playerActionsTypes.Count != 0 && playersTurn)
