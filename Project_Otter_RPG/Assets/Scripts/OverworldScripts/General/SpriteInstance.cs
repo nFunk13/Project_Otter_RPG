@@ -12,27 +12,30 @@ public class SpriteInstance : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private SpriteRenderer silhouetteRenderer;
     public Direction currentDirection;
-    
 
     [Header("Animation")]
     [SerializeField] private SpriteAnimation currentAnim;
     [SerializeField] private int currentFrameIndex;
     private Coroutine animTimer;
 
+    [Header("Misc")]
+    [SerializeField] private bool hasSilhouette;
+
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        silhouette = transform.parent.Find("Silhouette").gameObject;
-        silhouetteRenderer = silhouette.GetComponent<SpriteRenderer>();
+        
+        if (hasSilhouette)
+        {
+            silhouette = transform.parent.Find("Silhouette").gameObject;
+            silhouetteRenderer = silhouette.GetComponent<SpriteRenderer>();
+        }
+
         if (BillboardManager.Instance != null)
         {
             BillboardManager.Instance.spriteInstances.Add(this);
-            BillboardManager.Instance.silhouettes.Add(silhouette);
+            if(hasSilhouette) BillboardManager.Instance.silhouettes.Add(silhouette);
         }
-        else
-        {
-            Debug.Log("billboard manager null");
-        }        
     }
 
     private void LateUpdate()
@@ -43,7 +46,7 @@ public class SpriteInstance : MonoBehaviour
         var frames = currentAnim.sprites[dir].sprites;
         if (currentFrameIndex >= frames.Length) return;
         spriteRenderer.sprite = frames[currentFrameIndex];
-        silhouetteRenderer.sprite = frames[currentFrameIndex];
+        if(hasSilhouette) silhouetteRenderer.sprite = frames[currentFrameIndex];
     }
 
     private void OnDestroy()
@@ -63,7 +66,7 @@ public class SpriteInstance : MonoBehaviour
             currentFrameIndex = 0;
             animTimer = StartCoroutine(AnimationTimer());
         }
-        else Debug.LogWarning($"anim '{name}' not found in bundle", this);
+        else Debug.Log($"anim '{name}' not found");
     }
 
     public void Stop(string fallback = null)
