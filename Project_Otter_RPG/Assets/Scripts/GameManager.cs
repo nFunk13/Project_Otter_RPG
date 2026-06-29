@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private int playerCombatActions = 2;
     [SerializeField] private int enemyCombatActions = 1;
-    [SerializeField] private PMovement playerMovement;
+    private PMovement playerMovement;
     [SerializeField] private List<Enemy> enemyList;
     [SerializeField] private GridManager gridManager;
     [SerializeField] private float enemyActionDelayTime = 1.0f;
@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         enemyList = new List<Enemy>();
+        playerMovement = GameObject.Find("Player_UI").GetComponent<PMovement>();
         playerMovement.SetPlayerActionCount(GetPlayerActions());
         List<GameObject> enemyObjects = new List<GameObject>();
         float numOfEnemies = Random.Range((int)enemyRange.x, ((int)enemyRange.y) + 1);
@@ -161,7 +162,6 @@ public class GameManager : MonoBehaviour
     // Performs actions based on the player's action list
     private void PerformAction(InputAction.CallbackContext ctx)
     {
-        PMovement playerMovement = GameObject.Find("Player_UI").GetComponentInChildren<PMovement>();
         PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         
         // Checks to make sure list is not empty
@@ -172,7 +172,6 @@ public class GameManager : MonoBehaviour
             if (playerActionsTypes[0] == ActionTypes.MOVE && actionRange)
             {
                 playerMovement.MovePlayer();
-
             }
             // What to do with the attack action
             else if (playerActionsTypes[0] == ActionTypes.ATTACK && actionRange)
