@@ -26,6 +26,7 @@ public class OverworldPlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private PlayerState playerState;
+    [SerializeField] [Tooltip("For position snapping.")] private float pixelsPerUnit;
 
     private void OnEnable()
     {
@@ -89,6 +90,7 @@ public class OverworldPlayerMovement : MonoBehaviour
         {
             SetPlayerState(PlayerState.IDLE);
         }
+
         characterController.Move(moveSpeed * Time.deltaTime * moveDir);
     }
 
