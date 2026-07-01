@@ -1841,7 +1841,7 @@ MonoBehaviour:
   - {fileID: 0}
   gridManager: {fileID: 1008754785}
   enemyActionDelayTime: 1
-  enemyPrefab: {fileID: 3581527483704797762, guid: 5950dedcbe5f43c4290d3c0d8d96c658, type: 3}
+  enemyPrefab: {fileID: 5073077942122808807, guid: 84094b5786d2afa41b2ce946c81e900a, type: 3}
   eventSystem: {fileID: 0}
   enemyRange: {x: 2, y: 3}
 --- !u!1 &1122105710
@@ -2872,6 +2872,18 @@ PrefabInstance:
     - target: {fileID: 4906823576903261152, guid: 1d2bf958bac0c7943815ba56721a61c5, type: 3}
       propertyPath: m_Name
       value: Player_UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137607696860639801, guid: 1d2bf958bac0c7943815ba56721a61c5, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137607696860639801, guid: 1d2bf958bac0c7943815ba56721a61c5, type: 3}
+      propertyPath: m_Color.g
+      value: 0.40197146
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137607696860639801, guid: 1d2bf958bac0c7943815ba56721a61c5, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7283019
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

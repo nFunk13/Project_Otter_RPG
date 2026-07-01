@@ -80,11 +80,7 @@ public class GameManager : MonoBehaviour
         float numOfEnemies = Random.Range((int)enemyRange.x, ((int)enemyRange.y) + 1);
         for (int i = 0; i < numOfEnemies; i++)
         {
-            GameObject enemy = Instantiate(enemyPrefab, new Vector2(0, 0), Quaternion.identity);
-            enemyObjects.Add(enemy);
-        }
-        foreach (GameObject enemy in enemyObjects)
-        {
+            GameObject enemy = Instantiate(enemyPrefab, new Vector2(0, 0), Quaternion.identity, GameObject.Find("Attack_Canvas").gameObject.transform);
             enemyList.Add(enemy.GetComponent<Enemy>());
         }
        
