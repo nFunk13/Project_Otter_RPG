@@ -37,7 +37,7 @@ public class BillboardManager : MonoBehaviour
             float angle = Vector3.SignedAngle(facingAngle, dirToCamera, Vector3.up);
 
             instance.transform.rotation = cam.transform.rotation;
-            instance.currentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
+            instance.CurrentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
         }
 
         foreach (var silhouette in silhouettes)

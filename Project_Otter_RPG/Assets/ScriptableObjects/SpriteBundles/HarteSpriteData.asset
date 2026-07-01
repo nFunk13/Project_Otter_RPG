@@ -12,42 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 495bf785e78ce1f4b9b46e4e0cb6d330, type: 3}
   m_Name: HarteSpriteData
   m_EditorClassIdentifier: Assembly-CSharp::SpriteBundleData
-  anims:
-  - sprites:
-    - sprites:
+  animations:
+  - frameSets:
+    - frames:
       - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
+    - frames:
       - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
+    - frames:
       - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
+    - frames:
       - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    looping: 1
-    spriteDelay: 0
+    frameDelays: []
+    uniformFrameDelay: 0
+    looping: 0
     animOnEnd: 
     name: idle
-  - sprites:
-    - sprites:
-      - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+  - frameSets:
+    - frames:
       - {fileID: 418060798, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 1159964739, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
-      - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+      - {fileID: 7731562319795676631, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+    - frames:
       - {fileID: 1578725883, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 1204330759, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
-      - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+      - {fileID: 1080298523, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+    - frames:
       - {fileID: 1390331679, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 2121057728, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
-    - sprites:
-      - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+      - {fileID: 2075356491, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+    - frames:
       - {fileID: -1128021148, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
       - {fileID: 549500013, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+      - {fileID: 2074151675, guid: f6e796ff347a29944a333bd0921d94a4, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
     looping: 1
-    spriteDelay: 0.2
     animOnEnd: 
     name: walk

@@ -11,11 +11,25 @@ public class SpriteInstance : MonoBehaviour
     private GameObject silhouette;
     private SpriteRenderer spriteRenderer;
     private SpriteRenderer silhouetteRenderer;
-    public Direction currentDirection;
+    private Direction _currentDirection;
+    public Direction CurrentDirection
+    {
+        get { return _currentDirection; }
+        set 
+        { 
+            Direction old = _currentDirection;
+            if (old != value)
+            {
+                if (!string.IsNullOrEmpty(currentAnim.name)) Play(currentAnim.name);
+                _currentDirection = value;
+            }
+        }
+    }
 
     [Header("Animation")]
     [SerializeField] private SpriteAnimation currentAnim;
     [SerializeField] private int currentFrameIndex;
+    [SerializeField] [Tooltip("Will be automatically played in Start().")] private string defaultAnimation;
     private Coroutine animTimer;
 
     [Header("Misc")]
@@ -36,14 +50,17 @@ public class SpriteInstance : MonoBehaviour
             BillboardManager.Instance.spriteInstances.Add(this);
             if(hasSilhouette) BillboardManager.Instance.silhouettes.Add(silhouette);
         }
+
+        if(!string.IsNullOrEmpty(defaultAnimation)) Play(defaultAnimation);
+        else Debug.Log("no default animation found");
     }
 
     private void LateUpdate()
     {
         if (currentAnim == null) return;
-        int dir = (int)currentDirection;
-        if (dir >= currentAnim.sprites.Length) return;
-        var frames = currentAnim.sprites[dir].sprites;
+        int dir = (int)_currentDirection;
+        if (dir >= currentAnim.frameSets.Length) return;
+        var frames = currentAnim.frameSets[dir].frames;
         if (currentFrameIndex >= frames.Length) return;
         spriteRenderer.sprite = frames[currentFrameIndex];
         if(hasSilhouette) silhouetteRenderer.sprite = frames[currentFrameIndex];
@@ -58,7 +75,7 @@ public class SpriteInstance : MonoBehaviour
     public void Play(string name)
     {
         if (animTimer != null) StopCoroutine(animTimer);
-        var findAnim = bundleData.anims.Find((anim) => anim.name == name);
+        var findAnim = bundleData.animations.Find((anim) => anim.name == name);
 
         if (findAnim != null)
         {
@@ -80,11 +97,14 @@ public class SpriteInstance : MonoBehaviour
 
     private IEnumerator AnimationTimer()
     {
+        bool hasSpecificFrameDelays = currentAnim.frameDelays.Length > 0;
+
         do
         {
-            for (currentFrameIndex = 0; currentFrameIndex < currentAnim.sprites[(int)currentDirection].sprites.Length; currentFrameIndex++)
+            for (currentFrameIndex = 0; currentFrameIndex < currentAnim.frameSets[(int)_currentDirection].frames.Length; currentFrameIndex++)
             {
-                yield return new WaitForSeconds(currentAnim.spriteDelay);
+                if (hasSpecificFrameDelays) yield return new WaitForSeconds(currentAnim.frameDelays[currentFrameIndex]);
+                else yield return new WaitForSeconds(currentAnim.uniformFrameDelay);
             }
         }
         while (currentAnim.looping);
