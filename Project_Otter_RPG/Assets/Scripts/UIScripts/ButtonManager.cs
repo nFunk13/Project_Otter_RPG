@@ -18,7 +18,7 @@ public class ButtonManager : MonoBehaviour
     // Adds attack action to the actionTypes List in GameManager
     public void AttackAction()
     {
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(false);
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(true);
         for (int i = 0; i < moveButtons.Count; i++)
@@ -34,7 +34,7 @@ public class ButtonManager : MonoBehaviour
 
     public void MoveOne()
     {
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         string moveName = moveButtons[0].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
         playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
@@ -55,7 +55,7 @@ public class ButtonManager : MonoBehaviour
 
     public void MoveTwo()
     {
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         string moveName = moveButtons[1].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
         playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
@@ -76,7 +76,7 @@ public class ButtonManager : MonoBehaviour
 
     public void MoveThree()
     {
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         string moveName = moveButtons[2].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
         playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);
@@ -97,7 +97,7 @@ public class ButtonManager : MonoBehaviour
 
     public void MoveFour()
     {
-        PAttack playerAttack = GameObject.Find("Player").GetComponent<PAttack>();
+        PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         string moveName = moveButtons[3].gameObject.GetComponentInChildren<TextMeshProUGUI>().text;
         playerAttack.SetChosenMoveData(playerAttack.ChosenMove(moveName));
         gameObject.transform.Find("Moves_Menu").gameObject.SetActive(false);

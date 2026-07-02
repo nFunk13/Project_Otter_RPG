@@ -15,11 +15,14 @@ public class PMovement : PlayerManager
 
     private float moveTime = 0.25f;
     [SerializeField] private int playerActionCount = 0;
+    private GameObject chosenMoveLocation;
 
-    private void Awake()
+    public override void Init(PlayerSystems system)
     {
         // Gets the GridManager script
+        base.Init(system);
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
+        base.playerActions.Combat.AddTileMovement.performed += AddTileMovement;
     }
 
     public override void Tick()
@@ -43,6 +46,30 @@ public class PMovement : PlayerManager
     private void StartGame()
     {
         StartSpawn();
+    }
+
+    private void AddTileMovement(InputAction.CallbackContext context)
+    {
+        if (GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.MOVE)
+        {
+            if (context.control.name == PlayerManager.InputKeyNames.upArrow.ToString())
+            {
+                chosenMoveLocation = potentialMoveTiles[3];
+            }
+            else if (context.control.name == PlayerManager.InputKeyNames.downArrow.ToString())
+            {
+                chosenMoveLocation = potentialMoveTiles[2];
+            }
+            else if (context.control.name == PlayerManager.InputKeyNames.rightArrow.ToString())
+            {
+                chosenMoveLocation = potentialMoveTiles[4];
+            }
+            else if (context.control.name == PlayerManager.InputKeyNames.leftArrow.ToString())
+            {
+                chosenMoveLocation = potentialMoveTiles[1];
+            }
+            Debug.Log("CHOSEN MOVE LOCATION: " + chosenMoveLocation);
+        }
     }
 
     private void StartSpawn()
@@ -77,27 +104,29 @@ public class PMovement : PlayerManager
                 // Adds the potential keys to a list of integers
                 List<int> potentialKeys = new List<int>();
                 potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
-                potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
                 potentialKeys.Add(playerKey - 1);
                 potentialKeys.Add(playerKey + 1);
-
-                // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
-                foreach (var potentailKey in potentialKeys)
-                {
-                    if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
-                    {
-                        potentialMoveTiles.Add(potentailKey, tileObject);
-                    }
-                }
+                potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
 
                 // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
                 if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
                 {
-                    potentialMoveTiles.Remove(playerKey + 1);
+                    potentialKeys.Remove(playerKey + 1);
                 }
                 else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 3)
                 {
-                    potentialMoveTiles.Remove(playerKey - 1);
+                    potentialKeys.Remove(playerKey - 1);
+                }
+
+                // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
+                foreach (var potentailKey in potentialKeys)
+                {
+                    int key = 1;
+                    if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
+                    {
+                        potentialMoveTiles.Add(potentailKey, tileObject);
+                    }
+                    key++;
                 }
             }
 
@@ -178,5 +207,15 @@ public class PMovement : PlayerManager
     public Dictionary<int, GameObject> GetPotentialMoveTiles()
     {
         return potentialMoveTiles;
+    }
+
+    private void OnEnable()
+    {
+        base.playerActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        base.playerActions.Disable();
     }
 }

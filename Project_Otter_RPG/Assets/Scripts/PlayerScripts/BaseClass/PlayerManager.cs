@@ -8,6 +8,14 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private static HealthBarUI healthBar;
     protected PlayerActions playerActions;
 
+    public enum InputKeyNames
+    {
+        upArrow,
+        downArrow,
+        rightArrow,
+        leftArrow
+    }
+
     private void Awake()
     {
         characterData = Resources.Load<PlayableCharacterData>("ScriptableObjects/PlayableCharacterData/HarteData");

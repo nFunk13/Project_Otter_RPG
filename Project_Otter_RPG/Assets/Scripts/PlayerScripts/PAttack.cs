@@ -14,18 +14,10 @@ public class PAttack : PlayerManager
     private List<MoveData> chosenMove = new List<MoveData>();
     private int tileAddition = 0;
 
-    public enum InputKeyNames
-    {
-        upArrow,
-        downArrow,
-        rightArrow,
-        leftArrow
-    }
-
     public override void Init(PlayerSystems system)
     {
         base.Init(system);
-        base.playerActions.MouseActions.AddTile.performed += ChangeTileValue;
+        base.playerActions.Combat.AddTileAtk.performed += ChangeTileValue;
     }
 
     public override void Tick()
@@ -49,27 +41,26 @@ public class PAttack : PlayerManager
 
     private void ChangeTileValue(InputAction.CallbackContext context)
     {
-        if (chosenMove.Count != 0)
+        if (GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK && chosenMove.Count != 0)
         {
             MoveData atk = chosenMove[0];
-            if (context.control.name == InputKeyNames.upArrow.ToString() && (atk.rightMostTileKey + tileAddition) % 4 != 0)
+            if (context.control.name == PlayerManager.InputKeyNames.upArrow.ToString() && (atk.rightMostTileKey + tileAddition) % 4 != 0)
             {
                 tileAddition += 1;
             }
-            else if (context.control.name == InputKeyNames.downArrow.ToString() && chosenMove.Count != 0 && (((atk.leftMostTileKey + tileAddition) - 1) % 4) != 0)
+            else if (context.control.name == PlayerManager.InputKeyNames.downArrow.ToString() && chosenMove.Count != 0 && (((atk.leftMostTileKey + tileAddition) - 1) % 4) != 0)
             {
                 tileAddition -= 1;
             }
-            else if (context.control.name == InputKeyNames.rightArrow.ToString() && chosenMove.Count != 0 && (atk.rightMostTileKey + tileAddition) <= (16 - 4))
+            else if (context.control.name == PlayerManager.InputKeyNames.rightArrow.ToString() && chosenMove.Count != 0 && (atk.rightMostTileKey + tileAddition) <= (16 - 4))
             {
                 tileAddition += 4;
             }
-            else if (context.control.name == InputKeyNames.leftArrow.ToString() && chosenMove.Count != 0 && (atk.leftMostTileKey + tileAddition) > 4)
+            else if (context.control.name == PlayerManager.InputKeyNames.leftArrow.ToString() && chosenMove.Count != 0 && (atk.leftMostTileKey + tileAddition) > 4)
             {
                 tileAddition -= 4;
             }
         }
-        Debug.Log(tileAddition);
     }
 
     public void SeeAttackPattern()
