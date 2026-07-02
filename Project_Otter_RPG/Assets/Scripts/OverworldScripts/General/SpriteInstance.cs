@@ -29,7 +29,10 @@ public class SpriteInstance : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private SpriteAnimation currentAnim;
     [SerializeField] private int currentFrameIndex;
-    [SerializeField] [Tooltip("Will be automatically played in Start().")] private string defaultAnimation;
+
+    [Tooltip("Will be automatically played in Start().")]
+    [SerializeField] private string defaultAnimation;
+    
     private Coroutine animTimer;
 
     [Header("Misc")]

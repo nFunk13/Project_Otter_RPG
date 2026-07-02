@@ -6,7 +6,6 @@ using UnityEngine;
 public class OverworldPlayerMovement : MonoBehaviour
 {
     private InputEventManager IEM;
-    private OverworldEventManager OEM;
     private Camera cam;
 
     public enum PlayerState
@@ -26,7 +25,20 @@ public class OverworldPlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private PlayerState playerState;
-    [SerializeField] [Tooltip("For position snapping.")] private float pixelsPerUnit;
+
+    [Header("Invalid Direction Check Settings")]
+    [Tooltip("Set this to be about the Controller's capsule radius, plus a small margin (~0.4 - 0.6f).")]
+    [SerializeField] private float invalidDirectionCheckMagnitude;
+    [SerializeField] private float startingRaycastHeight;
+    [SerializeField] private float raycastLength;
+
+    [Header("Gravity")]
+    [SerializeField] private float gravity = 20f;
+
+    [Tooltip("Set this to be a small negative so Harte \"sticks\" to the ground. Leaving it at -2 is fine.")]
+    [SerializeField] private float groundedVelocity = -2f;
+
+    private float verticalVelocity;
 
     private void OnEnable()
     {
@@ -37,11 +49,8 @@ public class OverworldPlayerMovement : MonoBehaviour
             IEM.onHorizontalInputChanged.AddListener(ReadHorizontalInput);
         }
 
-        OEM = OverworldEventManager.Instance;
         SetPlayerState(PlayerState.IDLE);
-
-        characterController = GetComponent<CharacterController>();
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        cam = Camera.main;
     }
 
     private void OnDisable() // i stg if i forget to remove listeners properly again in this project im gonna explode
@@ -53,6 +62,11 @@ public class OverworldPlayerMovement : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        characterController = GetComponent<CharacterController>();
+    }
+
     void ReadVerticalInput(float value) { verticalInputRaw = value; }
     void ReadHorizontalInput(float value) { horizontalInputRaw = value; }
 
@@ -60,12 +74,11 @@ public class OverworldPlayerMovement : MonoBehaviour
     {
         Vector3 camForward = cam.transform.forward; camForward.y = 0; camForward.Normalize();
         Vector3 camRight = cam.transform.right; camRight.y = 0; camRight.Normalize();
-        Vector3 moveDir = horizontalInputRaw * camRight + verticalInputRaw * camForward;
-        moveDir.Normalize();
+        Vector3 horizontalDir = horizontalInputRaw * camRight + verticalInputRaw * camForward;
+        horizontalDir.Normalize();
 
-        if (moveDir != Vector3.zero)
+        if (horizontalDir != Vector3.zero)
         {
-            SetPlayerState(PlayerState.WALK);
             bool horizontalHeld = horizontalInputRaw != 0;
             bool verticalHeld = verticalInputRaw != 0;
 
@@ -86,12 +99,30 @@ public class OverworldPlayerMovement : MonoBehaviour
                 else if (horizontalHeld) commitedToVertical = false;
             }
         }
-        else
+
+        // check if the player is trying to move into an invalid direction (maybe into a ledge or into surfaces like water)
+        bool negXCheck = Physics.Raycast(transform.position + Vector3.left * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
+        bool posXCheck = Physics.Raycast(transform.position + Vector3.right * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
+        bool negZCheck = Physics.Raycast(transform.position + Vector3.back * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
+        bool posZCheck = Physics.Raycast(transform.position + Vector3.forward * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
+
+        if (!posXCheck && horizontalDir.x > 0) horizontalDir.x = 0;
+        if (!negXCheck && horizontalDir.x < 0) horizontalDir.x = 0;
+        if (!posZCheck && horizontalDir.z > 0) horizontalDir.z = 0;
+        if (!negZCheck && horizontalDir.z < 0) horizontalDir.z = 0;
+
+        if (horizontalDir != Vector3.zero)
         {
-            SetPlayerState(PlayerState.IDLE);
+            if(!Physics.Raycast(transform.position + horizontalDir.normalized * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit surfaceHit, raycastLength))
+            {
+                horizontalDir = Vector3.zero;
+                // possibly play bump animation
+            }
         }
 
-        characterController.Move(moveSpeed * Time.deltaTime * moveDir);
+        verticalVelocity = characterController.isGrounded ? groundedVelocity : verticalVelocity - gravity * Time.deltaTime;
+        characterController.Move((horizontalDir * moveSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
+        SetPlayerState(horizontalDir != Vector3.zero ? PlayerState.WALK : PlayerState.IDLE);
     }
 
     private void SetPlayerState(PlayerState state)
