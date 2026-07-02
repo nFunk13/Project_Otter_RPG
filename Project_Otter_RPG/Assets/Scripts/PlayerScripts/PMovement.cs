@@ -17,6 +17,14 @@ public class PMovement : PlayerManager
     [SerializeField] private int playerActionCount = 0;
     private GameObject chosenMoveLocation;
 
+    private enum DirectionToMoveTile
+    {
+        LEFT = 1,
+        DOWN = 2,
+        UP = 3,
+        RIGHT = 4
+    };
+
     public override void Init(PlayerSystems system)
     {
         // Gets the GridManager script
@@ -54,19 +62,31 @@ public class PMovement : PlayerManager
         {
             if (context.control.name == PlayerManager.InputKeyNames.upArrow.ToString())
             {
-                chosenMoveLocation = potentialMoveTiles[3];
+                if(potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.UP))
+                {
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.DOWN];
+                }
             }
             else if (context.control.name == PlayerManager.InputKeyNames.downArrow.ToString())
             {
-                chosenMoveLocation = potentialMoveTiles[2];
+                if (potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.DOWN))
+                {
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.DOWN];
+                }
             }
             else if (context.control.name == PlayerManager.InputKeyNames.rightArrow.ToString())
             {
-                chosenMoveLocation = potentialMoveTiles[4];
+                if (potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.RIGHT))
+                {
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.RIGHT];
+                }
             }
             else if (context.control.name == PlayerManager.InputKeyNames.leftArrow.ToString())
             {
-                chosenMoveLocation = potentialMoveTiles[1];
+                if (potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.LEFT))
+                {
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.LEFT];
+                }
             }
             Debug.Log("CHOSEN MOVE LOCATION: " + chosenMoveLocation);
         }
@@ -108,23 +128,13 @@ public class PMovement : PlayerManager
                 potentialKeys.Add(playerKey + 1);
                 potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
 
-                // Removes any tiles that the plaeyr shouldn't move to if the player is on the top row or bottom row
-                if (playerTile.Key % gridManager.GetPlayerGridWidth() == 0)
-                {
-                    potentialKeys.Remove(playerKey + 1);
-                }
-                else if (playerTile.Key % gridManager.GetPlayerGridWidth() == gridManager.GetPlayerGridWidth() - 3)
-                {
-                    potentialKeys.Remove(playerKey - 1);
-                }
-
                 // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
+                int key = 1;
                 foreach (var potentailKey in potentialKeys)
                 {
-                    int key = 1;
                     if (playerTiles.TryGetValue(potentailKey, out GameObject tileObject))
                     {
-                        potentialMoveTiles.Add(potentailKey, tileObject);
+                        potentialMoveTiles.Add(key, tileObject);
                     }
                     key++;
                 }
