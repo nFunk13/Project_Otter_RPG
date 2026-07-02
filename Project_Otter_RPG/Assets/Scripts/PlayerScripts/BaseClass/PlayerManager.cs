@@ -4,12 +4,13 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     protected PlayerSystems playerManager;
-    [SerializeField] private PlayableCharacterData characterData;
-    [SerializeField] protected static HealthBarUI healthBar;
+    protected PlayableCharacterData characterData;
+    [SerializeField] private static HealthBarUI healthBar;
     protected PlayerActions playerActions;
 
     private void Awake()
     {
+        characterData = Resources.Load<PlayableCharacterData>("ScriptableObjects/PlayableCharacterData/HarteData");
         playerActions = new PlayerActions();
         characterData.characterCurrentHealth = characterData.characterMaxHealth;
         healthBar = GameObject.Find("Harte_Health_Bar").GetComponent<HealthBarUI>();
@@ -23,8 +24,10 @@ public class PlayerManager : MonoBehaviour
 
     public virtual void Tick()
     {
-        Debug.Log("Harte Health: " + characterData.characterCurrentHealth);
-        healthBar.SetHealth(characterData.characterCurrentHealth);
+        if (characterData != null)
+        {
+            healthBar.SetHealth(characterData.characterCurrentHealth);
+        }
     }
 
     public virtual void FixedTick()
