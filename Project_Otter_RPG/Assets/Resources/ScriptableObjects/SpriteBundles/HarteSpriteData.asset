@@ -53,3 +53,17 @@ MonoBehaviour:
     looping: 1
     animOnEnd: 
     name: walk
+  - frameSets:
+    - frames:
+      - {fileID: 312835201002814903, guid: 4b9524aeae03e98409b044d9ca3dae23, type: 3}
+    - frames:
+      - {fileID: -998802279, guid: 4b9524aeae03e98409b044d9ca3dae23, type: 3}
+    - frames:
+      - {fileID: 1735327643, guid: 4b9524aeae03e98409b044d9ca3dae23, type: 3}
+    - frames:
+      - {fileID: 754984385, guid: 4b9524aeae03e98409b044d9ca3dae23, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0
+    looping: 0
+    animOnEnd: 
+    name: falling

@@ -10,7 +10,7 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     public enum PlayerState
     {
-        IDLE, WALK
+        IDLE, WALK, FALLING
     }
 
     // values
@@ -122,7 +122,8 @@ public class OverworldPlayerMovement : MonoBehaviour
 
         verticalVelocity = characterController.isGrounded ? groundedVelocity : verticalVelocity - gravity * Time.deltaTime;
         characterController.Move((horizontalDir * moveSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
-        SetPlayerState(horizontalDir != Vector3.zero ? PlayerState.WALK : PlayerState.IDLE);
+        if(!characterController.isGrounded) SetPlayerState(PlayerState.FALLING);
+        else SetPlayerState(horizontalDir != Vector3.zero ? PlayerState.WALK : PlayerState.IDLE);
     }
 
     private void SetPlayerState(PlayerState state)
