@@ -106,11 +106,11 @@ public class PAttack : PlayerManager
         }
     }
 
-    public bool Attack(GameObject attackTile)
+    public bool Attack()
     {
         Debug.Log("Chosen Move: " + chosenMove.FirstOrDefault().name);
         // Checks to make sure the tile is acceptable
-        if (GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().ContainsValue(attackTile))
+        if (GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().ContainsValue(attackTiles.FirstOrDefault()))
         {
             foreach (var tile in attackTiles)
             {

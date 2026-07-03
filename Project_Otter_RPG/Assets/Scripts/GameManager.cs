@@ -172,7 +172,7 @@ public class GameManager : MonoBehaviour
             // What to do with the attack action
             else if (playerActionsTypes[0] == ActionTypes.ATTACK && actionRange)
             {
-                if (playerAttack.Attack(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
+                if (playerAttack.Attack())
                 {
                     foreach (var enemy in enemyList)
                     {
