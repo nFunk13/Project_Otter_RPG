@@ -37,6 +37,7 @@ public class PlayerManager : MonoBehaviour
         {
             healthBar.SetHealth(characterData.characterCurrentHealth);
         }
+        Debug.Log("PLAYER ACTION MOVEMENT ENABLED: " + playerActions.Combat.AddTileMovement.enabled);
     }
 
     public virtual void FixedTick()
@@ -52,5 +53,10 @@ public class PlayerManager : MonoBehaviour
     public PlayableCharacterData GetPlayableCharacterData()
     {
         return characterData;
+    }
+
+    public PlayerActions GetPlayerActions()
+    {
+        return playerActions;
     }
 }
