@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using NUnit.Framework;
 using UnityEngine;
@@ -148,57 +149,47 @@ public class PMovement : PlayerManager
     }
 
     // Moves the player when a tile is clicked
-    public bool MovePlayerOnGrid(GameObject tile)
+    public void MovePlayerOnGrid()
     {
-        // Checks if the selected tile is valid and moves the player if so
-        foreach (var potentialTile in potentialMoveTiles)
-        {
-            if (tile != null && tile.gameObject == potentialTile.Value.gameObject)
-            {
-                // Moves the player
-                Vector3 endPosition = new Vector3(tile.gameObject.transform.position.x, tile.gameObject.transform.position.y, transform.position.z);
-                
-                // Moving game object using DOTween
-                transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
-                CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
+        transform.DOMove(chosenMoveLocation.transform.position, moveTime).SetUpdate(UpdateType.Fixed);
+        CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
 
-                // Changing where the player is on the tiles
-                playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
-                playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
-                potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(true);
-                potentialTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-                
-                playerTile = new KeyValuePair<int, GameObject>(potentialTile.Key, potentialTile.Value.gameObject);
-                playerActionCount--;
-                List<Enemy> eList = GameManager.GetInstance().GetEnemyList();
-                foreach (var removeTile in potentialMoveTiles)
+        // Changing where the player is on the tiles
+        playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
+        playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
+        chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOn(true);
+        chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+
+        playerTile = new KeyValuePair<int, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
+        playerActionCount--;
+
+        List<Enemy> eList = GameManager.GetInstance().GetEnemyList();
+        foreach (var removeTile in potentialMoveTiles)
+        {
+            removeTile.Value.gameObject.GetComponent<Image>().color = Color.green;
+            foreach (Enemy enemy in eList)
+            {
+                foreach (var eAttackTile in enemy.GetAttackTiles())
                 {
-                    removeTile.Value.gameObject.GetComponent<Image>().color = Color.green;
-                    foreach (Enemy enemy in eList)
+                    if (removeTile.Value.gameObject == eAttackTile)
                     {
-                        foreach (var eAttackTile in enemy.GetAttackTiles())
-                        {
-                            if (removeTile.Value.gameObject == eAttackTile)
-                            {
-                                removeTile.Value.gameObject.GetComponent<Image>().color = Color.orange;
-                                break;
-                            }
-                        }
+                        removeTile.Value.gameObject.GetComponent<Image>().color = Color.orange;
+                        break;
                     }
                 }
-                potentialMoveTiles = new Dictionary<int, GameObject>();
-                return true;
             }
         }
-        return false;
+        potentialMoveTiles = new Dictionary<int, GameObject>();
     }
 
     public void MovePlayer()
     {
         // Removes the first action from the player action list if the player has moved
-        if (MovePlayerOnGrid(gridManager.getTileAtPosition(gridManager.MouseToWorldPosition())))
+        if (chosenMoveLocation != null)
         {
+            MovePlayerOnGrid();
             GameManager.GetInstance().GetPlayerActionTypesList().RemoveAt(0);
+            chosenMoveLocation = null;
         }
     }
 
@@ -217,11 +208,6 @@ public class PMovement : PlayerManager
     public Dictionary<int, GameObject> GetPotentialMoveTiles()
     {
         return potentialMoveTiles;
-    }
-
-    private void OnEnable()
-    {
-        base.playerActions.Enable();
     }
 
     private void OnDisable()

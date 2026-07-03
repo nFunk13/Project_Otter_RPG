@@ -185,6 +185,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConfirmAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b106a81-3d6a-46d1-b172-d4babd4fbb01"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -275,6 +284,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""AddTileMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fc3ea4f-f3e3-42fa-b28c-04edb46e5f5a"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ConfirmAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -292,6 +312,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
         m_Combat_AddTileAtk = m_Combat.FindAction("AddTileAtk", throwIfNotFound: true);
         m_Combat_AddTileMovement = m_Combat.FindAction("AddTileMovement", throwIfNotFound: true);
+        m_Combat_ConfirmAction = m_Combat.FindAction("ConfirmAction", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -579,6 +600,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private List<ICombatActions> m_CombatActionsCallbackInterfaces = new List<ICombatActions>();
     private readonly InputAction m_Combat_AddTileAtk;
     private readonly InputAction m_Combat_AddTileMovement;
+    private readonly InputAction m_Combat_ConfirmAction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Combat".
     /// </summary>
@@ -598,6 +620,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Combat/AddTileMovement".
         /// </summary>
         public InputAction @AddTileMovement => m_Wrapper.m_Combat_AddTileMovement;
+        /// <summary>
+        /// Provides access to the underlying input action "Combat/ConfirmAction".
+        /// </summary>
+        public InputAction @ConfirmAction => m_Wrapper.m_Combat_ConfirmAction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -630,6 +656,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @AddTileMovement.started += instance.OnAddTileMovement;
             @AddTileMovement.performed += instance.OnAddTileMovement;
             @AddTileMovement.canceled += instance.OnAddTileMovement;
+            @ConfirmAction.started += instance.OnConfirmAction;
+            @ConfirmAction.performed += instance.OnConfirmAction;
+            @ConfirmAction.canceled += instance.OnConfirmAction;
         }
 
         /// <summary>
@@ -647,6 +676,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @AddTileMovement.started -= instance.OnAddTileMovement;
             @AddTileMovement.performed -= instance.OnAddTileMovement;
             @AddTileMovement.canceled -= instance.OnAddTileMovement;
+            @ConfirmAction.started -= instance.OnConfirmAction;
+            @ConfirmAction.performed -= instance.OnConfirmAction;
+            @ConfirmAction.canceled -= instance.OnConfirmAction;
         }
 
         /// <summary>
@@ -738,5 +770,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAddTileMovement(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ConfirmAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConfirmAction(InputAction.CallbackContext context);
     }
 }

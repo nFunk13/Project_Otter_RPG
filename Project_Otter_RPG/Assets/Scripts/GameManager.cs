@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
         // Gets the Player Actions for clicking
         playerActions = new PlayerActions();
-        playerActions.MouseActions.LeftClick.performed += PerformAction;
+        playerActions.Combat.ConfirmAction.performed += PerformAction;
         playerActions.Quit.QuitGame.performed += EndGame;
     }
 

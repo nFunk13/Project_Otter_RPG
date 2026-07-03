@@ -146,11 +146,6 @@ public class PAttack : PlayerManager
         return moves;
     }
 
-    private void OnEnable()
-    {
-        base.playerActions.Enable();
-    }
-
     private void OnDisable()
     {
         base.playerActions.Disable();

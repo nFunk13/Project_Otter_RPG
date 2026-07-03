@@ -28,6 +28,7 @@ public class PlayerManager : MonoBehaviour
     public virtual void Init(PlayerSystems system)
     {
         this.playerManager = system;
+        playerActions.Enable();
     }
 
     public virtual void Tick()
