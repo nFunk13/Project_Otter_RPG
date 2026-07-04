@@ -11,7 +11,7 @@ public class BillboardManager : MonoBehaviour
     }
 
     public List<SpriteInstance> spriteInstances;
-    public List<GameObject> silhouettes;
+    public List<GameObject> additionalSprites;
     private Camera cam;
 
     [Header("Direction Settings")]
@@ -20,9 +20,16 @@ public class BillboardManager : MonoBehaviour
 
     private void Awake()
     {
+        // im singletoning it so hard
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+
         if (spriteInstances == null) spriteInstances = new List<SpriteInstance>();
-        if (silhouettes == null) silhouettes = new List<GameObject>();
+        if (additionalSprites == null) additionalSprites = new List<GameObject>();
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
@@ -40,9 +47,9 @@ public class BillboardManager : MonoBehaviour
             instance.CurrentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
         }
 
-        foreach (var silhouette in silhouettes)
+        foreach (var sprite in additionalSprites)
         {
-            silhouette.transform.rotation = cam.transform.rotation;
+            sprite.transform.rotation = cam.transform.rotation;
         }
     }
 }

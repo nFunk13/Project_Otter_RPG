@@ -1,16 +1,26 @@
+using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using static BillboardManager;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class SpriteInstance : MonoBehaviour
 {
+    [Serializable]
+    struct Renderer
+    { 
+        public SpriteRenderer spriteRenderer;
+        public bool billboarded;
+    }
+
     [Header("References")]
     public SpriteBundleData bundleData;
     private GameObject silhouette;
-    private SpriteRenderer spriteRenderer;
-    private SpriteRenderer silhouetteRenderer;
+
+    [Tooltip("For renderers that need to be synced with the main sprite")]
+    [SerializeField] private Renderer[] additionalRenderers;
+
+    private SpriteRenderer mainRenderer;
     private Direction _currentDirection;
     public Direction CurrentDirection
     {
@@ -40,18 +50,22 @@ public class SpriteInstance : MonoBehaviour
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        
-        if (hasSilhouette)
-        {
-            silhouette = transform.parent.Find("Silhouette").gameObject;
-            silhouetteRenderer = silhouette.GetComponent<SpriteRenderer>();
-        }
+        mainRenderer = GetComponent<SpriteRenderer>();
 
         if (BillboardManager.Instance != null)
         {
             BillboardManager.Instance.spriteInstances.Add(this);
-            if(hasSilhouette) BillboardManager.Instance.silhouettes.Add(silhouette);
+
+            if (additionalRenderers.Length > 0)
+            {
+                foreach (var sr in additionalRenderers)
+                {
+                    if(sr.billboarded)
+                    {
+                        BillboardManager.Instance.additionalSprites.Add(sr.spriteRenderer.gameObject);
+                    }
+                }
+            }
         }
 
         if(!string.IsNullOrEmpty(defaultAnimation)) Play(defaultAnimation);
@@ -65,8 +79,12 @@ public class SpriteInstance : MonoBehaviour
         if (dir >= currentAnim.frameSets.Length) return;
         var frames = currentAnim.frameSets[dir].frames;
         if (currentFrameIndex >= frames.Length) return;
-        spriteRenderer.sprite = frames[currentFrameIndex];
-        if(hasSilhouette) silhouetteRenderer.sprite = frames[currentFrameIndex];
+
+        mainRenderer.sprite = frames[currentFrameIndex];
+        foreach (var sr in additionalRenderers)
+        {
+            sr.spriteRenderer.sprite = frames[currentFrameIndex];
+        }
     }
 
     private void OnDestroy()
