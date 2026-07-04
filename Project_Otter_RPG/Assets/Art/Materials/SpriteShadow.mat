@@ -57,6 +57,9 @@ Material:
     m_Floats:
     - _QueueControl: 1
     - _QueueOffset: 0
-    m_Colors: []
+    - _pinchAmount: 0.75
+    - _pinchStart: 0.4
+    m_Colors:
+    - _UVRect: {r: 0, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

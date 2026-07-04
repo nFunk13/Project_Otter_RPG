@@ -15,7 +15,6 @@ public class SpriteInstance : MonoBehaviour
 
     [Header("References")]
     public SpriteBundleData bundleData;
-    private GameObject silhouette;
 
     [Tooltip("For renderers that need to be synced with the main sprite")]
     [SerializeField] private Renderer[] additionalRenderers;
@@ -37,8 +36,10 @@ public class SpriteInstance : MonoBehaviour
     }
 
     [Header("Animation")]
-    [SerializeField] private SpriteAnimation currentAnim;
-    [SerializeField] private int currentFrameIndex;
+    public SpriteAnimation currentAnim;
+    private int currentFrameIndex;
+    public int CurrentFrameIndex { get { return Mathf.Min(currentFrameIndex, currentAnim.frameSets[(int)_currentDirection].frames.Length - 1); } }
+
 
     [Tooltip("Will be automatically played in Start().")]
     [SerializeField] private string defaultAnimation;

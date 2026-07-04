@@ -16,7 +16,6 @@ public class BillboardManager : MonoBehaviour
 
     [Header("Direction Settings")]
     public int numOfDetectionWedges = 4;
-    public int sizeOfDetectionWedges = 90; //degrees
 
     private void Awake()
     {
@@ -39,17 +38,22 @@ public class BillboardManager : MonoBehaviour
         {
             Vector3 facingAngle = instance.transform.parent.forward;
             Vector3 dirToCamera = (cam.transform.position - instance.transform.position).normalized;
-            facingAngle.y = 0;
-            dirToCamera.y = 0;
-            float angle = Vector3.SignedAngle(facingAngle, dirToCamera, Vector3.up);
 
             instance.transform.rotation = cam.transform.rotation;
-            instance.CurrentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
+            instance.CurrentDirection = (Direction)GetDirectionFromSubjectToViewer(facingAngle, dirToCamera, numOfDetectionWedges);
         }
 
         foreach (var sprite in additionalSprites)
         {
             sprite.transform.rotation = cam.transform.rotation;
         }
+    }
+
+    public int GetDirectionFromSubjectToViewer(Vector3 facing, Vector3 dirToViewer, int numOfDetectionWedges)
+    {
+        facing.y = 0; dirToViewer.y = 0;
+        int sizeOfDetectionWedges = 360 / numOfDetectionWedges;
+        float angle = Vector3.SignedAngle(facing, dirToViewer, Vector3.up); 
+        return (Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges + numOfDetectionWedges) % numOfDetectionWedges;
     }
 }

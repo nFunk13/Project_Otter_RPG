@@ -168,8 +168,6 @@ MonoBehaviour:
   additionalRenderers:
   - spriteRenderer: {fileID: 315272890}
     billboarded: 1
-  - spriteRenderer: {fileID: 2104592347}
-    billboarded: 0
   currentAnim:
     frameSets: []
     frameDelays: []
@@ -177,7 +175,6 @@ MonoBehaviour:
     looping: 0
     animOnEnd: 
     name: 
-  currentFrameIndex: 0
   defaultAnimation: idle
   hasSilhouette: 1
 --- !u!212 &17173385
@@ -300,7 +297,7 @@ Transform:
   m_GameObject: {fileID: 105998303}
   serializedVersion: 2
   m_LocalRotation: {x: 0.19996412, y: 0.3736123, z: -0.08282785, w: 0.90198}
-  m_LocalPosition: {x: 0, y: 5, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -346,7 +343,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 0.8679245, g: 0.8679245, b: 0.8679245, a: 1}
-  m_Intensity: 15
+  m_Intensity: 5
   m_Range: 100
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7429,7 +7426,6 @@ MonoBehaviour:
   spriteInstances: []
   additionalSprites: []
   numOfDetectionWedges: 4
-  sizeOfDetectionWedges: 90
 --- !u!1 &375918760
 GameObject:
   m_ObjectHideFlags: 0
@@ -12107,7 +12103,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1383519828}
@@ -12183,6 +12179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 145d3ad6712b0ca4da1c3f67dad165d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  spriteInstance: {fileID: 17173384}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
