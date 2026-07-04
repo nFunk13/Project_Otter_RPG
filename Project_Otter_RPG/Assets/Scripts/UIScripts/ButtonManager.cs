@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class ButtonManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class ButtonManager : MonoBehaviour
     public void MoveAction()
     {
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.MOVE);
+        ResetActiveButton();
     }
 
     // Adds attack action to the actionTypes List in GameManager
@@ -30,6 +32,7 @@ public class ButtonManager : MonoBehaviour
             moveButtons[i].gameObject.SetActive(true);
             moveButtons[i].transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = playerAttack.GetMoves()[i].moveName;
         }
+        EventSystem.current.SetSelectedGameObject(moveButtons[0]);
     }
 
     public void MoveOne()
@@ -51,6 +54,7 @@ public class ButtonManager : MonoBehaviour
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        ResetActiveButton();
     }
 
     public void MoveTwo()
@@ -72,6 +76,7 @@ public class ButtonManager : MonoBehaviour
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        ResetActiveButton();
     }
 
     public void MoveThree()
@@ -93,6 +98,7 @@ public class ButtonManager : MonoBehaviour
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        ResetActiveButton();
     }
 
     public void MoveFour()
@@ -114,6 +120,12 @@ public class ButtonManager : MonoBehaviour
         }
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
+        ResetActiveButton();
+    }
+
+    private void ResetActiveButton()
+    {
+        EventSystem.current.SetSelectedGameObject(GameObject.Find("Move_Button"));
     }
 
     public void StartGame()
