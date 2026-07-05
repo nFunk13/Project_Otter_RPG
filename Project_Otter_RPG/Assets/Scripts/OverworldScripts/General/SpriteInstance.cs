@@ -52,23 +52,6 @@ public class SpriteInstance : MonoBehaviour
     private void Start()
     {
         mainRenderer = GetComponent<SpriteRenderer>();
-
-        if (BillboardManager.Instance != null)
-        {
-            BillboardManager.Instance.spriteInstances.Add(this);
-
-            if (additionalRenderers.Length > 0)
-            {
-                foreach (var sr in additionalRenderers)
-                {
-                    if(sr.billboarded)
-                    {
-                        BillboardManager.Instance.additionalSprites.Add(sr.spriteRenderer.gameObject);
-                    }
-                }
-            }
-        }
-
         if(!string.IsNullOrEmpty(defaultAnimation)) Play(defaultAnimation);
         else Debug.Log("no default animation found");
     }
@@ -88,10 +71,46 @@ public class SpriteInstance : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
+        if(currentAnim != null) Play(currentAnim.name);
+
         if (BillboardManager.Instance != null)
+        {
+            BillboardManager.Instance.spriteInstances.Add(this);
+
+            if (additionalRenderers.Length > 0)
+            {
+                foreach (var sr in additionalRenderers)
+                {
+                    if (sr.billboarded)
+                    {
+                        BillboardManager.Instance.additionalSprites.Add(sr.spriteRenderer.gameObject);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        if(animTimer != null) StopCoroutine(animTimer);
+        currentFrameIndex = 0;
+
+        if (BillboardManager.Instance != null)
+        {
             BillboardManager.Instance.spriteInstances.Remove(this);
+            if (additionalRenderers.Length > 0)
+            {
+                foreach (var sr in additionalRenderers)
+                {
+                    if (sr.billboarded)
+                    {
+                        BillboardManager.Instance.additionalSprites.Remove(sr.spriteRenderer.gameObject);
+                    }
+                }
+            }
+        }
     }
 
     public void Play(string name)
