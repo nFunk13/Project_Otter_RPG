@@ -59,7 +59,7 @@ public class PMovement : PlayerManager
 
     private void AddTileMovement(InputAction.CallbackContext context)
     {
-        if (GameManager.GetInstance().GetPlayerActionTypesList().Count > 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.MOVE)
+        if (GameManager.GetInstance().GetCanPerformActions() && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.MOVE)
         {
             if (context.control.name == PlayerManager.InputKeyNames.upArrow.ToString())
             {

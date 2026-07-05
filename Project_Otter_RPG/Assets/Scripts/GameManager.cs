@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     
     PlayerActions playerActions;
     private bool playersTurn = true;
+    private bool canPerformActions = false;
 
     private List<ActionTypes> playerActionsTypes = new List<ActionTypes>();
 
@@ -109,6 +110,8 @@ public class GameManager : MonoBehaviour
         UpdateTurn();
 
         VisualizeEnemyAttacks();
+
+        Debug.Log("CAN PERFORM ACTION: " + canPerformActions);
     }
 
     // Updates whether it is the player or enemies turn
@@ -161,16 +164,22 @@ public class GameManager : MonoBehaviour
         PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
         
         // Checks to make sure list is not empty
-        if (playerActionsTypes.Count != 0 && playersTurn)
+        if (canPerformActions && playersTurn)
         {
-            bool actionRange = (playerMovement.getPlayerActionCount() <= 2 && playerMovement.getPlayerActionCount() > 0); // Range for acceptable actions
+            //bool actionRange = (playerMovement.getPlayerActionCount() <= 2 && playerMovement.getPlayerActionCount() > 0); // Range for acceptable actions
             // What to do with the movement action
-            if (playerActionsTypes[0] == ActionTypes.MOVE && actionRange)
+            if (playerActionsTypes[0] == ActionTypes.MOVE /*&& actionRange*/)
             {
                 playerMovement.MovePlayer();
+                if (playerActionsTypes.Count == 0)
+                {
+                    canPerformActions = false;
+                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                    buttonManager.ShowUIMenu(true);
+                }
             }
             // What to do with the attack action
-            else if (playerActionsTypes[0] == ActionTypes.ATTACK && actionRange)
+            else if (playerActionsTypes[0] == ActionTypes.ATTACK /*&& actionRange*/)
             {
                 if (playerAttack.Attack())
                 {
@@ -186,6 +195,12 @@ public class GameManager : MonoBehaviour
                     {
                         SceneManager.LoadScene("EndScene");
                     }
+                }
+                if (playerActionsTypes.Count == 0)
+                {
+                    canPerformActions = false;
+                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                    buttonManager.ShowUIMenu(true);
                 }
             }
         }
@@ -292,6 +307,16 @@ public class GameManager : MonoBehaviour
     public EventSystem GetEventSystem()
     {
         return eventSystem;
+    }
+
+    public bool GetCanPerformActions()
+    {
+        return canPerformActions;
+    }
+
+    public void SetCanPerformActions(bool truthValue)
+    {
+        canPerformActions = truthValue;
     }
 
     private void OnEnable()

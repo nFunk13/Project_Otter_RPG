@@ -9,12 +9,18 @@ using UnityEngine.EventSystems;
 public class ButtonManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> moveButtons = new List<GameObject>();
+    [SerializeField] private GameObject actionMenu;
 
     // Adds move action to the actionTypes List in GameManager
     public void MoveAction()
     {
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.MOVE);
         ResetActiveButton();
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count == GameManager.GetInstance().GetPlayerActions())
+        {
+            ShowUIMenu(false);
+            GameManager.GetInstance().SetCanPerformActions(true);
+        }
     }
 
     // Adds attack action to the actionTypes List in GameManager
@@ -55,6 +61,11 @@ public class ButtonManager : MonoBehaviour
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
         ResetActiveButton();
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count == GameManager.GetInstance().GetPlayerActions())
+        {
+            ShowUIMenu(false);
+            GameManager.GetInstance().SetCanPerformActions(true);
+        }
     }
 
     public void MoveTwo()
@@ -77,6 +88,11 @@ public class ButtonManager : MonoBehaviour
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
         ResetActiveButton();
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count == GameManager.GetInstance().GetPlayerActions())
+        {
+            ShowUIMenu(false);
+            GameManager.GetInstance().SetCanPerformActions(true);
+        }
     }
 
     public void MoveThree()
@@ -99,6 +115,11 @@ public class ButtonManager : MonoBehaviour
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
         ResetActiveButton();
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count == GameManager.GetInstance().GetPlayerActions())
+        {
+            ShowUIMenu(false);
+            GameManager.GetInstance().SetCanPerformActions(true);
+        }
     }
 
     public void MoveFour()
@@ -121,6 +142,16 @@ public class ButtonManager : MonoBehaviour
         gameObject.transform.Find("Action_Menu").gameObject.SetActive(true);
         GameManager.GetInstance().SetPlayerAction(GameManager.ActionTypes.ATTACK);
         ResetActiveButton();
+        if (GameManager.GetInstance().GetPlayerActionTypesList().Count == GameManager.GetInstance().GetPlayerActions())
+        {
+            ShowUIMenu(false);
+            GameManager.GetInstance().SetCanPerformActions(true);
+        }
+    }
+
+    public void ShowUIMenu(bool truthValue)
+    {
+        actionMenu.SetActive(truthValue);
     }
 
     private void ResetActiveButton()

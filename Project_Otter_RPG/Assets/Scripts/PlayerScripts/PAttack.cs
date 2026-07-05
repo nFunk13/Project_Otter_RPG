@@ -41,7 +41,7 @@ public class PAttack : PlayerManager
 
     private void ChangeTileValue(InputAction.CallbackContext context)
     {
-        if (GameManager.GetInstance().GetPlayerActionTypesList().Count > 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK && chosenMove.Count != 0)
+        if (GameManager.GetInstance().GetCanPerformActions() && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK && chosenMove.Count != 0)
         {
             MoveData atk = chosenMove[0];
             if (context.control.name == PlayerManager.InputKeyNames.upArrow.ToString() && (atk.rightMostTileKey + tileAddition) % 4 != 0)
