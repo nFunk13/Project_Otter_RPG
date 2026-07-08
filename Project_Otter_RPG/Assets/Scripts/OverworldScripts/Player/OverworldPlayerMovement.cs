@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -33,9 +31,12 @@ public class OverworldPlayerMovement : MonoBehaviour
     [SerializeField] private float invalidDirectionCheckMagnitude;
     [SerializeField] private float startingRaycastHeight;
     [SerializeField] private float raycastLength;
+    [SerializeField] private LayerMask invalidFloorMask;
 
     [Header("Gravity")]
     [SerializeField] private float gravity = 20f;
+    [SerializeField] private float fallHeight = 1f;
+    private bool fallChecked = false;
 
     [Tooltip("Set this to be a small negative so Harte \"sticks\" to the ground. Leaving it at -2 is fine.")]
     [SerializeField] private float groundedVelocity = -2f;
@@ -130,29 +131,68 @@ public class OverworldPlayerMovement : MonoBehaviour
         }
 
         // check if the player is trying to move into an invalid direction (maybe into a ledge or into surfaces like water)
-        bool negXCheck = Physics.Raycast(transform.position + Vector3.left * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
-        bool posXCheck = Physics.Raycast(transform.position + Vector3.right * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
-        bool negZCheck = Physics.Raycast(transform.position + Vector3.back * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
-        bool posZCheck = Physics.Raycast(transform.position + Vector3.forward * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, raycastLength);
+        bool negXCheck = Physics.Raycast(transform.position + Vector3.left * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit negXHit, raycastLength);
+        bool posXCheck = Physics.Raycast(transform.position + Vector3.right * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit posXHit, raycastLength);
+        bool negZCheck = Physics.Raycast(transform.position + Vector3.back * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit negZHit, raycastLength);
+        bool posZCheck = Physics.Raycast(transform.position + Vector3.forward * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit posZHit, raycastLength);
 
-        if (!posXCheck && horizontalDir.x > 0) horizontalDir.x = 0;
-        if (!negXCheck && horizontalDir.x < 0) horizontalDir.x = 0;
-        if (!posZCheck && horizontalDir.z > 0) horizontalDir.z = 0;
-        if (!negZCheck && horizontalDir.z < 0) horizontalDir.z = 0;
+        if (horizontalDir.x > 0)
+        { 
+            if(!posXCheck || CheckInvalidSurface(posXHit.collider.gameObject.layer)) horizontalDir.x = 0;
+        }
+
+        if (horizontalDir.x < 0)
+        { 
+            if(!negXCheck || CheckInvalidSurface(negXHit.collider.gameObject.layer)) horizontalDir.x = 0;
+        }
+
+        if (horizontalDir.z > 0)
+        {
+            if(!posZCheck || CheckInvalidSurface(posZHit.collider.gameObject.layer)) horizontalDir.z = 0;
+        }
+
+        if (horizontalDir.z < 0)
+        { 
+            if(!negZCheck || CheckInvalidSurface(negZHit.collider.gameObject.layer)) horizontalDir.z = 0;
+        }
 
         if (horizontalDir != Vector3.zero)
         {
-            if(!Physics.Raycast(transform.position + horizontalDir.normalized * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit surfaceHit, raycastLength))
+            bool diagonalCheck = Physics.Raycast(transform.position + horizontalDir.normalized * invalidDirectionCheckMagnitude + Vector3.up * startingRaycastHeight, Vector3.down, out RaycastHit diagHit, raycastLength);
+            if (!diagonalCheck || (diagonalCheck && CheckInvalidSurface(diagHit.collider.gameObject.layer)))
             {
                 horizontalDir = Vector3.zero;
-                // possibly play bump animation
             }
         }
 
         verticalVelocity = characterController.isGrounded ? groundedVelocity : verticalVelocity - gravity * Time.deltaTime;
         characterController.Move((horizontalDir * moveSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
-        if(!characterController.isGrounded) SetPlayerState(PlayerState.FALLING);
-        else SetPlayerState(horizontalDir != Vector3.zero ? PlayerState.WALK : PlayerState.IDLE);
+        if (!characterController.isGrounded)
+        {
+            if(!fallChecked)
+            {
+                fallChecked = true;
+                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit floorHit, 100f))
+                {
+                    if (transform.position.y - floorHit.point.y > fallHeight) 
+                        SetPlayerState(PlayerState.FALLING);
+                }
+            }
+        }
+        else
+        {
+            fallChecked = false;
+            SetPlayerState(horizontalDir != Vector3.zero ? PlayerState.WALK : PlayerState.IDLE);
+        } 
+    }
+
+    private bool CheckInvalidSurface(int layer)
+    {
+        if (((1 << layer) & invalidFloorMask) != 0)
+        {
+            return true;
+        }
+        return false;                                                                                                           
     }
 
     private void SetPlayerState(PlayerState state)

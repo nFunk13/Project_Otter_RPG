@@ -40,7 +40,7 @@ public class CameraManager : MonoBehaviour
 
     public void SwitchCamera(CinemachineCamera newCam)
     {
-        if (isTransitioning) return; // prevent switching cameras while transitioning
+        if (isTransitioning) return;
         if (currentCam != null)
         {
             currentCam.Priority = basePriority;
