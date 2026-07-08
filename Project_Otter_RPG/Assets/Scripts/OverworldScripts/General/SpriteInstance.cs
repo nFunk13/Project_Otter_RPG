@@ -1,16 +1,25 @@
+using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using static BillboardManager;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class SpriteInstance : MonoBehaviour
 {
+    [Serializable]
+    struct Renderer
+    { 
+        public SpriteRenderer spriteRenderer;
+        public bool billboarded;
+    }
+
     [Header("References")]
     public SpriteBundleData bundleData;
-    private GameObject silhouette;
-    private SpriteRenderer spriteRenderer;
-    private SpriteRenderer silhouetteRenderer;
+
+    [Tooltip("For renderers that need to be synced with the main sprite")]
+    [SerializeField] private Renderer[] additionalRenderers;
+
+    private SpriteRenderer mainRenderer;
     private Direction _currentDirection;
     public Direction CurrentDirection
     {
@@ -27,8 +36,10 @@ public class SpriteInstance : MonoBehaviour
     }
 
     [Header("Animation")]
-    [SerializeField] private SpriteAnimation currentAnim;
-    [SerializeField] private int currentFrameIndex;
+    public SpriteAnimation currentAnim;
+    private int currentFrameIndex;
+    public int CurrentFrameIndex { get { return Mathf.Min(currentFrameIndex, currentAnim.frameSets[(int)_currentDirection].frames.Length - 1); } }
+
 
     [Tooltip("Will be automatically played in Start().")]
     [SerializeField] private string defaultAnimation;
@@ -40,20 +51,7 @@ public class SpriteInstance : MonoBehaviour
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        
-        if (hasSilhouette)
-        {
-            silhouette = transform.parent.Find("Silhouette").gameObject;
-            silhouetteRenderer = silhouette.GetComponent<SpriteRenderer>();
-        }
-
-        if (BillboardManager.Instance != null)
-        {
-            BillboardManager.Instance.spriteInstances.Add(this);
-            if(hasSilhouette) BillboardManager.Instance.silhouettes.Add(silhouette);
-        }
-
+        mainRenderer = GetComponent<SpriteRenderer>();
         if(!string.IsNullOrEmpty(defaultAnimation)) Play(defaultAnimation);
         else Debug.Log("no default animation found");
     }
@@ -65,14 +63,54 @@ public class SpriteInstance : MonoBehaviour
         if (dir >= currentAnim.frameSets.Length) return;
         var frames = currentAnim.frameSets[dir].frames;
         if (currentFrameIndex >= frames.Length) return;
-        spriteRenderer.sprite = frames[currentFrameIndex];
-        if(hasSilhouette) silhouetteRenderer.sprite = frames[currentFrameIndex];
+
+        mainRenderer.sprite = frames[currentFrameIndex];
+        foreach (var sr in additionalRenderers)
+        {
+            sr.spriteRenderer.sprite = frames[currentFrameIndex];
+        }
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
+        if(currentAnim != null) Play(currentAnim.name);
+
         if (BillboardManager.Instance != null)
+        {
+            BillboardManager.Instance.spriteInstances.Add(this);
+
+            if (additionalRenderers.Length > 0)
+            {
+                foreach (var sr in additionalRenderers)
+                {
+                    if (sr.billboarded)
+                    {
+                        BillboardManager.Instance.additionalSprites.Add(sr.spriteRenderer.gameObject);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        if(animTimer != null) StopCoroutine(animTimer);
+        currentFrameIndex = 0;
+
+        if (BillboardManager.Instance != null)
+        {
             BillboardManager.Instance.spriteInstances.Remove(this);
+            if (additionalRenderers.Length > 0)
+            {
+                foreach (var sr in additionalRenderers)
+                {
+                    if (sr.billboarded)
+                    {
+                        BillboardManager.Instance.additionalSprites.Remove(sr.spriteRenderer.gameObject);
+                    }
+                }
+            }
+        }
     }
 
     public void Play(string name)

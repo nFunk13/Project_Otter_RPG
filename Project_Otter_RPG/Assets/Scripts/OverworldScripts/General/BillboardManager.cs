@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class BillboardManager : MonoBehaviour
@@ -11,19 +12,43 @@ public class BillboardManager : MonoBehaviour
     }
 
     public List<SpriteInstance> spriteInstances;
-    public List<GameObject> silhouettes;
-    private Camera cam;
+    public List<GameObject> additionalSprites;
+    private CinemachineCamera cam;
 
     [Header("Direction Settings")]
     public int numOfDetectionWedges = 4;
-    public int sizeOfDetectionWedges = 90; //degrees
 
     private void Awake()
     {
+        // im singletoning it so hard
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+
+        if(OverworldEventManager.Instance != null)
+        {
+            OverworldEventManager.Instance.onCameraSwitch.AddListener(ChangeCamera);
+        }
+
         if (spriteInstances == null) spriteInstances = new List<SpriteInstance>();
-        if (silhouettes == null) silhouettes = new List<GameObject>();
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        if (additionalSprites == null) additionalSprites = new List<GameObject>();
+        cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
+    }
+
+    private void OnDestroy()
+    {
+        if (OverworldEventManager.Instance != null)
+        {
+            OverworldEventManager.Instance.onCameraSwitch.RemoveListener(ChangeCamera);
+        }
+    }   
+
+    public void ChangeCamera(CinemachineCamera newCam)
+    {
+        cam = newCam;
     }
 
     private void LateUpdate()
@@ -32,17 +57,22 @@ public class BillboardManager : MonoBehaviour
         {
             Vector3 facingAngle = instance.transform.parent.forward;
             Vector3 dirToCamera = (cam.transform.position - instance.transform.position).normalized;
-            facingAngle.y = 0;
-            dirToCamera.y = 0;
-            float angle = Vector3.SignedAngle(facingAngle, dirToCamera, Vector3.up);
 
             instance.transform.rotation = cam.transform.rotation;
-            instance.CurrentDirection = (Direction)(((Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges) + numOfDetectionWedges) % numOfDetectionWedges);
+            instance.CurrentDirection = (Direction)GetDirectionFromSubjectToViewer(facingAngle, dirToCamera, numOfDetectionWedges);
         }
 
-        foreach (var silhouette in silhouettes)
+        foreach (var sprite in additionalSprites)
         {
-            silhouette.transform.rotation = cam.transform.rotation;
+            sprite.transform.rotation = cam.transform.rotation;
         }
+    }
+
+    public int GetDirectionFromSubjectToViewer(Vector3 facing, Vector3 dirToViewer, int numOfDetectionWedges)
+    {
+        facing.y = 0; dirToViewer.y = 0;
+        int sizeOfDetectionWedges = 360 / numOfDetectionWedges;
+        float angle = Vector3.SignedAngle(facing, dirToViewer, Vector3.up); 
+        return (Mathf.RoundToInt(angle / sizeOfDetectionWedges) % numOfDetectionWedges + numOfDetectionWedges) % numOfDetectionWedges;
     }
 }

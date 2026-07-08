@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using static OverworldPlayerMovement;
@@ -7,7 +8,7 @@ public class OverworldEventManager : MonoBehaviour
     public static OverworldEventManager Instance { get; private set; } // singleton instance
 
     // events
-    // nothing here lmao
+    [HideInInspector] public UnityEvent<CinemachineCamera> onCameraSwitch;
 
     void Awake()
     {
