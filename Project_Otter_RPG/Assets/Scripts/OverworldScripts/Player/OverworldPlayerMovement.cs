@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ using UnityEngine;
 public class OverworldPlayerMovement : MonoBehaviour
 {
     private InputEventManager IEM;
-    private Camera cam;
+    private OverworldEventManager OEM;
+    private CinemachineCamera cam;
 
     public enum PlayerState
     {
@@ -49,8 +51,14 @@ public class OverworldPlayerMovement : MonoBehaviour
             IEM.onHorizontalInputChanged.AddListener(ReadHorizontalInput);
         }
 
+        OEM = OverworldEventManager.Instance;
+        if (OEM != null)
+        {
+            OEM.onCameraSwitch.AddListener(SwitchCamera);
+        }
+
         SetPlayerState(PlayerState.IDLE);
-        cam = Camera.main;
+        cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
     }
 
     private void OnDisable() // i stg if i forget to remove listeners properly again in this project im gonna explode
@@ -59,6 +67,11 @@ public class OverworldPlayerMovement : MonoBehaviour
         {
             IEM.onVerticalInputChanged.RemoveListener(ReadVerticalInput);
             IEM.onHorizontalInputChanged.RemoveListener(ReadHorizontalInput);
+        }
+
+        if(OEM != null)
+        {
+            OEM.onCameraSwitch.RemoveListener(SwitchCamera);
         }
     }
 
@@ -70,8 +83,24 @@ public class OverworldPlayerMovement : MonoBehaviour
     void ReadVerticalInput(float value) { verticalInputRaw = value; }
     void ReadHorizontalInput(float value) { horizontalInputRaw = value; }
 
+    private void SwitchCamera(CinemachineCamera newCam)
+    {
+        cam = newCam;
+    }
+
     private void Movement()
     {
+        if(IEM != null)
+        {
+            if(IEM.canInput == false)
+            {
+                verticalInputRaw = 0;
+                horizontalInputRaw = 0;
+                SetPlayerState(PlayerState.IDLE);
+                return;
+            }
+        }
+
         Vector3 camForward = cam.transform.forward; camForward.y = 0; camForward.Normalize();
         Vector3 camRight = cam.transform.right; camRight.y = 0; camRight.Normalize();
         Vector3 horizontalDir = horizontalInputRaw * camRight + verticalInputRaw * camForward;

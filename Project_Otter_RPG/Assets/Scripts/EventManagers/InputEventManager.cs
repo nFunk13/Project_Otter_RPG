@@ -14,6 +14,8 @@ public class InputEventManager : MonoBehaviour
     [HideInInspector] public UnityEvent<float> onVerticalInputChanged;
     [HideInInspector] public UnityEvent<float> onHorizontalInputChanged;
 
+    public bool canInput = true;
+
     void Awake()
     {
         // im singletoning it so hard

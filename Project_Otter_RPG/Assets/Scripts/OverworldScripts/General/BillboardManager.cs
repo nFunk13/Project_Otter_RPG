@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class BillboardManager : MonoBehaviour
@@ -12,7 +13,7 @@ public class BillboardManager : MonoBehaviour
 
     public List<SpriteInstance> spriteInstances;
     public List<GameObject> additionalSprites;
-    private Camera cam;
+    private CinemachineCamera cam;
 
     [Header("Direction Settings")]
     public int numOfDetectionWedges = 4;
@@ -27,9 +28,27 @@ public class BillboardManager : MonoBehaviour
         }
         Instance = this;
 
+        if(OverworldEventManager.Instance != null)
+        {
+            OverworldEventManager.Instance.onCameraSwitch.AddListener(ChangeCamera);
+        }
+
         if (spriteInstances == null) spriteInstances = new List<SpriteInstance>();
         if (additionalSprites == null) additionalSprites = new List<GameObject>();
-        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
+    }
+
+    private void OnDestroy()
+    {
+        if (OverworldEventManager.Instance != null)
+        {
+            OverworldEventManager.Instance.onCameraSwitch.RemoveListener(ChangeCamera);
+        }
+    }   
+
+    public void ChangeCamera(CinemachineCamera newCam)
+    {
+        cam = newCam;
     }
 
     private void LateUpdate()
