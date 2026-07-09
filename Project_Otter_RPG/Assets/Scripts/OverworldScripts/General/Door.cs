@@ -1,7 +1,6 @@
 using DG.Tweening;
 using Unity.Cinemachine;
 using UnityEngine;
-using static System.TimeZoneInfo;
 
 public class Door : MonoBehaviour
 {
