@@ -1,0 +1,33 @@
+title: test
+position: 91,-403
+---
+test: testing
+test: test
+ -> hello
+    test: hello guy
+    test: me be the tester
+-> jump me good sir
+        test: okay
+<<jump test2>>
+===
+
+title: test2
+position: 85,-211
+---
+test: hello again
+test: this is the node you jumped to
+-> it sure is
+    test: okay bye
+        -> bye
+        -> good bye
+        -> BAD BYE!!!!!!!!!
+            test: :(
+-> man this sucks *shoots you with lasers*
+    test: dude you just said that out loud
+    test: corny ass...........
+        -> mean!!! be nice to me
+            test: lol nerd
+        -> yeah i know
+            test: truth nuke
+===
+
