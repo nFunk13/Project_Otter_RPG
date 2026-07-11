@@ -8,6 +8,9 @@ public class Tile : MonoBehaviour
     private bool characterOn = false;
     private GameObject characterOnTile;
     Image image;
+
+    [SerializeField] private int tileWeight;
+
     private void Awake()
     {
         image = GetComponent<Image>();
@@ -36,5 +39,20 @@ public class Tile : MonoBehaviour
     public GameObject GetCharacterOnTile()
     {
         return characterOnTile;
+    }
+
+    public void SetTileWeight(int amount)
+    {
+        tileWeight = amount;
+    }
+
+    public void SetTileWeight(int amount, int multiplier)
+    {
+        tileWeight = (amount * multiplier);
+    }
+
+    public int GetTileWeight()
+    {
+        return tileWeight;
     }
 }

@@ -25,11 +25,11 @@ public class GridManager : MonoBehaviour
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
-    //int playerActionCount = 0;
-
     // Variables for storing the tiles
     private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
     private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
+
+    private int baseTileWeight = 5;
 
     private void Awake()
     {
@@ -65,6 +65,7 @@ public class GridManager : MonoBehaviour
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.tag = enemyTileTag;
                 currentTile.GetComponent<Tile>().init(true);
+                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
                 enemyTileDictionary.Add(eTileCount, currentTile);
                 eTileCount++;
             }
@@ -88,6 +89,7 @@ public class GridManager : MonoBehaviour
                 currentTile.name = $"PlayerTile({i},{j})";
                 currentTile.tag = playerTileTag;
                 currentTile.GetComponent<Tile>().init(false);
+                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
                 playerTileDictionary.Add(pTileCount, currentTile);
                 pTileCount++;
             }
