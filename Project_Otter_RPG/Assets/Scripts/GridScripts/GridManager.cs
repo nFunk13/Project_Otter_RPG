@@ -25,9 +25,9 @@ public class GridManager : MonoBehaviour
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
-    // Variables for storing the tiles
-    private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
-    private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
+    // Variables for storing the tiles; x val = the index number, y val = weight of tile
+    private Dictionary<Vector2, GameObject> playerTileDictionary = new Dictionary<Vector2, GameObject>();
+    private Dictionary<Vector2, GameObject> enemyTileDictionary = new Dictionary<Vector2, GameObject>();
 
     private int baseTileWeight = 5;
 
@@ -64,9 +64,10 @@ public class GridManager : MonoBehaviour
                 currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(enemyGridStart.x + ((rt.rect.width + offset) * i), enemyGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.tag = enemyTileTag;
-                currentTile.GetComponent<Tile>().init(true);
-                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
-                enemyTileDictionary.Add(eTileCount, currentTile);
+                Tile tileScript = currentTile.GetComponent<Tile>();
+                tileScript.init(true);
+                tileScript.SetTileWeight(baseTileWeight);
+                enemyTileDictionary.Add(new Vector2(eTileCount, tileScript.GetTileWeight()), currentTile);
                 eTileCount++;
             }
         }
@@ -88,97 +89,36 @@ public class GridManager : MonoBehaviour
                 currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(playerGridStart.x + ((rt.rect.width + offset) * i), playerGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"PlayerTile({i},{j})";
                 currentTile.tag = playerTileTag;
-                currentTile.GetComponent<Tile>().init(false);
-                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
-                playerTileDictionary.Add(pTileCount, currentTile);
+                Tile tileScript = currentTile.GetComponent<Tile>();
+                tileScript.init(false);
+                tileScript.SetTileWeight(baseTileWeight);
+                playerTileDictionary.Add(new Vector2(pTileCount, tileScript.GetTileWeight()), currentTile);
                 pTileCount++;
             }
         }
     }
 
-    public Vector3 MouseToWorldPosition()
+    public void UpdatePlayerTileWeight()
     {
-        return mouseLocation;
+        //for
     }
 
-    public GameObject getTileAtPosition(Vector3 pos)
+    public void ResetPlayerTileWeight()
     {
-        // Takes the mouse position and sets the z component to zero
-        Vector3 newPos = pos;
-
-        // EventSystem Raycast
-        PointerEventData pressData = new PointerEventData(EventSystem.current);
-        pressData.position = newPos;
-
-        // Stores the result of what the UI raycast hits
-        List<RaycastResult> result = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pressData, result);
-
-        if (result.Count > 0)
+        foreach (var tile in playerTileDictionary.Values)
         {
-            // Gets the UI Game Object of where the player selected
-            GameObject desiredTile = result[0].gameObject;
-            return desiredTile;
+            tile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
         }
-
-        // returns nothing otherwise
-        return null;
-    }
-
-    // Gets the key of the tile
-    public int getTileKeyAtPosition(Vector3 pos)
-    {
-        // Takes the mouse position and sets the z component to zero
-        Vector3 newPos = pos;
-        GameObject desiredTile = null;
-
-        // EventSystem Raycast
-        PointerEventData pressData = new PointerEventData(EventSystem.current);
-        pressData.position = newPos;
-
-        // Stores the result of what the UI raycast hits
-        List<RaycastResult> result = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pressData, result);
-
-        if (result.Count > 0)
-        {
-            // Gets the UI Game Object of where the player selected
-            desiredTile = result[0].gameObject;
-            
-            if (desiredTile.tag == playerTileTag)
-            {
-                foreach (var tile in playerTileDictionary)
-                {
-                    if (tile.Value.gameObject == desiredTile)
-                    {
-                        return tile.Key;
-                    }
-                }
-            }
-            else if (desiredTile.tag == enemyTileTag)
-            {
-                foreach (var tile in enemyTileDictionary)
-                {
-                    if (tile.Value.gameObject == desiredTile)
-                    {
-                        return tile.Key;
-                    }
-                }
-            }
-        }
-
-        // returns nothing otherwise
-        return 0;
     }
 
     // Gets the dictionary containing the enemy grid tiles
-    public Dictionary<int, GameObject> GetEnemyTileDictionary()
+    public Dictionary<Vector2, GameObject> GetEnemyTileDictionary()
     {
         return enemyTileDictionary;
     }
 
     // Gets the dictionary containing the player grid tiles
-    public Dictionary<int, GameObject> GetPlayerTileDictionary()
+    public Dictionary<Vector2, GameObject> GetPlayerTileDictionary()
     {
         return playerTileDictionary;
     }
@@ -218,6 +158,11 @@ public class GridManager : MonoBehaviour
     public int GetEnemyGridHeight()
     {
         return eHeight;
+    }
+
+    public int GetBaseTileWeight()
+    {
+        return baseTileWeight;
     }
 
     private void OnEnable()

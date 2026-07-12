@@ -6,13 +6,13 @@ using System.Linq;
 [CreateAssetMenu(fileName = "MoveData", menuName = "Scriptable Objects/MoveData")]
 public class MoveData : ScriptableObject
 {
-    [Tooltip("Move name")]
+    [Header("Move name")]
     public string moveName = "";
 
-    [Tooltip("Move damage")]
+    [Header("Move damage")]
     public int attackDamage = 0;
 
-    [Tooltip("Wanted Tiles")]
+    [Header("Wanted Tiles")]
     public List<int> tileKeys = new List<int>();
 
     [Header("Tiles highest in a certain direction")]

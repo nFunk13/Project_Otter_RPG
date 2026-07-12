@@ -46,9 +46,9 @@ public class Tile : MonoBehaviour
         tileWeight = amount;
     }
 
-    public void SetTileWeight(int amount, int multiplier)
+    public void AddTileWeight(int addition)
     {
-        tileWeight = (amount * multiplier);
+        tileWeight += addition;
     }
 
     public int GetTileWeight()

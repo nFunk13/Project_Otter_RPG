@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 
     private GridManager gridManager;
 
-    private KeyValuePair<int, GameObject> enemyTile;
+    private KeyValuePair<Vector2, GameObject> enemyTile;
 
     private List<GameObject> attackTiles = new List<GameObject>();
     [SerializeField] private List<MoveData> moves = new List<MoveData>();
@@ -52,15 +52,17 @@ public class Enemy : MonoBehaviour
     {
         GameObject startSpawn;
         int randomNumber;
+        Vector2 tileKey;
         do
         {
             randomNumber = Random.Range(1, (gridManager.GetEnemyGridHeight() * gridManager.GetEnemyGridHeight()));
-            startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[randomNumber];
+            tileKey = new Vector2(randomNumber, gridManager.GetBaseTileWeight());
+            startSpawn = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[tileKey];
         } while (startSpawn.GetComponent<Tile>().GetCharacterOn());
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-        enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
+        enemyTile = new KeyValuePair<Vector2, GameObject>(tileKey, startSpawn);
     }
 
     public void MoveEnemyOnGrid()
@@ -68,35 +70,35 @@ public class Enemy : MonoBehaviour
         if (enemyActionCount > 0)
         {
             // Dictionary of enemy Tiles
-            Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
+            Dictionary<Vector2, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
 
             // Dictionary of potentialSpots for the enemy to move to
-            int enemyKey = enemyTile.Key;
+            Vector2 enemyKey = enemyTile.Key;
 
             // List of potential keys
-            List<int> potentialKeys = new List<int>();
-            potentialKeys.Add(enemyKey - gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey + gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey - 1);
-            potentialKeys.Add(enemyKey + 1);
+            List<Vector2> potentialKeys = new List<Vector2>();
+            potentialKeys.Add(new Vector2(enemyKey.x - gridManager.GetEnemyGridWidth(), (enemyKey.y /*- 1*/)));
+            potentialKeys.Add(new Vector2(enemyKey.x + gridManager.GetEnemyGridWidth(), (enemyKey.y /*- 1*/)));
+            potentialKeys.Add(new Vector2(enemyKey.x - 1, (enemyKey.y /*- 1*/)));
+            potentialKeys.Add(new Vector2(enemyKey.x + 1, (enemyKey.y /*- 1*/)));
 
             // Checks to see if any of the potential keys are out of scope
             for (int i = potentialKeys.Count - 1; i >= 0; i--)
             {
-                if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
+                if (potentialKeys[i].x < 1 || potentialKeys[i].x > 16)
                 {
                     potentialKeys.Remove(potentialKeys[i]);
                 }
             }
 
             // Checks to see if the current enemy tile is in the top or bottom row and removes the key forward or back one respectively
-            if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
+            if (enemyTile.Key.x % gridManager.GetEnemyGridWidth() == 0)
             {
-                potentialKeys.Remove(enemyKey + 1);
+                potentialKeys.Remove(new Vector2(enemyKey.x + 1, enemyKey.y - 1));
             }
-            else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
+            else if (enemyTile.Key.x % gridManager.GetEnemyGridWidth() == 1)
             {
-                potentialKeys.Remove(enemyKey - 1);
+                potentialKeys.Remove(new Vector2(enemyKey.x - 1, (enemyKey.y - 1)));
             }
 
             // Picks a random potential key and tries to get the gameobject tied to it
@@ -110,27 +112,33 @@ public class Enemy : MonoBehaviour
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-            enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
+            enemyTile = new KeyValuePair<Vector2, GameObject>(potentialKeys[randomNumber], desiredTile);
         }
     }
 
     public void visualizeAttack()
     {
+        GridManager gridManager = GameManager.GetInstance().GetGridManager();
         if (enemyActionTypes.Count != 0 && enemyActionTypes[0] == GameManager.ActionTypes.ATTACK && !attackVisualized)
         {
 
             if (attackTiles.Count == 0)
             {
                 SetChosenMove();
-                foreach (var key in chosenMove[0].tileKeys)
+                foreach (var location in gridManager.GetPlayerTileDictionary())
                 {
-                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
-                    attackTiles.Add(tile);
+                    for (int i = 0; i < chosenMove[0].tileKeys.Count; i++)
+                    {
+                        if (location.Key.x == chosenMove[0].tileKeys[i])
+                        {
+                            GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[new Vector2(location.Key.x, location.Key.y)];
+                            attackTiles.Add(tile);
+                        }
+                    }
                 }
             }
 
             // Sets up variables for setting the correct colors
-            GridManager gridManager = GameManager.GetInstance().GetGridManager();
             int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count); // Added value to the base tile index
 
             if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
@@ -172,8 +180,8 @@ public class Enemy : MonoBehaviour
                             keyAddition--;
                         }
 
-                        attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.orange;
+                        attackTiles.Add(gridManager.GetPlayerTileDictionary()[new Vector2(moveKey + keyAddition, tileKey.y)]);
+                        gridManager.GetPlayerTileDictionary()[new Vector2(moveKey + keyAddition, tileKey.y)].gameObject.GetComponent<Image>().color = Color.orange;
                         continue;
                     }
                     break;
