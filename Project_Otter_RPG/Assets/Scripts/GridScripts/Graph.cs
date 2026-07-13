@@ -34,7 +34,7 @@ public class Graph : MonoBehaviour
 
         if (DFSHelperFunction(startVertex, goalVertex, visited, paths, ref shortestPath))
         {
-            return shortestPath;
+            return paths;
         }
 
         return null;
@@ -57,14 +57,7 @@ public class Graph : MonoBehaviour
             {
                 if (DFSHelperFunction(neighbor, goalVertex, visited, path, ref shortPath))
                 {
-                    if (shortPath.Count <= 0)
-                    {
-                        shortPath = path;
-                    }
-                    if (path.Count < shortPath.Count)
-                    {
-                        shortPath = path;
-                    }
+                    return true;
                 }
             }
         }
