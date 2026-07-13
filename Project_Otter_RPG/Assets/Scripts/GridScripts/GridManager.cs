@@ -25,11 +25,13 @@ public class GridManager : MonoBehaviour
     private PlayerActions playerActions;
     private Vector2 mouseLocation;
 
-    // Variables for storing the tiles; x val = the index number, y val = weight of tile
-    private Dictionary<Vector2, GameObject> playerTileDictionary = new Dictionary<Vector2, GameObject>();
-    private Dictionary<Vector2, GameObject> enemyTileDictionary = new Dictionary<Vector2, GameObject>();
+    // Variables for storing the tiles
+    private Dictionary<int, GameObject> playerTileDictionary = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> enemyTileDictionary = new Dictionary<int, GameObject>();
 
     private int baseTileWeight = 5;
+    List<int> enemyTilePathway;
+    List<int> playerTilePathway;
 
     private void Awake()
     {
@@ -40,6 +42,16 @@ public class GridManager : MonoBehaviour
         playerActions.MouseActions.MouseLocation.performed += ctx => mouseLocation = ctx.ReadValue<Vector2>();
         
         createGrids();
+
+        playerTilePathway = new List<int>();
+    }
+
+    private void Start()
+    {
+        int start = 1;
+        int goal = 15;
+        playerTilePathway = GraphBehavior.GetPlayerGridPath(start, goal);
+        Debug.Log(playerTilePathway.Count);
     }
 
     private void createGrids()
@@ -64,10 +76,9 @@ public class GridManager : MonoBehaviour
                 currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(enemyGridStart.x + ((rt.rect.width + offset) * i), enemyGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"EnemyTile({i},{j})";
                 currentTile.tag = enemyTileTag;
-                Tile tileScript = currentTile.GetComponent<Tile>();
-                tileScript.init(true);
-                tileScript.SetTileWeight(baseTileWeight);
-                enemyTileDictionary.Add(new Vector2(eTileCount, tileScript.GetTileWeight()), currentTile);
+                currentTile.GetComponent<Tile>().init(true);
+                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
+                enemyTileDictionary.Add(eTileCount, currentTile);
                 eTileCount++;
             }
         }
@@ -89,18 +100,12 @@ public class GridManager : MonoBehaviour
                 currentTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(playerGridStart.x + ((rt.rect.width + offset) * i), playerGridStart.y + ((rt.rect.height + offset) * j));
                 currentTile.name = $"PlayerTile({i},{j})";
                 currentTile.tag = playerTileTag;
-                Tile tileScript = currentTile.GetComponent<Tile>();
-                tileScript.init(false);
-                tileScript.SetTileWeight(baseTileWeight);
-                playerTileDictionary.Add(new Vector2(pTileCount, tileScript.GetTileWeight()), currentTile);
+                currentTile.GetComponent<Tile>().init(false);
+                currentTile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
+                playerTileDictionary.Add(pTileCount, currentTile);
                 pTileCount++;
             }
         }
-    }
-
-    public void UpdatePlayerTileWeight()
-    {
-        //for
     }
 
     public void ResetPlayerTileWeight()
@@ -112,13 +117,13 @@ public class GridManager : MonoBehaviour
     }
 
     // Gets the dictionary containing the enemy grid tiles
-    public Dictionary<Vector2, GameObject> GetEnemyTileDictionary()
+    public Dictionary<int, GameObject> GetEnemyTileDictionary()
     {
         return enemyTileDictionary;
     }
 
     // Gets the dictionary containing the player grid tiles
-    public Dictionary<Vector2, GameObject> GetPlayerTileDictionary()
+    public Dictionary<int, GameObject> GetPlayerTileDictionary()
     {
         return playerTileDictionary;
     }

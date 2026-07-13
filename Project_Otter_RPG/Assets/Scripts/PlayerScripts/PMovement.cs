@@ -11,7 +11,7 @@ public class PMovement : PlayerManager
     private GridManager gridManager;
     [SerializeField] private Canvas attackCanvas;
 
-    private KeyValuePair<Vector2, GameObject> playerTile;
+    private KeyValuePair<int, GameObject> playerTile;
     Dictionary<int, GameObject> potentialMoveTiles = new Dictionary<int, GameObject>();
 
     private float moveTime = 0.25f;
@@ -97,14 +97,13 @@ public class PMovement : PlayerManager
     {
         // Places the player on a random tile
         int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
-        Vector2 tileKey = new Vector2(randomNumber, GameManager.GetInstance().GetGridManager().GetBaseTileWeight());
         Vector3 targetPosition;
-        GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[tileKey].gameObject.GetComponent<RectTransform>().position, out targetPosition);
-        GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[tileKey];
+        GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
+        GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-        playerTile = new KeyValuePair<Vector2, GameObject>(tileKey, startSpawn.gameObject);
+        playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
         
     }
 
@@ -120,15 +119,15 @@ public class PMovement : PlayerManager
         {
             if (potentialMoveTiles.Count == 0)
             {
-                Dictionary<Vector2, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
-                Vector2 playerKey = playerTile.Key;
+                Dictionary<int, GameObject> playerTiles = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary();
+                int playerKey = playerTile.Key;
 
                 // Adds the potential keys to a list of integers
-                List<Vector2> potentialKeys = new List<Vector2>();
-                potentialKeys.Add(new Vector2(playerKey.x - gridManager.GetPlayerGridWidth(), (playerKey.y /*- 1*/)));
-                potentialKeys.Add(new Vector2(playerKey.x - 1, (playerKey.y /*- 1*/)));
-                potentialKeys.Add(new Vector2(playerKey.x + 1, (playerKey.y /*- 1*/)));
-                potentialKeys.Add(new Vector2(playerKey.x + gridManager.GetPlayerGridWidth(), (playerKey.y /*- 1*/)));
+                List<int> potentialKeys = new List<int>();
+                potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
+                potentialKeys.Add(playerKey - 1);
+                potentialKeys.Add(playerKey + 1);
+                potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
 
                 // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
                 int key = 1;
@@ -161,7 +160,7 @@ public class PMovement : PlayerManager
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOn(true);
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
 
-        playerTile = new KeyValuePair<Vector2, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
+        playerTile = new KeyValuePair<int, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
         playerActionCount--;
 
         List<Enemy> eList = GameManager.GetInstance().GetEnemyList();

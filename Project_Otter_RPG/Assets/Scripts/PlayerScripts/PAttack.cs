@@ -65,30 +65,21 @@ public class PAttack : PlayerManager
 
     public void SeeAttackPattern()
     {
-        GridManager gridManager = GameManager.GetInstance().GetGridManager();
         if (GameManager.GetInstance().GetPlayerActionTypesList().Count != 0 && GameManager.GetInstance().GetPlayerActionTypesList()[0] == GameManager.ActionTypes.ATTACK)
         {
             if (attackTiles.Count == 0)
             {
-                foreach (var location in gridManager.GetEnemyTileDictionary())
+                foreach (var key in chosenMove[0].tileKeys)
                 {
-                    for (int i = 0; i < chosenMove[0].tileKeys.Count; i++)
-                    {
-                        if (location.Key.x == chosenMove[0].tileKeys[i])
-                        {
-                            GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[new Vector2(location.Key.x, location.Key.y)];
-                            tile.GetComponent<Image>().color = Color.hotPink;
-                            attackTiles.Add(tile);
-                        }
-                    }
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[key];
+                    tile.GetComponent<Image>().color = Color.hotPink;
+                    attackTiles.Add(tile);
                 }
-                //foreach (var tile in chosenMove[0].tileKeys)
-                //{
-                //    GameObject tile = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[new Vector2(key, )];
-                //    tile.GetComponent<Image>().color = Color.hotPink;
-                //    attackTiles.Add(tile);
-                //}
             }
+
+            // Sets up variables for setting the correct colors
+            //int keyAddition = 0; // Added value to the base tile index
+            GridManager gridManager = GameManager.GetInstance().GetGridManager();
 
             // Gets the tiles based on the mouse's position
             if (chosenMove[0].tileKeys[0] >= 1 && tileAddition <= gridManager.GetEnemyTileDictionary().Count)
@@ -103,8 +94,9 @@ public class PAttack : PlayerManager
                 {
                     foreach (var moveKey in chosenMove[0].tileKeys)
                     {
-                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[new Vector2(moveKey + tileAddition, tileKey.y)]);
-                        gridManager.GetEnemyTileDictionary()[new Vector2(moveKey + tileAddition, tileKey.y)].gameObject.GetComponent<Image>().color = Color.hotPink;
+
+                        attackTiles.Add(gridManager.GetEnemyTileDictionary()[(moveKey + tileAddition)]);
+                        gridManager.GetEnemyTileDictionary()[(moveKey + tileAddition)].gameObject.GetComponent<Image>().color = Color.hotPink;
                         continue;
                     }
                     break;

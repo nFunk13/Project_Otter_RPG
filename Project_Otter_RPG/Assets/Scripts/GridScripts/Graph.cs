@@ -1,45 +1,47 @@
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class Graph : MonoBehaviour
 {
-    private Dictionary<Vector2, List<Vector2>> adjacencyList;
+    private Dictionary<int, List<int>> adjacencyList;
 
     public Graph()
     {
-        adjacencyList = new Dictionary<Vector2, List<Vector2>>();
+        adjacencyList = new Dictionary<int, List<int>>();
     }
 
-    public void AddEdge(Vector2 vertex1, Vector2 vertex2)
+    public void AddEdge(int vertex1, int vertex2)
     {
         if (!adjacencyList.ContainsKey(vertex1))
         {
-            adjacencyList.Add(vertex1, new List<Vector2>());
+            adjacencyList.Add(vertex1, new List<int>());
         }
         if (!adjacencyList.ContainsKey(vertex2))
         {
-            adjacencyList.Add(vertex2, new List<Vector2>());
+            adjacencyList.Add(vertex2, new List<int>());
         }
 
         adjacencyList[vertex1].Add(vertex2);
     }
 
     // Change this to go through each tile in the dictionary to change the value of each tile
-    public List<Vector2> DFS(Vector2 startVertex, Vector2 goalVertex)
+    public List<int> DFS(int startVertex, int goalVertex)
     {
-        List<Vector2> visited = new List<Vector2>();
-        List<Vector2> paths = new List<Vector2>();
+        List<int> visited = new List<int>();
+        List<int> paths = new List<int>();
+        List<int> shortestPath = new List<int>();
 
-        if (DFSHelperFunction(startVertex, goalVertex, visited, paths))
+        if (DFSHelperFunction(startVertex, goalVertex, visited, paths, ref shortestPath))
         {
-            return paths;
+            return shortestPath;
         }
 
         return null;
     }
 
     // Change this to go through each tile in the dictionary to change the value of each tile
-    public bool DFSHelperFunction(Vector2 current, Vector2 goalVertex, List<Vector2> visited, List<Vector2> path)
+    public bool DFSHelperFunction(int current, int goalVertex, List<int> visited, List<int> path, ref List<int> shortPath)
     {
         visited.Add(current);
         path.Add(current);
@@ -49,18 +51,30 @@ public class Graph : MonoBehaviour
             return true;
         }
 
-        foreach (Vector2 neighbor in adjacencyList[current])
+        foreach (int neighbor in adjacencyList[current])
         {
             if (!visited.Contains(neighbor))
             {
-                if (DFSHelperFunction(neighbor, goalVertex, visited, path))
+                if (DFSHelperFunction(neighbor, goalVertex, visited, path, ref shortPath))
                 {
-                    return true;
+                    if (shortPath.Count <= 0)
+                    {
+                        shortPath = path;
+                    }
+                    if (path.Count < shortPath.Count)
+                    {
+                        shortPath = path;
+                    }
                 }
             }
         }
 
         path.RemoveAt(path.Count - 1);
-        return false;
+        return true;
+    }
+
+    public Dictionary<int, List<int>> GetAdjacencyList()
+    {
+        return adjacencyList;
     }
 }
