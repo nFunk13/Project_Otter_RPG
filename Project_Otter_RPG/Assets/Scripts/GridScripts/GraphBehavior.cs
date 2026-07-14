@@ -56,15 +56,15 @@ public class GraphBehavior : MonoBehaviour
         }
     }
 
-    public static List<int> GetPlayerGridPath(int start, int end)
-    {
-        if (enemyTileConnection == null && enemyTileConnection == null)
-        {
-            ConnectEnemyTiles();
-            ConnectPlayerTiles();
-        }
-        return playerTileConnection.BFS(start, end);
-    }
+    //public static List<int> GetPlayerGridPath(int start, int end)
+    //{
+    //    if (enemyTileConnection == null && enemyTileConnection == null)
+    //    {
+    //        ConnectEnemyTiles();
+    //        ConnectPlayerTiles();
+    //    }
+    //    return playerTileConnection.BFS(start, end);
+    //}
 
     public static void ChangePlayerTileWeights(int start)
     {

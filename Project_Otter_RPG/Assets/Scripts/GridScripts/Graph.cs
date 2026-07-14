@@ -28,41 +28,41 @@ public class Graph : MonoBehaviour
         adjacencyList[vertex1].Add(vertex2);
     }
 
-    public List<int> BFS(int startVertex, int goalVertex)
-    {
-        Dictionary<int, int> visited = new Dictionary<int, int>();
-        visited[startVertex] = startVertex;
-        List<int> paths = new List<int>();
-        Queue<int> frontier = new Queue<int>();
-        frontier.Enqueue(startVertex);
+    //public List<int> BFS(int startVertex, int goalVertex)
+    //{
+    //    Dictionary<int, int> visited = new Dictionary<int, int>();
+    //    visited[startVertex] = startVertex;
+    //    List<int> paths = new List<int>();
+    //    Queue<int> frontier = new Queue<int>();
+    //    frontier.Enqueue(startVertex);
 
-        while (frontier.Count > 0)
-        {
-            int current = frontier.Dequeue();
+    //    while (frontier.Count > 0)
+    //    {
+    //        int current = frontier.Dequeue();
 
-            if (current == goalVertex)
-            {
-                return pathDicToList(ref visited, ref goalVertex);
-            }
+    //        if (current == goalVertex)
+    //        {
+    //            return pathDicToList(ref visited, ref goalVertex);
+    //        }
 
-            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+    //        var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
 
-            foreach (var neighbor in neighbors)
-            {
-                if (visited.ContainsKey(neighbor))
-                {
-                    continue;
-                }
-                else
-                {
-                    frontier.Enqueue(neighbor);
-                    visited[neighbor] = current;
-                }
-            }
-        }
+    //        foreach (var neighbor in neighbors)
+    //        {
+    //            if (visited.ContainsKey(neighbor))
+    //            {
+    //                continue;
+    //            }
+    //            else
+    //            {
+    //                frontier.Enqueue(neighbor);
+    //                visited[neighbor] = current;
+    //            }
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
     public void ChangePlayerTileWeights(int startInt)
     {
@@ -70,7 +70,7 @@ public class Graph : MonoBehaviour
         visited[startInt] = startInt;
         Queue<int> frontier = new Queue<int>();
         frontier.Enqueue(startInt);
-        int weightValue = 3;
+        int weightValue = 5;
 
         while (frontier.Count > 0)
         {

@@ -98,8 +98,7 @@ public class PMovement : PlayerManager
     private void StartSpawn()
     {
         // Places the player on a random tile
-        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
-        //GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
+        int randomNumber = Random.Range(1, gridManager.GetPlayerTileDictionary().Count);
         Vector3 targetPosition = gridManager.GetPlayerTileDictionary()[randomNumber].gameObject.transform.position;
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -108,14 +107,6 @@ public class PMovement : PlayerManager
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
 
         GraphBehavior.ChangePlayerTileWeights(FindPlayerTileKey(startSpawn));
-
-        //foreach (var tile in gridManager.GetPlayerTileDictionary())
-        //{
-        //    if (tile.Value == startSpawn.gameObject)
-        //    {
-        //        GraphBehavior.ChangePlayerTileWeights(tile.Key);
-        //    }
-        //}
     }
 
     private int FindPlayerTileKey(GameObject tileObj)
