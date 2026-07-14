@@ -154,6 +154,12 @@ public class GameManager : MonoBehaviour
                 }
                 playersTurn = true;
                 playerMovement.SetPlayerActionCount(playerCombatActions);
+                //if (playerActionsTypes.Count == 0)
+                //{
+                    //canPerformActions = false;
+                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                    buttonManager.ShowUIMenu(true);
+                //}
             }
         }
     }
@@ -171,12 +177,12 @@ public class GameManager : MonoBehaviour
             if (playerActionsTypes[0] == ActionTypes.MOVE /*&& actionRange*/)
             {
                 playerMovement.MovePlayer();
-                if (playerActionsTypes.Count == 0)
-                {
-                    canPerformActions = false;
-                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
-                    buttonManager.ShowUIMenu(true);
-                }
+                //if (playerActionsTypes.Count == 0)
+                //{
+                //    canPerformActions = false;
+                //    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                //    buttonManager.ShowUIMenu(true);
+                //}
             }
             // What to do with the attack action
             else if (playerActionsTypes[0] == ActionTypes.ATTACK /*&& actionRange*/)
@@ -196,12 +202,12 @@ public class GameManager : MonoBehaviour
                         SceneManager.LoadScene("EndScene");
                     }
                 }
-                if (playerActionsTypes.Count == 0)
-                {
-                    canPerformActions = false;
-                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
-                    buttonManager.ShowUIMenu(true);
-                }
+                //if (playerActionsTypes.Count == 0)
+                //{
+                //    canPerformActions = false;
+                //    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                //    buttonManager.ShowUIMenu(true);
+                //}
             }
         }
     }
