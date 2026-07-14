@@ -71,18 +71,9 @@ public class Graph : MonoBehaviour
         Queue<int> frontier = new Queue<int>();
         frontier.Enqueue(startInt);
         int weightValue = 3;
-        int parced = 0;
-        int changeWeight = 1;
-        int changeMultiplier = 1;
 
         while (frontier.Count > 0)
         {
-            if (parced == changeWeight && weightValue > 0)
-            {
-                changeWeight = (3 * changeMultiplier);
-                changeMultiplier++;
-                weightValue--;
-            }
             int current = frontier.Dequeue();
             GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weightValue);
             var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
@@ -97,39 +88,40 @@ public class Graph : MonoBehaviour
                 {
                     frontier.Enqueue(neighbor);
                     visited[neighbor] = current;
-                    //PlayerWeightChangeHelperFunction(weightValue, ref frontier, ref visited);
                 }
             }
-            parced++;
+            PlayerWeightHelpFunction(weightValue, ref frontier, ref visited);
         }
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
 
-    private void PlayerWeightChangeHelperFunction(int weight, ref Queue<int> frontier, ref Dictionary<int, int> visited)
+    private void PlayerWeightHelpFunction(int weight, ref Queue<int> oldFrontier, ref Dictionary<int, int> visited)
     {
         if (weight > 0)
-        {
             weight--;
-        }
-
-        int current = frontier.Dequeue();
-        GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(current);
-        var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
-
-        foreach (var neighbor in neighbors)
-        {
-            if (visited.ContainsKey(neighbor))
-            {
-                continue;
-            }
-            else
-            {
-                frontier.Enqueue(neighbor);
-                visited[neighbor] = current;
-            }
-        }
-        PlayerWeightChangeHelperFunction(weight, ref frontier, ref visited);
+        Queue<int> newFrontier = new Queue<int>();
         
+        while (oldFrontier.Count > 0)
+        {
+            int current = oldFrontier.Dequeue();
+            GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weight);
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+                else
+                {
+                    newFrontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                }
+            }
+        }
+        if (newFrontier.Count > 0)
+            PlayerWeightHelpFunction(weight, ref newFrontier, ref visited);
     }
 
     private List<int> pathDicToList(ref Dictionary<int, int> previousDic, ref int goal)

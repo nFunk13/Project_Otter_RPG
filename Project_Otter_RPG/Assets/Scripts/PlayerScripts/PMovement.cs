@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -104,7 +105,14 @@ public class PMovement : PlayerManager
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
-        
+
+        foreach (var tile in gridManager.GetPlayerTileDictionary())
+        {
+            if (tile.Value == startSpawn.gameObject)
+            {
+                GraphBehavior.ChangePlayerTileWeights(tile.Key);
+            }
+        }
     }
 
     private void GetScreenPosOfTile(Vector3 worldPos, out Vector3 finalScreenPos)
