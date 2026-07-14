@@ -70,14 +70,17 @@ public class Graph : MonoBehaviour
         visited[startInt] = startInt;
         Queue<int> frontier = new Queue<int>();
         frontier.Enqueue(startInt);
-        int weightValue = 5;
-        int parced = visited.Count;
+        int weightValue = 3;
+        int parced = 0;
+        int changeWeight = 1;
+        int changeMultiplier = 1;
 
         while (frontier.Count > 0)
         {
-            if (parced == (visited.Count + 1))
+            if (parced == changeWeight && weightValue > 0)
             {
-                parced++;
+                changeWeight = (3 * changeMultiplier);
+                changeMultiplier++;
                 weightValue--;
             }
             int current = frontier.Dequeue();
@@ -97,6 +100,7 @@ public class Graph : MonoBehaviour
                     //PlayerWeightChangeHelperFunction(weightValue, ref frontier, ref visited);
                 }
             }
+            parced++;
         }
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
