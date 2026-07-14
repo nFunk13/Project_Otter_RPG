@@ -63,7 +63,17 @@ public class GraphBehavior : MonoBehaviour
             ConnectEnemyTiles();
             ConnectPlayerTiles();
         }
-        return playerTileConnection.DFS(start, end);
+        return playerTileConnection.BFS(start, end);
+    }
+
+    public static void ChangePlayerTileWeights(int start)
+    {
+        if (enemyTileConnection == null && enemyTileConnection == null)
+        {
+            ConnectEnemyTiles();
+            ConnectPlayerTiles();
+        }
+        playerTileConnection.ChangePlayerTileWeights(start);
     }
 
 }

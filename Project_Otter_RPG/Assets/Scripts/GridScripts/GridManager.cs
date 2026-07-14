@@ -49,9 +49,10 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         int start = 1;
-        int goal = 15;
-        playerTilePathway = GraphBehavior.GetPlayerGridPath(start, goal);
-        Debug.Log(playerTilePathway.Count);
+        //int goal = 15;
+        //playerTilePathway = GraphBehavior.GetPlayerGridPath(start, goal);
+        //Debug.Log("PATHWAY COUNT SIZE: " + playerTilePathway.Count);
+        GraphBehavior.ChangePlayerTileWeights(start);
     }
 
     private void createGrids()

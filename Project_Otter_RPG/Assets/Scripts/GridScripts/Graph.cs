@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
+using Unity.VisualScripting;
+using UnityEditor.TerrainTools;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Graph : MonoBehaviour
 {
@@ -25,49 +28,117 @@ public class Graph : MonoBehaviour
         adjacencyList[vertex1].Add(vertex2);
     }
 
-    // Change this to go through each tile in the dictionary to change the value of each tile
-    public List<int> DFS(int startVertex, int goalVertex)
+    public List<int> BFS(int startVertex, int goalVertex)
     {
-        List<int> visited = new List<int>();
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+        visited[startVertex] = startVertex;
         List<int> paths = new List<int>();
-        List<int> shortestPath = new List<int>();
+        Queue<int> frontier = new Queue<int>();
+        frontier.Enqueue(startVertex);
 
-        if (DFSHelperFunction(startVertex, goalVertex, visited, paths, ref shortestPath))
+        while (frontier.Count > 0)
         {
-            return paths;
+            int current = frontier.Dequeue();
+
+            if (current == goalVertex)
+            {
+                return pathDicToList(ref visited, ref goalVertex);
+            }
+
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+                else
+                {
+                    frontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                }
+            }
         }
 
         return null;
     }
 
-    // Change this to go through each tile in the dictionary to change the value of each tile
-    public bool DFSHelperFunction(int current, int goalVertex, List<int> visited, List<int> path, ref List<int> shortPath)
+    public void ChangePlayerTileWeights(int startInt)
     {
-        visited.Add(current);
-        path.Add(current);
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+        visited[startInt] = startInt;
+        Queue<int> frontier = new Queue<int>();
+        frontier.Enqueue(startInt);
+        int weightValue = 5;
+        int parced = visited.Count;
 
-        if (current == goalVertex)
+        while (frontier.Count > 0)
         {
-            return true;
-        }
-
-        foreach (int neighbor in adjacencyList[current])
-        {
-            if (!visited.Contains(neighbor))
+            if (parced == (visited.Count + 1))
             {
-                if (DFSHelperFunction(neighbor, goalVertex, visited, path, ref shortPath))
+                parced++;
+                weightValue--;
+            }
+            int current = frontier.Dequeue();
+            GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weightValue);
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
                 {
-                    return true;
+                    continue;
+                }
+                else
+                {
+                    frontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                    //PlayerWeightChangeHelperFunction(weightValue, ref frontier, ref visited);
                 }
             }
         }
-
-        path.RemoveAt(path.Count - 1);
-        return true;
+        Debug.Log("VISITED COUNT: " + visited.Count);
     }
 
-    public Dictionary<int, List<int>> GetAdjacencyList()
+    private void PlayerWeightChangeHelperFunction(int weight, ref Queue<int> frontier, ref Dictionary<int, int> visited)
     {
-        return adjacencyList;
+        if (weight > 0)
+        {
+            weight--;
+        }
+
+        int current = frontier.Dequeue();
+        GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(current);
+        var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+        foreach (var neighbor in neighbors)
+        {
+            if (visited.ContainsKey(neighbor))
+            {
+                continue;
+            }
+            else
+            {
+                frontier.Enqueue(neighbor);
+                visited[neighbor] = current;
+            }
+        }
+        PlayerWeightChangeHelperFunction(weight, ref frontier, ref visited);
+        
+    }
+
+    private List<int> pathDicToList(ref Dictionary<int, int> previousDic, ref int goal)
+    {
+        List<int> pathway = new List<int>();
+        int current, previous;
+        current = goal;
+        do
+        {
+            pathway.Insert(0, current);
+            previous = current;
+            current = previousDic[current];
+        } while (current != previous);
+        return pathway;
     }
 }
