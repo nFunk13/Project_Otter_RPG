@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 public class PMovement : PlayerManager
@@ -98,27 +99,36 @@ public class PMovement : PlayerManager
     {
         // Places the player on a random tile
         int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
-        Vector3 targetPosition;
-        GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
+        //GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
+        Vector3 targetPosition = gridManager.GetPlayerTileDictionary()[randomNumber].gameObject.transform.position;
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
 
-        foreach (var tile in gridManager.GetPlayerTileDictionary())
-        {
-            if (tile.Value == startSpawn.gameObject)
-            {
-                GraphBehavior.ChangePlayerTileWeights(tile.Key);
-            }
-        }
+        GraphBehavior.ChangePlayerTileWeights(FindPlayerTileKey(startSpawn));
+
+        //foreach (var tile in gridManager.GetPlayerTileDictionary())
+        //{
+        //    if (tile.Value == startSpawn.gameObject)
+        //    {
+        //        GraphBehavior.ChangePlayerTileWeights(tile.Key);
+        //    }
+        //}
     }
 
-    private void GetScreenPosOfTile(Vector3 worldPos, out Vector3 finalScreenPos)
+    private int FindPlayerTileKey(GameObject tileObj)
     {
-        Vector3 uiWorldPoint = worldPos;
-        finalScreenPos = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
+        foreach (var tile in gridManager.GetPlayerTileDictionary())
+        {
+            if (tile.Value == tileObj.gameObject)
+            {
+                return tile.Key;
+            }
+        }
+
+        return -1;
     }
 
     public void VisualizeMovement()
@@ -167,6 +177,9 @@ public class PMovement : PlayerManager
         playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOn(true);
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+
+        gridManager.ResetPlayerTileWeight();
+        GraphBehavior.ChangePlayerTileWeights(FindPlayerTileKey(chosenMoveLocation.gameObject));
 
         playerTile = new KeyValuePair<int, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
         playerActionCount--;
