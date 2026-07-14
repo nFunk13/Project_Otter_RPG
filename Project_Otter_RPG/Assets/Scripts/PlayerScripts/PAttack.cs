@@ -80,7 +80,6 @@ public class PAttack : PlayerManager
             // Sets up variables for setting the correct colors
             //int keyAddition = 0; // Added value to the base tile index
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
-            GameObject testTile = gridManager.getTileAtPosition(gridManager.MouseToWorldPosition());
 
             // Gets the tiles based on the mouse's position
             if (chosenMove[0].tileKeys[0] >= 1 && tileAddition <= gridManager.GetEnemyTileDictionary().Count)

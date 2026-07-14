@@ -26,6 +26,10 @@ public class Enemy : MonoBehaviour
     private float moveTime = 0.25f;
     private int enemyActionCount = 0;
 
+    private float baseDecisionValue = 10000.0f;
+    private float moveMultiplier;
+    private float attackMultiplier;
+
     private void Awake()
     {
         gridManager = GameObject.Find("GameManager").GetComponent<GridManager>();
@@ -33,6 +37,9 @@ public class Enemy : MonoBehaviour
         instanceEnemyData = Instantiate(baseEnemyData);
 
         instanceEnemyData.enemyCurrentHealth = instanceEnemyData.enemyMaxHealth;
+
+        moveMultiplier = instanceEnemyData.attackRate;
+        attackMultiplier = (1.0f - instanceEnemyData.attackRate);
     }
 
     private void Start()
