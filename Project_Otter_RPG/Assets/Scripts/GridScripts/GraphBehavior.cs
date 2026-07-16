@@ -66,14 +66,37 @@ public class GraphBehavior : MonoBehaviour
     //    return playerTileConnection.BFS(start, end);
     //}
 
-    public static void ChangePlayerTileWeights(int start)
+    public static void ChangeWeights(int start, bool playerGraph, int decreaseWeight)
     {
-        if (enemyTileConnection == null && enemyTileConnection == null)
+        if (playerGraph)
+        {
+            ConnectPlayerTiles();
+            playerTileConnection.ChangeTileWeights(start, playerGraph, decreaseWeight);
+        }
+        else
         {
             ConnectEnemyTiles();
-            ConnectPlayerTiles();
+            enemyTileConnection.ChangeTileWeights(start, playerGraph, decreaseWeight);
         }
-        playerTileConnection.ChangePlayerTileWeights(start);
     }
 
+    public static void ChangeWeights(int start, bool playerGraph, int weight, int decreaseWeight)
+    {
+        if (playerGraph)
+        {
+            ConnectPlayerTiles();
+            playerTileConnection.ChangeTileWeights(start, playerGraph, decreaseWeight);
+        }
+        else
+        {
+            ConnectEnemyTiles();
+            enemyTileConnection.ChangeTileWeights(start, playerGraph, weight, decreaseWeight);
+        }
+    }
+
+    public static void GetEnemyAttackWeight(int startIndex, int endIndex, List<int> moveList, out int totalWeight, out int tileAddition)
+    {
+        ConnectPlayerTiles();
+        enemyTileConnection.enemyAttackDecision(startIndex, endIndex, moveList, out totalWeight, out tileAddition);
+    }
 }

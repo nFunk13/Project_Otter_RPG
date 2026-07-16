@@ -18,4 +18,8 @@ public class EnemyScriptableObject : ScriptableObject
 
     [Header("Enemy Moves")]
     [SerializeField] public List<MoveData> moveList = new List<MoveData>();
+
+    [Header("Enemy Weight Value")]
+    [SerializeField] public int weight = 5;
+    [SerializeField] public int weightDecreaseValue = 1;
 }

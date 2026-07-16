@@ -106,20 +106,7 @@ public class PMovement : PlayerManager
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
 
-        GraphBehavior.ChangePlayerTileWeights(FindPlayerTileKey(startSpawn));
-    }
-
-    private int FindPlayerTileKey(GameObject tileObj)
-    {
-        foreach (var tile in gridManager.GetPlayerTileDictionary())
-        {
-            if (tile.Value == tileObj.gameObject)
-            {
-                return tile.Key;
-            }
-        }
-
-        return -1;
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, true), true, 1);
     }
 
     public void VisualizeMovement()
@@ -170,7 +157,7 @@ public class PMovement : PlayerManager
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
 
         gridManager.ResetPlayerTileWeight();
-        GraphBehavior.ChangePlayerTileWeights(FindPlayerTileKey(chosenMoveLocation.gameObject));
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(chosenMoveLocation.gameObject, true), true, 1);
 
         playerTile = new KeyValuePair<int, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
         playerActionCount--;

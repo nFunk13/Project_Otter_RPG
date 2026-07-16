@@ -46,12 +46,32 @@ public class GridManager : MonoBehaviour
         playerTilePathway = new List<int>();
     }
 
-    private void Start()
+    public int FindTileKey(GameObject tileObj, bool playerGraph)
     {
-        //int start = 1;
-        //int goal = 15;
-        //playerTilePathway = GraphBehavior.GetPlayerGridPath(start, goal);
-        //Debug.Log("PATHWAY COUNT SIZE: " + playerTilePathway.Count);
+        if (playerGraph)
+        {
+            foreach (var tile in playerTileDictionary)
+            {
+                if (tile.Value == tileObj.gameObject)
+                {
+                    return tile.Key;
+                }
+            }
+
+            return -1;
+        }
+        else
+        {
+            foreach (var tile in enemyTileDictionary)
+            {
+                if (tile.Value == tileObj.gameObject)
+                {
+                    return tile.Key;
+                }
+            }
+        }
+
+            return -1;
     }
 
     private void createGrids()

@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private List<MoveData> moves = new List<MoveData>();
     private List<MoveData> chosenMove = new List<MoveData>();
     private bool attackVisualized = false;
+    private int tileAttackAddition;
 
     private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
@@ -60,7 +61,24 @@ public class Enemy : MonoBehaviour
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
+    }
+
+    public float DetermineAttackWeightModifier()
+    {
+        KeyValuePair<MoveData, int> highestWeight = new KeyValuePair<MoveData, int>();
+        foreach (var move in moves)
+        {
+            GraphBehavior.GetEnemyAttackWeight(move.centerTileKey, (16 - (move.rightMostTileKey - move.leftMostTileKey)), move.tileKeys, out int weight, out int addToTile);
+            if (highestWeight.Key != move)
+            {
+                highestWeight = new KeyValuePair<MoveData, int>(move, weight);
+                tileAttackAddition = addToTile;
+            }
+        }
+        chosenMove.Add(highestWeight.Key);
+        return (baseDecisionValue - (attackMultiplier * highestWeight.Value));
     }
 
     public void MoveEnemyOnGrid()
@@ -121,65 +139,69 @@ public class Enemy : MonoBehaviour
 
             if (attackTiles.Count == 0)
             {
-                SetChosenMove();
+                //SetChosenMove();
                 foreach (var key in chosenMove[0].tileKeys)
                 {
-                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key + tileAttackAddition];
                     attackTiles.Add(tile);
                 }
             }
 
             // Sets up variables for setting the correct colors
-            GridManager gridManager = GameManager.GetInstance().GetGridManager();
-            int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count); // Added value to the base tile index
+            //GridManager gridManager = GameManager.GetInstance().GetGridManager();
+            //int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count); // Added value to the base tile index
 
-            if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
+            //if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
+            //{
+            //    keyAddition = gridManager.GetPlayerTileDictionary().Count;
+            //}
+            //if (keyAddition < chosenMove[0].centerTileKey)
+            //{
+            //    keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
+            //}
+            //if (keyAddition > 0)
+            //{
+            //    keyAddition -= 1;
+            //}
+
+            //// Gets the tiles based on the mouse's position
+            //if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetPlayerTileDictionary().Count)
+            //{
+            //    attackTiles.Clear();
+
+            //    // Resets tile color to red
+            //    //GameManager.GetInstance().ResetPlayerGrid();
+
+            //    // Sets the desired tiles to hotpink for visualization purposes
+            //    foreach (var tileKey in gridManager.GetPlayerTileDictionary().Keys)
+            //    {
+            //        foreach (var moveKey in chosenMove[0].tileKeys)
+            //        {
+            //            if (chosenMove[0].rightMostTileKey + keyAddition > 16)
+            //            {
+            //                keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
+            //            }
+            //            else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
+            //            {
+            //                keyAddition = keyAddition - chosenMove[0].centerTileKey;
+            //            }
+            //            else if ((keyAddition + 1) % gridManager.GetPlayerGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
+            //            {
+            //                keyAddition--;
+            //            }
+
+            //            attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
+            foreach (var tile in attackTiles)
             {
-                keyAddition = gridManager.GetPlayerTileDictionary().Count;
+                tile.gameObject.GetComponent<Image>().color = Color.orange;
             }
-            if (keyAddition < chosenMove[0].centerTileKey)
-            {
-                keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
-            }
-            if (keyAddition > 0)
-            {
-                keyAddition -= 1;
-            }
-
-            // Gets the tiles based on the mouse's position
-            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetPlayerTileDictionary().Count)
-            {
-                attackTiles.Clear();
-
-                // Resets tile color to red
-                //GameManager.GetInstance().ResetPlayerGrid();
-
-                // Sets the desired tiles to hotpink for visualization purposes
-                foreach (var tileKey in gridManager.GetPlayerTileDictionary().Keys)
-                {
-                    foreach (var moveKey in chosenMove[0].tileKeys)
-                    {
-                        if (chosenMove[0].rightMostTileKey + keyAddition > 16)
-                        {
-                            keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
-                        }
-                        else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
-                        {
-                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
-                        }
-                        else if ((keyAddition + 1) % gridManager.GetPlayerGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
-                        {
-                            keyAddition--;
-                        }
-
-                        attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.orange;
-                        continue;
-                    }
-                    break;
-                }
-                attackVisualized = true;
-            }
+                        //gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.orange;
+                //        continue;
+                //    }
+                //    break;
+                //}
+                //attackVisualized = true;
+            //}
         }
     }
 
