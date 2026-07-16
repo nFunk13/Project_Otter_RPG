@@ -13,7 +13,7 @@ public class EnemyScriptableObject : ScriptableObject
 
     [Header("Attack-to-Move Ratio")]
     [Tooltip("The higher the value, the more likey the enemy is to attack")]
-    [Range(0.0f, 1.0f)]
+    [Range(0.001f, 1.0f)]
     public float attackRate = 0.5f;
 
     [Header("Enemy Moves")]

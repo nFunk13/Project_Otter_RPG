@@ -192,10 +192,6 @@ public class Graph
         {
             for (int j = 1; j <= attackTiles.Count; j++)
             {
-                //if ((j+addition) > 16)
-                //{
-                //    continue;
-                //}
                 tempWeight += GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[j + addition].gameObject.GetComponent<Tile>().GetTileWeight();
             }
             if (tempWeight > totalWeight)

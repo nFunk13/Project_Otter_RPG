@@ -160,8 +160,6 @@ public class GameManager : MonoBehaviour
                 {
                     enemyAction = ActionTypes.MOVE;
                 }
-                //int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
-                //enemy.SetEnemyActionTypes((ActionTypes)randomAction);
                 enemy.SetEnemyActionTypes(enemyAction);
                 enemy.visualizeAttack();
             }
