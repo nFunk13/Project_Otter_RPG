@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour
         KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(0, 10000);
 
         gridManager.ResetEnemyTileWeight();
-        foreach (var enemy in GameManager.GetInstance().GetEnemyList())//gridManager.GetEnemyTileDictionary().Values)
+        foreach (var enemy in GameManager.GetInstance().GetEnemyList())
         {
             if (enemy != this.gameObject)
             {
@@ -103,7 +103,7 @@ public class Enemy : MonoBehaviour
         {
             if (enemy.gameObject != this.gameObject)
             {
-                GraphBehavior.GetEnemyMoveWeight(this.enemyTile.Key, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight);
+                GraphBehavior.GetEnemyMoveWeight(this.enemyTile.Key, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
                 if (wantedMove.Value > weight)
                 {
                     wantedMove = new KeyValuePair<int, int>(tileKey, weight);
@@ -162,6 +162,7 @@ public class Enemy : MonoBehaviour
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
             enemyTile = new KeyValuePair<int, GameObject>(tileKeyToMoveTo, desiredTile);
+            tileKeyToMoveTo = 0;
         }
     }
 

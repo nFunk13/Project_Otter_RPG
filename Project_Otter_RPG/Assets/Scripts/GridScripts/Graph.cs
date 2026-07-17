@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEditor.TerrainTools;
@@ -64,7 +65,7 @@ public class Graph
         return null;
     }
 
-    public void BFS(int startVertex, int goalVertex, out int tileKeyWant, out int weightWant)
+    public void BFS(int startVertex, int goalVertex, out int tileKeyWant, out int weightWant, Enemy enemy)
     {
         Dictionary<int, int> visited = new Dictionary<int, int>();
         visited[startVertex] = startVertex;
@@ -81,7 +82,7 @@ public class Graph
 
             if (current == goalVertex)
             {
-                pathDicToList(ref visited, ref goalVertex, out int tileKey, out int weight);
+                pathDicToList(ref visited, ref goalVertex, out int tileKey, out int weight, enemy);
                 tileKeyWant = tileKey;
                 weightWant = weight;
             }
@@ -257,7 +258,7 @@ public class Graph
         return pathway;
     }
 
-    private void pathDicToList(ref Dictionary<int, int> previousDic, ref int goal, out int tileKey, out int weight)
+    private void pathDicToList(ref Dictionary<int, int> previousDic, ref int goal, out int tileKey, out int weight, Enemy enemy)
     {
         Dictionary<int, GameObject> enemyTileDictionary = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
         List<int> pathway = new List<int>();
@@ -266,14 +267,19 @@ public class Graph
 
         weight = 0;
         tileKey = 0;
+        bool firstTime = true;
 
         do
         {
             weight += enemyTileDictionary[current].gameObject.GetComponent<Tile>().GetTileWeight();
-            pathway.Insert(0, current);
+            if (current != enemy.GetEnemyTileData().Key || firstTime)
+            {
+                pathway.Insert(0, current);
+            }
+            firstTime = false;
             previous = current;
             current = previousDic[current];
         } while (current != previous);
-        tileKey = pathway[1];
+        tileKey = pathway[0];
     }
 }
