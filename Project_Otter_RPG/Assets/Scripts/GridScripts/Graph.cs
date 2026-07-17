@@ -274,7 +274,6 @@ public class Graph
             previous = current;
             current = previousDic[current];
         } while (current != previous);
-        tileKey = pathway[0];
-        //return pathway;
+        tileKey = pathway[1];
     }
 }
