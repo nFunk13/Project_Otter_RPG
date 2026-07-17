@@ -143,14 +143,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetEnemyAction()
+    public void SetEnemyAction()
     {
         foreach (var enemy in enemyList)
         {
             if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
             {
                 float attackWeight = enemy.DetermineAttackWeightModifier();
-                float moveWeight = 0;
+                float moveWeight = enemy.DetermineMoveWeightModifier();
                 ActionTypes enemyAction = ActionTypes.NO_ACTION;
                 if (attackWeight > moveWeight)
                 {
@@ -198,6 +198,10 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+        }
+        if (GetPlayerActionTypesList().Count == 0)
+        {
+            GameManager.GetInstance().SetCanPerformActions(false);
         }
     }
 

@@ -99,4 +99,10 @@ public class GraphBehavior : MonoBehaviour
         ConnectPlayerTiles();
         enemyTileConnection.enemyAttackDecision(startIndex, endIndex, moveList, out totalWeight, out tileAddition);
     }
+
+    public static void GetEnemyMoveWeight(int startIndex, int endIndex, out int tileKey, out int weight)
+    {
+        ConnectEnemyTiles();
+        enemyTileConnection.BFS(startIndex, endIndex, out tileKey, out weight);
+    }
 }

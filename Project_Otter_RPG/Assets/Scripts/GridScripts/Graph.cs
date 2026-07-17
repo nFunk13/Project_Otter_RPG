@@ -28,41 +28,80 @@ public class Graph
         adjacencyList[vertex1].Add(vertex2);
     }
 
-    //public List<int> BFS(int startVertex, int goalVertex)
-    //{
-    //    Dictionary<int, int> visited = new Dictionary<int, int>();
-    //    visited[startVertex] = startVertex;
-    //    List<int> paths = new List<int>();
-    //    Queue<int> frontier = new Queue<int>();
-    //    frontier.Enqueue(startVertex);
+    public List<int> BFS(int startVertex, int goalVertex)
+    {
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+        visited[startVertex] = startVertex;
+        List<int> paths = new List<int>();
+        Queue<int> frontier = new Queue<int>();
+        frontier.Enqueue(startVertex);
 
-    //    while (frontier.Count > 0)
-    //    {
-    //        int current = frontier.Dequeue();
+        while (frontier.Count > 0)
+        {
+            int current = frontier.Dequeue();
 
-    //        if (current == goalVertex)
-    //        {
-    //            return pathDicToList(ref visited, ref goalVertex);
-    //        }
+            if (current == goalVertex)
+            {
+                return pathDicToList(ref visited, ref goalVertex);
+            }
 
-    //        var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
 
-    //        foreach (var neighbor in neighbors)
-    //        {
-    //            if (visited.ContainsKey(neighbor))
-    //            {
-    //                continue;
-    //            }
-    //            else
-    //            {
-    //                frontier.Enqueue(neighbor);
-    //                visited[neighbor] = current;
-    //            }
-    //        }
-    //    }
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+                else
+                {
+                    frontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                }
+            }
+        }
 
-    //    return null;
-    //}
+        return null;
+    }
+
+    public void BFS(int startVertex, int goalVertex, out int tileKeyWant, out int weightWant)
+    {
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+        visited[startVertex] = startVertex;
+        List<int> paths = new List<int>();
+        Queue<int> frontier = new Queue<int>();
+        frontier.Enqueue(startVertex);
+
+        tileKeyWant = 0;
+        weightWant = 0;
+
+        while (frontier.Count > 0)
+        {
+            int current = frontier.Dequeue();
+
+            if (current == goalVertex)
+            {
+                pathDicToList(ref visited, ref goalVertex, out int tileKey, out int weight);
+                tileKeyWant = tileKey;
+                weightWant = weight;
+            }
+
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+                else
+                {
+                    frontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                }
+            }
+        }
+    }
 
     public void ChangeTileWeights(int startInt, bool playerGraph, int decreaseWeight)
     {
@@ -204,17 +243,38 @@ public class Graph
         }
     }
 
-    //private List<int> pathDicToList(ref Dictionary<int, int> previousDic, ref int goal)
-    //{
-    //    List<int> pathway = new List<int>();
-    //    int current, previous;
-    //    current = goal;
-    //    do
-    //    {
-    //        pathway.Insert(0, current);
-    //        previous = current;
-    //        current = previousDic[current];
-    //    } while (current != previous);
-    //    return pathway;
-    //}
+    private List<int> pathDicToList(ref Dictionary<int, int> previousDic, ref int goal)
+    {
+        List<int> pathway = new List<int>();
+        int current, previous;
+        current = goal;
+        do
+        {
+            pathway.Insert(0, current);
+            previous = current;
+            current = previousDic[current];
+        } while (current != previous);
+        return pathway;
+    }
+
+    private void pathDicToList(ref Dictionary<int, int> previousDic, ref int goal, out int tileKey, out int weight)
+    {
+        Dictionary<int, GameObject> enemyTileDictionary = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
+        List<int> pathway = new List<int>();
+        int current, previous;
+        current = goal;
+
+        weight = 0;
+        tileKey = 0;
+
+        do
+        {
+            weight += enemyTileDictionary[current].gameObject.GetComponent<Tile>().GetTileWeight();
+            pathway.Insert(0, current);
+            previous = current;
+            current = previousDic[current];
+        } while (current != previous);
+        tileKey = pathway[0];
+        //return pathway;
+    }
 }

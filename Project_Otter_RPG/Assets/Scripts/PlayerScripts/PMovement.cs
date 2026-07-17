@@ -67,7 +67,7 @@ public class PMovement : PlayerManager
             {
                 if(potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.UP))
                 {
-                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.DOWN];
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.UP];
                 }
             }
             else if (context.control.name == PlayerManager.InputKeyNames.downArrow.ToString())

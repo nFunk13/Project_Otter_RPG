@@ -136,6 +136,14 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    public void ResetEnemyTileWeight()
+    {
+        foreach (var tile in enemyTileDictionary.Values)
+        {
+            tile.GetComponent<Tile>().SetTileWeight(baseTileWeight);
+        }
+    }
+
     // Gets the dictionary containing the enemy grid tiles
     public Dictionary<int, GameObject> GetEnemyTileDictionary()
     {

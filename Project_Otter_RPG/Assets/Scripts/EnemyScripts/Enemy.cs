@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour
     private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     private float moveTime = 0.25f;
+    private int tileKeyToMoveTo;
     private int enemyActionCount = 0;
 
     private float baseDecisionValue = 10000.0f;
@@ -43,11 +44,13 @@ public class Enemy : MonoBehaviour
 
         moveMultiplier = instanceEnemyData.attackRate;
         attackMultiplier = (1.0f - instanceEnemyData.attackRate);
+
+        StartSpawn();
     }
 
     private void Start()
     {
-        StartSpawn();
+        
     }
 
     // Places the enemy on a random spot on their grid
@@ -83,6 +86,34 @@ public class Enemy : MonoBehaviour
         return (baseDecisionValue - (attackMultiplier * highestWeight.Value));
     }
 
+    public float DetermineMoveWeightModifier()
+    {
+        KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(0, 10000);
+
+        gridManager.ResetEnemyTileWeight();
+        foreach (var enemy in GameManager.GetInstance().GetEnemyList())//gridManager.GetEnemyTileDictionary().Values)
+        {
+            if (enemy != this.gameObject)
+            {
+                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue);
+            }
+        }
+
+        foreach (var enemy in GameManager.GetInstance().GetEnemyList())
+        {
+            if (enemy.gameObject != this.gameObject)
+            {
+                GraphBehavior.GetEnemyMoveWeight(this.enemyTile.Key, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight);
+                if (wantedMove.Value > weight)
+                {
+                    wantedMove = new KeyValuePair<int, int>(tileKey, weight);
+                }
+            }
+        }
+        tileKeyToMoveTo = wantedMove.Key;
+        return baseDecisionValue - (moveMultiplier * wantedMove.Value);
+    }
+
     public void MoveEnemyOnGrid()
     {
         if (enemyActionCount > 0)
@@ -91,37 +122,37 @@ public class Enemy : MonoBehaviour
             Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
 
             // Dictionary of potentialSpots for the enemy to move to
-            int enemyKey = enemyTile.Key;
+            //int enemyKey = enemyTile.Key;
 
-            // List of potential keys
-            List<int> potentialKeys = new List<int>();
-            potentialKeys.Add(enemyKey - gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey + gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey - 1);
-            potentialKeys.Add(enemyKey + 1);
+            //// List of potential keys
+            //List<int> potentialKeys = new List<int>();
+            //potentialKeys.Add(enemyKey - gridManager.GetEnemyGridWidth());
+            //potentialKeys.Add(enemyKey + gridManager.GetEnemyGridWidth());
+            //potentialKeys.Add(enemyKey - 1);
+            //potentialKeys.Add(enemyKey + 1);
 
-            // Checks to see if any of the potential keys are out of scope
-            for (int i = potentialKeys.Count - 1; i >= 0; i--)
-            {
-                if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
-                {
-                    potentialKeys.Remove(potentialKeys[i]);
-                }
-            }
+            //// Checks to see if any of the potential keys are out of scope
+            //for (int i = potentialKeys.Count - 1; i >= 0; i--)
+            //{
+            //    if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
+            //    {
+            //        potentialKeys.Remove(potentialKeys[i]);
+            //    }
+            //}
 
-            // Checks to see if the current enemy tile is in the top or bottom row and removes the key forward or back one respectively
-            if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
-            {
-                potentialKeys.Remove(enemyKey + 1);
-            }
-            else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
-            {
-                potentialKeys.Remove(enemyKey - 1);
-            }
+            //// Checks to see if the current enemy tile is in the top or bottom row and removes the key forward or back one respectively
+            //if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
+            //{
+            //    potentialKeys.Remove(enemyKey + 1);
+            //}
+            //else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
+            //{
+            //    potentialKeys.Remove(enemyKey - 1);
+            //}
 
-            // Picks a random potential key and tries to get the gameobject tied to it
-            int randomNumber = Random.Range(0, potentialKeys.Count);
-            enemyTiles.TryGetValue(potentialKeys[randomNumber], out GameObject desiredTile);
+            //// Picks a random potential key and tries to get the gameobject tied to it
+            //int randomNumber = Random.Range(0, potentialKeys.Count);
+            enemyTiles.TryGetValue(tileKeyToMoveTo, out GameObject desiredTile);
             
             // Moves the enemy object to the desired tile
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
@@ -130,7 +161,7 @@ public class Enemy : MonoBehaviour
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-            enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
+            enemyTile = new KeyValuePair<int, GameObject>(tileKeyToMoveTo, desiredTile);
         }
     }
 
@@ -232,5 +263,10 @@ public class Enemy : MonoBehaviour
     public List<GameManager.ActionTypes> GetEnemyActionTypes()
     {
         return enemyActionTypes;
+    }
+
+    public KeyValuePair<int, GameObject> GetEnemyTileData()
+    {
+        return enemyTile;
     }
 }
