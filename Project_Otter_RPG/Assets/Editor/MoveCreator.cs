@@ -39,8 +39,6 @@ public class MoveCreator : EditorWindow
         {
             CreateMove();
         }
-
-        //moveData = EditorGUILayout.ObjectField("MoveData", moveData, typeof(MoveData), false) as MoveData;
     }
 
     private void AddKeyToTileList(int key)
