@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue);
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue, ref this.tileKeyToMoveTo);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
@@ -95,7 +95,7 @@ public class Enemy : MonoBehaviour
         {
             if (enemy != this.gameObject)
             {
-                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue);
+                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue, ref tileKeyToMoveTo);
             }
         }
 
@@ -121,37 +121,6 @@ public class Enemy : MonoBehaviour
             // Dictionary of enemy Tiles
             Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
 
-            // Dictionary of potentialSpots for the enemy to move to
-            //int enemyKey = enemyTile.Key;
-
-            //// List of potential keys
-            //List<int> potentialKeys = new List<int>();
-            //potentialKeys.Add(enemyKey - gridManager.GetEnemyGridWidth());
-            //potentialKeys.Add(enemyKey + gridManager.GetEnemyGridWidth());
-            //potentialKeys.Add(enemyKey - 1);
-            //potentialKeys.Add(enemyKey + 1);
-
-            //// Checks to see if any of the potential keys are out of scope
-            //for (int i = potentialKeys.Count - 1; i >= 0; i--)
-            //{
-            //    if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
-            //    {
-            //        potentialKeys.Remove(potentialKeys[i]);
-            //    }
-            //}
-
-            //// Checks to see if the current enemy tile is in the top or bottom row and removes the key forward or back one respectively
-            //if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
-            //{
-            //    potentialKeys.Remove(enemyKey + 1);
-            //}
-            //else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
-            //{
-            //    potentialKeys.Remove(enemyKey - 1);
-            //}
-
-            //// Picks a random potential key and tries to get the gameobject tied to it
-            //int randomNumber = Random.Range(0, potentialKeys.Count);
             enemyTiles.TryGetValue(tileKeyToMoveTo, out GameObject desiredTile);
             
             // Moves the enemy object to the desired tile
@@ -173,7 +142,6 @@ public class Enemy : MonoBehaviour
 
             if (attackTiles.Count == 0)
             {
-                //SetChosenMove();
                 foreach (var key in chosenMove[0].tileKeys)
                 {
                     GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key + tileAttackAddition];
@@ -269,5 +237,10 @@ public class Enemy : MonoBehaviour
     public KeyValuePair<int, GameObject> GetEnemyTileData()
     {
         return enemyTile;
+    }
+
+    public int GetTileKeyToMoveTo()
+    {
+        return tileKeyToMoveTo;
     }
 }

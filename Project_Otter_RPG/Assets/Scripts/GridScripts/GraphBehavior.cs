@@ -80,7 +80,7 @@ public class GraphBehavior : MonoBehaviour
         }
     }
 
-    public static void ChangeWeights(int start, bool playerGraph, int weight, int decreaseWeight)
+    public static void ChangeWeights(int start, bool playerGraph, int weight, int decreaseWeight, ref int moveTile)
     {
         if (playerGraph)
         {
@@ -90,7 +90,7 @@ public class GraphBehavior : MonoBehaviour
         else
         {
             ConnectEnemyTiles();
-            enemyTileConnection.ChangeTileWeights(start, playerGraph, weight, decreaseWeight);
+            enemyTileConnection.ChangeTileWeights(start, playerGraph, weight, decreaseWeight, ref moveTile);
         }
     }
 
@@ -103,6 +103,6 @@ public class GraphBehavior : MonoBehaviour
     public static void GetEnemyMoveWeight(int startIndex, int endIndex, out int tileKey, out int weight, Enemy enemyScript)
     {
         ConnectEnemyTiles();
-        enemyTileConnection.BFS(startIndex, endIndex, out tileKey, out weight, enemyScript);
+        enemyTileConnection.BFS(startIndex, enemyScript.GetTileKeyToMoveTo(), out tileKey, out weight, enemyScript);
     }
 }

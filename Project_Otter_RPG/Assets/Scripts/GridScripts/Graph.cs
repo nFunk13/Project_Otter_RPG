@@ -139,12 +139,12 @@ public class Graph
                     visited[neighbor] = current;
                 }
             }
-            PlayerWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight);
+            ChangeWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight);
         }
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
 
-    public void ChangeTileWeights(int startInt, bool playerGraph, int desiredWeight, int decreaseWeight)
+    public void ChangeTileWeights(int startInt, bool playerGraph, int desiredWeight, int decreaseWeight, ref int moveTile)
     {
         Dictionary<int, int> visited = new Dictionary<int, int>();
         visited[startInt] = startInt;
@@ -165,6 +165,8 @@ public class Graph
                 GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weightValue * 2);
             }
 
+            moveTile = current;
+
             var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
 
             foreach (var neighbor in neighbors)
@@ -179,12 +181,12 @@ public class Graph
                     visited[neighbor] = current;
                 }
             }
-            PlayerWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight);
+            ChangeWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight, ref moveTile);
         }
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
 
-    private void PlayerWeightHelpFunction(int weight, ref Queue<int> oldFrontier, ref Dictionary<int, int> visited, bool playerGraph, int weightDecreaseValue)
+    private void ChangeWeightHelpFunction(int weight, ref Queue<int> oldFrontier, ref Dictionary<int, int> visited, bool playerGraph, int weightDecreaseValue)
     {
         weight -= weightDecreaseValue;
         Queue<int> newFrontier = new Queue<int>();
@@ -218,7 +220,49 @@ public class Graph
             }
         }
         if (newFrontier.Count > 0)
-            PlayerWeightHelpFunction(weight, ref newFrontier, ref visited, playerGraph, weightDecreaseValue);
+            ChangeWeightHelpFunction(weight, ref newFrontier, ref visited, playerGraph, weightDecreaseValue);
+    }
+
+    private void ChangeWeightHelpFunction(int weight, ref Queue<int> oldFrontier, ref Dictionary<int, int> visited, bool playerGraph, int weightDecreaseValue, ref int tileToMoveTo)
+    {
+        weight -= weightDecreaseValue;
+        Queue<int> newFrontier = new Queue<int>();
+
+        while (oldFrontier.Count > 0)
+        {
+            int current = oldFrontier.Dequeue();
+
+            if (playerGraph)
+            {
+                GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weight);
+            }
+            else
+            {
+                GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weight);
+            }
+
+            if (GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[tileToMoveTo].GetComponent<Tile>().GetTileWeight() > GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[current].GetComponent<Tile>().GetTileWeight())
+            {
+                tileToMoveTo = current;
+            }
+
+            var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
+
+            foreach (var neighbor in neighbors)
+            {
+                if (visited.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+                else
+                {
+                    newFrontier.Enqueue(neighbor);
+                    visited[neighbor] = current;
+                }
+            }
+        }
+        if (newFrontier.Count > 0)
+            ChangeWeightHelpFunction(weight, ref newFrontier, ref visited, playerGraph, weightDecreaseValue, ref tileToMoveTo);
     }
 
     public void enemyAttackDecision(int startIndex, int endIndex, List<int> attackTiles, out int totalWeight, out int tileAddition)

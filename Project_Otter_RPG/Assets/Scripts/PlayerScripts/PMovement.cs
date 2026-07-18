@@ -91,7 +91,6 @@ public class PMovement : PlayerManager
                     chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.LEFT];
                 }
             }
-            Debug.Log("CHOSEN MOVE LOCATION: " + chosenMoveLocation);
         }
     }
 
@@ -121,8 +120,23 @@ public class PMovement : PlayerManager
                 // Adds the potential keys to a list of integers
                 List<int> potentialKeys = new List<int>();
                 potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
-                potentialKeys.Add(playerKey - 1);
-                potentialKeys.Add(playerKey + 1);
+
+                if ((playerTile.Key - 1) % 4 != 0)
+                {
+                    potentialKeys.Add(playerKey - 1);
+                }
+                else
+                {
+                    potentialKeys.Add(0);
+                }
+                if (playerTile.Key % 4 != 0)
+                {
+                    potentialKeys.Add(playerKey + 1);
+                }
+                else
+                {
+                    potentialKeys.Add(0);
+                }
                 potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
 
                 // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
