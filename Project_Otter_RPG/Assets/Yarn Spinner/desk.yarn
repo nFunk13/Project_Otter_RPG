@@ -1,0 +1,120 @@
+
+title: desk
+tags: 
+position: -231,-105
+---
+
+<<declare $noncurious = 0>>
+<<declare $searched = false>>
+
+<<if $searched == true>>
+    <<jump searchedDesk>>
+<<endif>>
+It's your desk. Covered in ink, paint, and endless scratches.
+Look inside?
+// -------------------------------------------------------------------------
+    ->Yes
+        <<if $noncurious == 1>>
+            Your noncuriosity restrains you from the act of desk opening.
+            Repent?
+            ->Yes
+                <<set $noncurious = 0>>
+                Your prayers are heard, and the power of desk opening is returned to you.
+                Look inside?
+                ->Yes
+                    <<jump searchStart>>
+                ->Yes
+                    <<jump searchStart>>
+            ->Sin
+                <<set $noncurious = 2>>
+                You carve another mark into the desk with your claw.
+                Somewhere, you have angered something.
+                There will be no desks today.
+                <<if $noncurious == 2>>
+                    You have forsaken a powerful privilege.
+                <<endif>>
+        <<endif>>
+        <<jump searchStart>>
+// -------------------------------------------------------------------------
+    ->No
+        <<set $noncurious = 1>>
+        You step away from the desk, declaring yourself as a non-curious individual.
+===
+
+
+
+
+title: searchStart
+position: 142,462
+---
+You choose to walk down memory lane.
+You open up the desk, and see\:
+Several bottles of different colored inks, used for your artistic pursuits.
+A suspiciously old Whiskerbar, half-eaten.
+A homemade thumb piano from your grandmother.
+Various loose papers, worn on all edges.
+A pocket mirror, encased in red cloth.
+...and some other stuff.
+<<jump searchOptions>>
+<<set $searched = true>>
+===
+
+title: searchOptions
+position: 16,16
+---
+// -------------------------------------------------------------------------
+    -> Ink bottles
+        Bottles of every color, including black, red, blue, and that's it really. 
+        You think ink is the coolest form of artistic expression. Everyone can see something different in it.
+        You remember painting a sick ass tree down by the river, and your mom thought it was a wet bird.
+        Some things may be more objective than others.
+        <<jump searchOptions>>
+// -------------------------------------------------------------------------
+    -> Questionable Whiskerbar
+        A wonderful combination of fish, peanut butter, and molasses.
+        People usually only eat half, because their mouth is glued shut after the first bite.
+        Your teeth have never forgiven you. Your stomach was quite happy though.
+        You leave the bar to marinate. //cool text effect on marinate
+        <<jump searchOptions>>
+// -------------------------------------------------------------------------
+    -> Piano for Thumbs
+        Made out of a piece of driftwood and some tender metal. Cracked at the edge.
+        You think your grandmother got it for you in an attempt to encourage a sense of musicality.
+        You think a guitar or flute would've been cooler.
+        Or maybe a vibraphone...
+        <<jump searchOptions>>
+// -------------------------------------------------------------------------
+    -> Papers
+        Old mail, birthday cards, the errant bad drawing.
+        Sometimes you use them as palettes for your ink.
+        You used to use your desk for that, but started losing track of your black, red, and blue possesions.
+        Oh desk, the great devourer of pens and markers alike.
+        <<jump searchOptions>>
+// -------------------------------------------------------------------------
+    -> Mirror 
+        You unwrap the mirror and see yourself.
+        Harte, an Otter, 18. An artist of some sort. Restless.
+        You like fish and rebellious music.
+        You don't think you would ever rebel against much, though. 
+        Your whiskers are freshly whisked.
+        Your tail is freshly a tail.
+        Everything in its right place.
+        <<jump searchOptions>>
+// -------------------------------------------------------------------------
+    -> Stop Looking
+        You close the desk, having utilized your curiosity. 
+===
+
+title: searchedDesk
+tags: 
+position: 12,237
+---
+It's your desk, again.
+Reminisce?
+
+    -> Yes
+        <<jump searchStart>>
+
+    -> No 
+        Curiosity killed the cat.
+===
