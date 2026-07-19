@@ -84,17 +84,8 @@ public class GameManager : MonoBehaviour
             GameObject enemy = Instantiate(enemyPrefab, new Vector2(0, 0), Quaternion.identity, GameObject.Find("Attack_Canvas").gameObject.transform);
             enemyList.Add(enemy.GetComponent<Enemy>());
         }
-       
 
-        foreach (var enemy in enemyList)
-        {
-            if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
-            {
-                int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
-                enemy.SetEnemyActionTypes((ActionTypes)randomAction);
-                enemy.visualizeAttack();
-            }
-        }
+        SetEnemyAction();
     }
 
     public void VisualizeEnemyAttacks()
@@ -143,17 +134,34 @@ public class GameManager : MonoBehaviour
             }
             if (shouldBePlayersTurn)
             {
-                foreach (var enemy in enemyList)
-                {
-                    if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
-                    {
-                        int randomAction = UnityEngine.Random.Range((int)ActionTypes.MOVE, ((int)ActionTypes.ATTACK + 1));
-                        enemy.SetEnemyActionTypes((ActionTypes)randomAction);
-                        enemy.visualizeAttack();
-                    }
-                }
+                SetEnemyAction();
                 playersTurn = true;
                 playerMovement.SetPlayerActionCount(playerCombatActions);
+                ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
+                buttonManager.ShowUIMenu(true);
+            }
+        }
+    }
+
+    public void SetEnemyAction()
+    {
+        foreach (var enemy in enemyList)
+        {
+            if (enemy.GetEnemyActionTypes().Count != enemyCombatActions)
+            {
+                float attackWeight = enemy.DetermineAttackWeightModifier();
+                float moveWeight = enemy.DetermineMoveWeightModifier();
+                ActionTypes enemyAction = ActionTypes.NO_ACTION;
+                if (attackWeight > moveWeight)
+                {
+                    enemyAction = ActionTypes.ATTACK;
+                }
+                else if (moveWeight > attackWeight)
+                {
+                    enemyAction = ActionTypes.MOVE;
+                }
+                enemy.SetEnemyActionTypes(enemyAction);
+                enemy.visualizeAttack();
             }
         }
     }
@@ -166,17 +174,10 @@ public class GameManager : MonoBehaviour
         // Checks to make sure list is not empty
         if (canPerformActions && playersTurn)
         {
-            //bool actionRange = (playerMovement.getPlayerActionCount() <= 2 && playerMovement.getPlayerActionCount() > 0); // Range for acceptable actions
             // What to do with the movement action
             if (playerActionsTypes[0] == ActionTypes.MOVE /*&& actionRange*/)
             {
                 playerMovement.MovePlayer();
-                if (playerActionsTypes.Count == 0)
-                {
-                    canPerformActions = false;
-                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
-                    buttonManager.ShowUIMenu(true);
-                }
             }
             // What to do with the attack action
             else if (playerActionsTypes[0] == ActionTypes.ATTACK /*&& actionRange*/)
@@ -196,13 +197,11 @@ public class GameManager : MonoBehaviour
                         SceneManager.LoadScene("EndScene");
                     }
                 }
-                if (playerActionsTypes.Count == 0)
-                {
-                    canPerformActions = false;
-                    ButtonManager buttonManager = GameObject.Find("Attack_Canvas").GetComponent<ButtonManager>();
-                    buttonManager.ShowUIMenu(true);
-                }
             }
+        }
+        if (GetPlayerActionTypesList().Count == 0)
+        {
+            GameManager.GetInstance().SetCanPerformActions(false);
         }
     }
 

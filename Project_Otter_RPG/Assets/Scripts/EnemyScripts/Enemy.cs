@@ -17,14 +17,20 @@ public class Enemy : MonoBehaviour
     private KeyValuePair<int, GameObject> enemyTile;
 
     private List<GameObject> attackTiles = new List<GameObject>();
-    [SerializeField] private List<MoveData> moves = new List<MoveData>();
+    private List<MoveData> moves = new List<MoveData>();
     private List<MoveData> chosenMove = new List<MoveData>();
     private bool attackVisualized = false;
+    private int tileAttackAddition;
 
     private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     private float moveTime = 0.25f;
+    private int tileKeyToMoveTo;
     private int enemyActionCount = 0;
+
+    private float baseDecisionValue = 10000.0f;
+    private float moveMultiplier;
+    private float attackMultiplier;
 
     private void Awake()
     {
@@ -33,11 +39,18 @@ public class Enemy : MonoBehaviour
         instanceEnemyData = Instantiate(baseEnemyData);
 
         instanceEnemyData.enemyCurrentHealth = instanceEnemyData.enemyMaxHealth;
+
+        moves = instanceEnemyData.moveList;
+
+        moveMultiplier = instanceEnemyData.attackRate;
+        attackMultiplier = (1.0f - instanceEnemyData.attackRate);
+
+        StartSpawn();
     }
 
     private void Start()
     {
-        StartSpawn();
+        
     }
 
     // Places the enemy on a random spot on their grid
@@ -53,7 +66,52 @@ public class Enemy : MonoBehaviour
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue, ref this.tileKeyToMoveTo);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
+    }
+
+    public float DetermineAttackWeightModifier()
+    {
+        KeyValuePair<MoveData, int> highestWeight = new KeyValuePair<MoveData, int>();
+        foreach (var move in moves)
+        {
+            GraphBehavior.GetEnemyAttackWeight(move.centerTileKey, (16 - (move.rightMostTileKey - move.leftMostTileKey)), move.tileKeys, out int weight, out int addToTile);
+            if (highestWeight.Key != move)
+            {
+                highestWeight = new KeyValuePair<MoveData, int>(move, weight);
+                tileAttackAddition = addToTile;
+            }
+        }
+        chosenMove.Add(highestWeight.Key);
+        return (baseDecisionValue - (attackMultiplier * highestWeight.Value));
+    }
+
+    public float DetermineMoveWeightModifier()
+    {
+        KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(0, 10000);
+
+        gridManager.ResetEnemyTileWeight();
+        foreach (var enemy in GameManager.GetInstance().GetEnemyList())
+        {
+            if (enemy != this.gameObject)
+            {
+                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue, ref tileKeyToMoveTo);
+            }
+        }
+
+        foreach (var enemy in GameManager.GetInstance().GetEnemyList())
+        {
+            if (enemy.gameObject != this.gameObject)
+            {
+                GraphBehavior.GetEnemyMoveWeight(this.enemyTile.Key, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
+                if (wantedMove.Value > weight)
+                {
+                    wantedMove = new KeyValuePair<int, int>(tileKey, weight);
+                }
+            }
+        }
+        tileKeyToMoveTo = wantedMove.Key;
+        return baseDecisionValue - (moveMultiplier * wantedMove.Value);
     }
 
     public void MoveEnemyOnGrid()
@@ -63,38 +121,7 @@ public class Enemy : MonoBehaviour
             // Dictionary of enemy Tiles
             Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
 
-            // Dictionary of potentialSpots for the enemy to move to
-            int enemyKey = enemyTile.Key;
-
-            // List of potential keys
-            List<int> potentialKeys = new List<int>();
-            potentialKeys.Add(enemyKey - gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey + gridManager.GetEnemyGridWidth());
-            potentialKeys.Add(enemyKey - 1);
-            potentialKeys.Add(enemyKey + 1);
-
-            // Checks to see if any of the potential keys are out of scope
-            for (int i = potentialKeys.Count - 1; i >= 0; i--)
-            {
-                if (potentialKeys[i] < 1 || potentialKeys[i] > 16)
-                {
-                    potentialKeys.Remove(potentialKeys[i]);
-                }
-            }
-
-            // Checks to see if the current enemy tile is in the top or bottom row and removes the key forward or back one respectively
-            if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 0)
-            {
-                potentialKeys.Remove(enemyKey + 1);
-            }
-            else if (enemyTile.Key % gridManager.GetEnemyGridWidth() == 1)
-            {
-                potentialKeys.Remove(enemyKey - 1);
-            }
-
-            // Picks a random potential key and tries to get the gameobject tied to it
-            int randomNumber = Random.Range(0, potentialKeys.Count);
-            enemyTiles.TryGetValue(potentialKeys[randomNumber], out GameObject desiredTile);
+            enemyTiles.TryGetValue(tileKeyToMoveTo, out GameObject desiredTile);
             
             // Moves the enemy object to the desired tile
             Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
@@ -103,7 +130,8 @@ public class Enemy : MonoBehaviour
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
             desiredTile.GetComponent<Tile>().SetCharacterOn(true);
             desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-            enemyTile = new KeyValuePair<int, GameObject>(potentialKeys[randomNumber], desiredTile);
+            enemyTile = new KeyValuePair<int, GameObject>(tileKeyToMoveTo, desiredTile);
+            tileKeyToMoveTo = 0;
         }
     }
 
@@ -114,64 +142,16 @@ public class Enemy : MonoBehaviour
 
             if (attackTiles.Count == 0)
             {
-                SetChosenMove();
                 foreach (var key in chosenMove[0].tileKeys)
                 {
-                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key];
+                    GameObject tile = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[key + tileAttackAddition];
                     attackTiles.Add(tile);
                 }
             }
 
-            // Sets up variables for setting the correct colors
-            GridManager gridManager = GameManager.GetInstance().GetGridManager();
-            int keyAddition = Random.Range(1, gridManager.GetPlayerTileDictionary().Count); // Added value to the base tile index
-
-            if (keyAddition > gridManager.GetPlayerTileDictionary().Count)
+            foreach (var tile in attackTiles)
             {
-                keyAddition = gridManager.GetPlayerTileDictionary().Count;
-            }
-            if (keyAddition < chosenMove[0].centerTileKey)
-            {
-                keyAddition = -(chosenMove[0].centerTileKey - keyAddition);
-            }
-            if (keyAddition > 0)
-            {
-                keyAddition -= 1;
-            }
-
-            // Gets the tiles based on the mouse's position
-            if (chosenMove[0].tileKeys[0] >= 1 && keyAddition <= gridManager.GetPlayerTileDictionary().Count)
-            {
-                attackTiles.Clear();
-
-                // Resets tile color to red
-                //GameManager.GetInstance().ResetPlayerGrid();
-
-                // Sets the desired tiles to hotpink for visualization purposes
-                foreach (var tileKey in gridManager.GetPlayerTileDictionary().Keys)
-                {
-                    foreach (var moveKey in chosenMove[0].tileKeys)
-                    {
-                        if (chosenMove[0].rightMostTileKey + keyAddition > 16)
-                        {
-                            keyAddition -= chosenMove[0].rightMostTileKey - chosenMove[0].centerTileKey;
-                        }
-                        else if (chosenMove[0].leftMostTileKey + keyAddition <= 0)
-                        {
-                            keyAddition = keyAddition - chosenMove[0].centerTileKey;
-                        }
-                        else if ((keyAddition + 1) % gridManager.GetPlayerGridWidth() == 0 && chosenMove[0].tileSpillage && keyAddition != 0)
-                        {
-                            keyAddition--;
-                        }
-
-                        attackTiles.Add(gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)]);
-                        gridManager.GetPlayerTileDictionary()[(moveKey + keyAddition)].gameObject.GetComponent<Image>().color = Color.orange;
-                        continue;
-                    }
-                    break;
-                }
-                attackVisualized = true;
+                tile.gameObject.GetComponent<Image>().color = Color.orange;
             }
         }
     }
@@ -252,5 +232,15 @@ public class Enemy : MonoBehaviour
     public List<GameManager.ActionTypes> GetEnemyActionTypes()
     {
         return enemyActionTypes;
+    }
+
+    public KeyValuePair<int, GameObject> GetEnemyTileData()
+    {
+        return enemyTile;
+    }
+
+    public int GetTileKeyToMoveTo()
+    {
+        return tileKeyToMoveTo;
     }
 }

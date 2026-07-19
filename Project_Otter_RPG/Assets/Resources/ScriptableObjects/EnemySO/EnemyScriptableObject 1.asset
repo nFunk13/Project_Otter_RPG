@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5dc0d30e502ac01429da4e0da3c0c31c, type: 3}
-  m_Name: EnemyScriptableObject
+  m_Name: EnemyScriptableObject 1
   m_EditorClassIdentifier: Assembly-CSharp::EnemyScriptableObject
   enemyName: Selina
   enemyMaxHealth: 20
@@ -19,5 +19,5 @@ MonoBehaviour:
   moveList:
   - {fileID: 11400000, guid: 6c8fc9d1595f3aa4e8d3bfc5bc763469, type: 2}
   - {fileID: 11400000, guid: ed302fe6fd680ac49b4cdb4668b2534e, type: 2}
-  weight: 5
-  weightDecreaseValue: 1
+  weight: 0
+  weightDecreaseValue: 2

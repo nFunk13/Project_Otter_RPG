@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 public class PMovement : PlayerManager
@@ -65,7 +67,7 @@ public class PMovement : PlayerManager
             {
                 if(potentialMoveTiles.ContainsKey((int)DirectionToMoveTile.UP))
                 {
-                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.DOWN];
+                    chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.UP];
                 }
             }
             else if (context.control.name == PlayerManager.InputKeyNames.downArrow.ToString())
@@ -89,28 +91,21 @@ public class PMovement : PlayerManager
                     chosenMoveLocation = potentialMoveTiles[(int)DirectionToMoveTile.LEFT];
                 }
             }
-            Debug.Log("CHOSEN MOVE LOCATION: " + chosenMoveLocation);
         }
     }
 
     private void StartSpawn()
     {
         // Places the player on a random tile
-        int randomNumber = Random.Range(((gridManager.GetEnemyGridWidth() * gridManager.GetEnemyGridHeight())), gridManager.GetPlayerTileDictionary().Count);
-        Vector3 targetPosition;
-        GetScreenPosOfTile(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber].gameObject.GetComponent<RectTransform>().position, out targetPosition);
+        int randomNumber = Random.Range(1, gridManager.GetPlayerTileDictionary().Count);
+        Vector3 targetPosition = gridManager.GetPlayerTileDictionary()[randomNumber].gameObject.transform.position;
         GameObject startSpawn = GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[randomNumber];
         this.gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         playerTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn.gameObject);
-        
-    }
 
-    private void GetScreenPosOfTile(Vector3 worldPos, out Vector3 finalScreenPos)
-    {
-        Vector3 uiWorldPoint = worldPos;
-        finalScreenPos = RectTransformUtility.WorldToScreenPoint(null, uiWorldPoint);
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, true), true, 1);
     }
 
     public void VisualizeMovement()
@@ -125,8 +120,23 @@ public class PMovement : PlayerManager
                 // Adds the potential keys to a list of integers
                 List<int> potentialKeys = new List<int>();
                 potentialKeys.Add(playerKey - gridManager.GetPlayerGridWidth());
-                potentialKeys.Add(playerKey - 1);
-                potentialKeys.Add(playerKey + 1);
+
+                if ((playerTile.Key - 1) % 4 != 0)
+                {
+                    potentialKeys.Add(playerKey - 1);
+                }
+                else
+                {
+                    potentialKeys.Add(0);
+                }
+                if (playerTile.Key % 4 != 0)
+                {
+                    potentialKeys.Add(playerKey + 1);
+                }
+                else
+                {
+                    potentialKeys.Add(0);
+                }
                 potentialKeys.Add(playerKey + gridManager.GetPlayerGridWidth());
 
                 // Checks to see if each potential key is valid and adds the tile to the dictionary if the key exists
@@ -159,6 +169,9 @@ public class PMovement : PlayerManager
         playerTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOn(true);
         chosenMoveLocation.gameObject.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+
+        gridManager.ResetPlayerTileWeight();
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(chosenMoveLocation.gameObject, true), true, 1);
 
         playerTile = new KeyValuePair<int, GameObject>(GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().FirstOrDefault(x => x.Value == chosenMoveLocation.gameObject).Key, chosenMoveLocation.gameObject);
         playerActionCount--;

@@ -1,7 +1,7 @@
 
 title: desk
-tags: 
-position: -231,-105
+
+
 ---
 
 <<declare $noncurious = 0>>
@@ -40,9 +40,6 @@ Look inside?
         <<set $noncurious = 1>>
         You step away from the desk, declaring yourself as a non-curious individual.
 ===
-
-
-
 
 title: searchStart
 position: 142,462
