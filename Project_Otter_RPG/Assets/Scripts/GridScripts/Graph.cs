@@ -274,10 +274,15 @@ public class Graph
 
         for (int i = startIndex; i <= endIndex; i++)
         {
-            for (int j = 1; j <= attackTiles.Count; j++)
+            foreach (int tileKey in attackTiles)
             {
-                tempWeight += GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[j + addition].gameObject.GetComponent<Tile>().GetTileWeight();
+                GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().TryGetValue(tileKey + addition, out GameObject tileObj);//[tileKey/* + addition*/].gameObject.GetComponent<Tile>().GetTileWeight();
+                tempWeight += tileObj.GetComponent<Tile>().GetTileWeight();
             }
+            //for (int j = 1; j <= attackTiles.Count; j++)
+            //{
+            //    tempWeight += GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[i/* + addition*/].gameObject.GetComponent<Tile>().GetTileWeight();
+            //}
             if (tempWeight > totalWeight)
             {
                 totalWeight = tempWeight;
