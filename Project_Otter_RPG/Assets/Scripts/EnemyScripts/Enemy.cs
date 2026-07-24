@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Google.Protobuf.WellKnownTypes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ public class Enemy : MonoBehaviour
     private KeyValuePair<int, GameObject> enemyTile;
 
     private List<GameObject> attackTiles = new List<GameObject>();
+    private List<int> tilesToMoveToo = new List<int>();
     private List<MoveData> moves = new List<MoveData>();
     private List<MoveData> chosenMove = new List<MoveData>();
     private bool attackVisualized = false;
@@ -88,9 +90,29 @@ public class Enemy : MonoBehaviour
 
     public float DetermineMoveWeightModifier()
     {
+        tilesToMoveToo.Clear();
+        Dictionary<int, GameObject> enemyGrid = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
         KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(0, 10000);
 
+        if (enemyGrid.TryGetValue(enemyTile.Key - 4, out GameObject tileObjectLeft))
+        {
+            tilesToMoveToo.Add(enemyTile.Key - 4);
+        }
+        if (/*enemyGrid.TryGetValue(enemyTile.Key - 1, out GameObject tileObjectDown) && */(this.enemyTile.Key - 1) % 4 != 0)
+        {
+            tilesToMoveToo.Add(enemyTile.Key - 1);
+        }
+        if (/*enemyGrid.TryGetValue(enemyTile.Key + 1, out GameObject tileObjectUp) && */(this.enemyTile.Key % 4) != 0)
+        {
+            tilesToMoveToo.Add(enemyTile.Key + 1);
+        }
+        if (enemyGrid.TryGetValue(enemyTile.Key - 4, out GameObject tileObjectRight))
+        {
+            tilesToMoveToo.Add(enemyTile.Key + 4);
+        }
+
         gridManager.ResetEnemyTileWeight();
+
         foreach (var enemy in GameManager.GetInstance().GetEnemyList())
         {
             if (enemy != this.gameObject)
@@ -103,10 +125,13 @@ public class Enemy : MonoBehaviour
         {
             if (enemy.gameObject != this.gameObject)
             {
-                GraphBehavior.GetEnemyMoveWeight(this.enemyTile.Key, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
-                if (wantedMove.Value > weight)
+                foreach (var tile in tilesToMoveToo)
                 {
-                    wantedMove = new KeyValuePair<int, int>(tileKey, weight);
+                    GraphBehavior.GetEnemyMoveWeight(tile, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
+                    if (wantedMove.Value > weight)
+                    {
+                        wantedMove = new KeyValuePair<int, int>(tileKey, weight);
+                    }
                 }
             }
         }
