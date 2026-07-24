@@ -92,21 +92,21 @@ public class Enemy : MonoBehaviour
     {
         tilesToMoveToo.Clear();
         Dictionary<int, GameObject> enemyGrid = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
-        KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(0, 10000);
+        KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(1, 10000);
 
         if (enemyGrid.TryGetValue(enemyTile.Key - 4, out GameObject tileObjectLeft))
         {
             tilesToMoveToo.Add(enemyTile.Key - 4);
         }
-        if (/*enemyGrid.TryGetValue(enemyTile.Key - 1, out GameObject tileObjectDown) && */(this.enemyTile.Key - 1) % 4 != 0)
+        if (enemyGrid.TryGetValue(enemyTile.Key - 1, out GameObject tileObjectDown) && (this.enemyTile.Key - 1) % 4 != 0)
         {
             tilesToMoveToo.Add(enemyTile.Key - 1);
         }
-        if (/*enemyGrid.TryGetValue(enemyTile.Key + 1, out GameObject tileObjectUp) && */(this.enemyTile.Key % 4) != 0)
+        if (enemyGrid.TryGetValue(enemyTile.Key + 1, out GameObject tileObjectUp) && (this.enemyTile.Key % 4) != 0)
         {
             tilesToMoveToo.Add(enemyTile.Key + 1);
         }
-        if (enemyGrid.TryGetValue(enemyTile.Key - 4, out GameObject tileObjectRight))
+        if (enemyGrid.TryGetValue(enemyTile.Key + 4, out GameObject tileObjectRight))
         {
             tilesToMoveToo.Add(enemyTile.Key + 4);
         }
@@ -128,7 +128,7 @@ public class Enemy : MonoBehaviour
                 foreach (var tile in tilesToMoveToo)
                 {
                     GraphBehavior.GetEnemyMoveWeight(tile, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
-                    if (wantedMove.Value > weight)
+                    if (wantedMove.Value > weight && !gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().GetCharacterOn() || wantedMove.Key == 0)
                     {
                         wantedMove = new KeyValuePair<int, int>(tileKey, weight);
                     }
