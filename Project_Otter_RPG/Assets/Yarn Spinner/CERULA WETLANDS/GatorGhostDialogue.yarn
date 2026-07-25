@@ -2,52 +2,52 @@ title: GatorGhost
 position: 1,-105
 ---
 ///scene starts out black after Harte gets in the boat
-Ahhh...
-Nuthin' like a good fishin' trip to do some thinkin', eh furball?
+???: Ahhh...
+???: Nuthin' like a good fishin' trip to do some thinkin', eh furball?
 ...
 . . .
-Not very talkative, are ya now? 
+???: Not very talkative, are ya now? 
 //Screen pops back in, Harte is now in the boat with the Gator, who was not there before.
-Ah, well. No matter.
-A good listner's worth a thousan' words.
-An' you look like you're worth 'bout a Chameleon.
-Er, was it a Vermillion?
-My ol' fishin' buddy could take a note from you, hahaw!
-Anyhow, you're on my boat, so y'might'swell stay awhile.
-Name's Tanny. I figure you're not from 'round here.
-Yeap, can smell ya from a mile away, this nose can!
-Gettin som' notes of coffee...fish...rosemary?//slower text
-Yeap, totally foreign.
-Now what's a furball like yerself doin' in these parts?
+???: Ah, well. No matter.
+???: A good listner's worth a thousan' words.
+???: An' you look like you're worth 'bout a Chameleon.
+???: Er, was it a Vermillion?
+???: My ol' fishin' buddy could take a note from you, hahaw!
+???: Anyhow, you're on my boat, so y'might'swell stay awhile.
+Tanny: Name's Tanny. I figure you're not from 'round here.
+Tanny: Yeap, can smell ya from a mile away, this nose can!
+Tanny: Gettin som' notes of coffee...fish...rosemary?//slower text
+Tanny: Yeap, totally foreign.
+Tanny: Now what's a furball like yerself doin' in these parts?
     -> Ran away from home
         <<detour gatorRanAway>>
     -> Got lost
         <<detour gatorGotLost>>
-...Say, how's about you take'a take that ol' fishin' rod and give it a spin?
-If you don't know where y'are in life, fishin's no better cure.
-'sides, y'aint got much else to do.
+Tanny: ...Say, how's about you take'a take that ol' fishin' rod and give it a spin?
+Tanny: If you don't know where y'are in life, fishin's no better cure.
+Tanny: 'sides, y'aint got much else to do.
 //fishing tutorial skipped here, idk how this will be written
-Hahaw! Yer a natural', lil' furball.
-Almost reminds me of...
-Pah, the past is the past.
-No use soakin' in it now.
-You might 'swell keep that dang-old pole. 'Suits ya good.
-Somethin tells me you'll be gettin' a bit more use out 'vit than him.
-...
-Let a tired soul give ya some advice, lil' buddy.
-Once in a blue moon, you'll find yourself starin' into that river.
-All the colors, like one o' them fancy church windows.
-Watchin' the ripples stare back at'cha. 
-Reflections of what might've been, had ya done somethin' diffrent.
-Like you could reach in, 'n pull out the past itself.
-Those ripples might look real enticin'...
-But you gotta know when to look away.
-Can't be catchin' any fish if you're too busy lookin' at ghosts.
-...
-Well, I think our time's just about up, furball.
-Best be goin' now. Ol' Tanny's got some more fishin' to do.
-An' don'cha worry too much about where yer goin' now.
-I think you'll find what yer lookin' for.
+Tanny: Hahaw! Yer a natural', lil' furball.
+Tanny: Almost reminds me of...
+Tanny: Pah, the past is the past.
+Tanny: No use soakin' in it now.
+Tanny: You might 'swell keep that dang-old pole. 'Suits ya good.
+Tanny: Somethin tells me you'll be gettin' a bit more use out 'vit than him.
+Tanny: ...
+Tanny: Let a tired soul give ya some advice, lil' buddy.
+Tanny: Once in a blue moon, you'll find yourself starin' into that river.
+Tanny: All the colors, like one o' them fancy church windows.
+Tanny: Watchin' the ripples stare back at'cha. 
+Tanny: Reflections of what might've been, had ya done somethin' diffrent.
+Tanny: Like you could reach in, 'n pull out the past itself.
+Tanny: Those ripples might look real enticin'...
+Tanny: But you gotta know when to look away.
+Tanny: Can't be catchin' any fish if you're too busy lookin' at ghosts.
+Tanny: ...
+Tanny: Well, I think our time's just about up, furball.
+Tanny: Best be goin' now. Ol' Tanny's got some more fishin' to do.
+Tanny: An' don'cha worry too much about where yer goin' now.
+Tanny: I think you'll find what yer lookin' for.
 
 //advice 
 ===
@@ -56,22 +56,22 @@ I think you'll find what yer lookin' for.
 title: gatorRanAway
 position: -238,56
 ---
-Hmm...
-Heard that one before, yes I have.
-Searchin' for somethin' you ain't even know yet.
-Tired've sittin' still, you've just gotta do somethin' to move your legs. 
-Whether it hurts or not.
-I won't pry. I'm sure you got yer reasons, furball.
+Tanny: Hmm...
+Tanny: Heard that one before, yes I have.
+Tanny: Searchin' for somethin' you ain't even know yet.
+Tanny: Tired've sittin' still, you've just gotta do somethin' to move your legs. 
+Tanny: Whether it hurts or not.
+Tanny: I won't pry. I'm sure you got yer reasons, furball.
 ===
 
 title: gatorGotLost
 position: 269,61
 ---
-Well, given ya've decided to hang with an ol' gator like maself,
-ya don't look in much 'a rush to get home!
-Looks to me like you're searchin' for somethin, whether you know hwhat it is or not.
-Now I've heard've a mid-wife crisis, but you don't look older'n a bride on her weddin' day.
-Er, was it a lid-knife crisis? 
-Had me a few o' those myself, dang'ol moonshine... //small text
-Anyhow, I won't pry. I'm sure you got yer reasons, furball.
+Tanny: Well, given ya've decided to hang with an ol' gator like maself,
+Tanny: ya don't look in much 'a rush to get home!
+Tanny: Looks to me like you're searchin' for somethin, whether you know hwhat it is or not.
+Tanny: Now I've heard've a mid-wife crisis, but you don't look older'n a bride on her weddin' day.
+Tanny: Er, was it a lid-knife crisis? 
+Tanny: Had me a few o' those myself, dang'ol moonshine... //small text
+Tanny: Anyhow, I won't pry. I'm sure you got yer reasons, furball.
 ===

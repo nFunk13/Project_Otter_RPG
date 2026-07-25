@@ -8,9 +8,14 @@ position: -137,-33
 <<if $talkbeeRed == true>>
     <<jump beebrotherRedTalked>>
 <<endif>>
-My brother put his hat on mirrored today.
-Now he won't stop talkin' weird.
-I don't know what to do.
-I guess if you can't beat 'em, join 'em.
+Red Bee: My brother put his hat on mirrored today.
+Red Bee: Now he won't stop talkin' weird.
+Red Bee: I don't know what to do.
+Red Bee: I guess if you can't beat 'em, join 'em.
 <<set $talkbeeRed = true>>
+===
+
+title: beebrotherRedTalked
+---
+Red Bee: tuna nut 
 ===
