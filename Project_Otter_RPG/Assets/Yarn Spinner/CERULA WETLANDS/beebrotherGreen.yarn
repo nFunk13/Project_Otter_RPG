@@ -1,0 +1,12 @@
+title: GreenBee
+
+---
+<<declare $talkbeeGreen = false>>
+<<if $talkbeeGreen == true>>
+    <<jump beebrotherGreenTalked>>
+<<endif>>
+.srehtorB eeB eht er'eW
+.tey tuo ti derugif yllaer t'nevah ew tub ,egdirb siht xif ot gniyrt neeb ev'eW
+.SenileF elines emos ekil ereh 'nittis tsuj er'ew woN
+<<set $talkbeeGreen = true>>
+===
