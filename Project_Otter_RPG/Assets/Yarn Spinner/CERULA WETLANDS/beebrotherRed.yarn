@@ -1,0 +1,16 @@
+title: RedBee
+position: -137,-33
+
+
+---
+<<declare $talkbeeRed = false>>
+
+<<if $talkbeeRed == true>>
+    <<jump beebrotherRedTalked>>
+<<endif>>
+My brother put his hat on mirrored today.
+Now he won't stop talkin' weird.
+I don't know what to do.
+I guess if you can't beat 'em, join 'em.
+<<set $talkbeeRed = true>>
+===

@@ -1,0 +1,27 @@
+title: HarteBed
+position: -79,8
+---
+<<declare $hartebedTalked = false>>
+
+<<if $hartebedTalked == true>>
+    <<jump HarteBed2>>
+<<endif>>
+It's your bed. Smells like coffee and fish.
+Your dad built it thinking you'd grow to be much larger.
+It's adorned with the softest of pillows for your weary head.
+You like to bury yourself in them and pretend you're in a fortress. 
+One of your favorite plushes is permanently deformed with hug-shaped dents. 
+The pumpkin plush stares with jealous intent.
+Envious gourds.
+
+
+===
+
+title: HarteBed2
+position: -85,470
+---
+As much as you would like to,
+As much as you would love to,
+You get the feeling you should stay awake today.
+
+===
