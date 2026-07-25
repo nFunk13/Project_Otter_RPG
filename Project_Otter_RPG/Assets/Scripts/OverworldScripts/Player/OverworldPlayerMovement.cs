@@ -43,13 +43,13 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private float verticalVelocity;
 
-    private void OnEnable()
+    private void Start()
     {
         IEM = InputEventManager.Instance;
         if (IEM != null)
         {
-            IEM.onVerticalInputChanged.AddListener(ReadVerticalInput);
-            IEM.onHorizontalInputChanged.AddListener(ReadHorizontalInput);
+            IEM.onVerticalInput.AddListener(ReadVerticalInput);
+            IEM.onHorizontalInput.AddListener(ReadHorizontalInput);
         }
 
         OEM = OverworldEventManager.Instance;
@@ -66,8 +66,8 @@ public class OverworldPlayerMovement : MonoBehaviour
     {
         if (IEM != null)
         {
-            IEM.onVerticalInputChanged.RemoveListener(ReadVerticalInput);
-            IEM.onHorizontalInputChanged.RemoveListener(ReadHorizontalInput);
+            IEM.onVerticalInput.RemoveListener(ReadVerticalInput);
+            IEM.onHorizontalInput.RemoveListener(ReadHorizontalInput);
         }
 
         if(OEM != null)
@@ -91,16 +91,19 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private void Movement()
     {
-        if(IEM != null)
+        if (IEM != null)
         {
-            if(IEM.canInput == false)
+            if (IEM.CanInput == false)
             {
                 verticalInputRaw = 0;
                 horizontalInputRaw = 0;
                 SetPlayerState(PlayerState.IDLE);
+                Debug.LogWarning("Input disabled");
                 return;
             }
         }
+        else
+            Debug.LogWarning("IEM null");
 
         Vector3 camForward = cam.transform.forward; camForward.y = 0; camForward.Normalize();
         Vector3 camRight = cam.transform.right; camRight.y = 0; camRight.Normalize();
