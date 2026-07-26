@@ -91,6 +91,7 @@ public class Enemy : MonoBehaviour
     public float DetermineMoveWeightModifier()
     {
         tilesToMoveToo.Clear();
+        tilesToMoveToo = new List<int>();
         Dictionary<int, GameObject> enemyGrid = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
         KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(1, 10000);
 
@@ -128,7 +129,7 @@ public class Enemy : MonoBehaviour
                 foreach (var tile in tilesToMoveToo)
                 {
                     GraphBehavior.GetEnemyMoveWeight(tile, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
-                    if (wantedMove.Value > weight && !gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().GetCharacterOn() || wantedMove.Key == 0)
+                    if (wantedMove.Value > weight && !gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().GetCharacterOn())
                     {
                         wantedMove = new KeyValuePair<int, int>(tileKey, weight);
                     }
@@ -136,7 +137,10 @@ public class Enemy : MonoBehaviour
             }
         }
         tileKeyToMoveTo = wantedMove.Key;
+        gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().SetCharacterOn(true);
+        gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
         return baseDecisionValue - (moveMultiplier * wantedMove.Value);
+
     }
 
     public void MoveEnemyOnGrid()
@@ -153,8 +157,6 @@ public class Enemy : MonoBehaviour
             transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
-            desiredTile.GetComponent<Tile>().SetCharacterOn(true);
-            desiredTile.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
             enemyTile = new KeyValuePair<int, GameObject>(tileKeyToMoveTo, desiredTile);
             tileKeyToMoveTo = 0;
         }
