@@ -1,10 +1,9 @@
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using static BillboardManager;
 
 public class Interactor : MonoBehaviour
 {
-    [SerializeField] SpriteInstance SI;
+    private InputEventManager IEM;
     [SerializeField] float checkRadius;
 
     [Tooltip("Forward offset from current player position.")]
@@ -14,8 +13,19 @@ public class Interactor : MonoBehaviour
 
     private void Start()
     {
-        //subscribe to interact input event
-        SI = gameObject.GetComponentInChildren<SpriteInstance>();
+        IEM = InputEventManager.Instance;
+        if (IEM != null)
+        {
+            IEM.onInteract.AddListener(InteractableCheck);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (IEM != null)
+        {
+            IEM.onInteract.RemoveListener(InteractableCheck);
+        }
     }
 
     [ContextMenu("InteractableCheck")]
@@ -23,7 +33,8 @@ public class Interactor : MonoBehaviour
     {
         if (checkRadius > 0)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position + (SpriteDirectionToVector3Direction(SI.CurrentDirection) * checkDistance), checkRadius, layerMask);
+            Vector3 checkOrigin = transform.position + transform.forward * checkDistance;
+            Collider[] hitColliders = Physics.OverlapSphere(checkOrigin, checkRadius, layerMask);
             
             if (hitColliders.Length <= 0)
             {
@@ -40,32 +51,19 @@ public class Interactor : MonoBehaviour
                     closest = collider;
             }
 
-            //invoke interact event passing in closest
+            if (closest.GetComponentInParent<Interactable>() is Interactable interactable)
+                interactable.Interact();
+            else
+                Debug.LogWarning($"{closest.name} is on the interactable layer but has no Interactable component");
         }
         else
             Debug.LogWarning("interact radius has to be larger than zero");
     }
 
-    private Vector3 SpriteDirectionToVector3Direction(Direction dir)
-    {
-        switch (dir)
-        {
-            case Direction.NORTH: 
-                return Vector3.forward;
-            case Direction.SOUTH: 
-                return Vector3.back;
-            case Direction.EAST: 
-                return Vector3.right;
-            case Direction.WEST: 
-                return Vector3.left;
-            default: 
-                return Vector3.zero;
-        }
-    }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position + (SpriteDirectionToVector3Direction(SI.CurrentDirection) * checkDistance), checkRadius);
+        Vector3 checkOrigin = transform.position + transform.forward * checkDistance;
+        Gizmos.DrawWireSphere(checkOrigin, checkRadius);
     }
 }

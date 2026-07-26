@@ -39,6 +39,7 @@ public class InputEventManager : MonoBehaviour
         }
         Instance = this;
         actionMap = InputSystem.actions.FindActionMap("Overworld", throwIfNotFound: true);
+        actionMap.Enable();
     }
 
     private void HandleActions(bool bind)

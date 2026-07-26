@@ -27,7 +27,6 @@ public class OverworldPlayerMovement : MonoBehaviour
     [SerializeField] private PlayerState playerState;
 
     [Header("Invalid Direction Check Settings")]
-    [Tooltip("Set this to be about the Controller's capsule radius, plus a small margin (~0.4 - 0.6f).")]
     [SerializeField] private float invalidDirectionCheckMagnitude;
     [SerializeField] private float startingRaycastHeight;
     [SerializeField] private float raycastLength;
@@ -62,7 +61,7 @@ public class OverworldPlayerMovement : MonoBehaviour
         cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
     }
 
-    private void OnDisable() // i stg if i forget to remove listeners properly again in this project im gonna explode
+    private void OnDestroy() // i stg if i forget to remove listeners properly again in this project im gonna explode
     {
         if (IEM != null)
         {
@@ -91,6 +90,8 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private void Movement()
     {
+        if (cam == null) Debug.Log("camera null");
+
         if (IEM != null)
         {
             if (IEM.CanInput == false)
