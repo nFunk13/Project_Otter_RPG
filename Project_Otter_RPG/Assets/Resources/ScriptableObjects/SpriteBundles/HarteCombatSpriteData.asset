@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 495bf785e78ce1f4b9b46e4e0cb6d330, type: 3}
+  m_Name: HarteCombatSpriteData
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteBundleData
+  animations:
+  - frameSets:
+    - frames:
+      - {fileID: -1751681613841451667, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: -2141615253994520346, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: -3655601762182089577, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 1201249449777869863, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 7841550768271311691, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: -5434930579739974402, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 2431024313760943918, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 8372126241352318892, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 8462325113830779001, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 1
+    animOnEnd: 
+    name: Idle_Combat

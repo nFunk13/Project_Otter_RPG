@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
-
 
 public class EnemyCreator : EditorWindow
 {
@@ -29,9 +29,9 @@ public class EnemyCreator : EditorWindow
         GUILayout.Label("Create New Enemy", EditorStyles.boldLabel);
 
         enemyName = EditorGUILayout.TextField("Name of enemy", enemyName);
-        
+
         EditorGUILayout.Space();
-        
+
         enemyHealth = EditorGUILayout.IntField("Health of the enemy", enemyHealth);
 
         EditorGUILayout.Space();
@@ -53,30 +53,30 @@ public class EnemyCreator : EditorWindow
         {
             CreateEnemy();
         }
-    }
+      }
 
-    private void CreateEnemy()
-    {
-        EnemyScriptableObject enemyObj = CreateInstance<EnemyScriptableObject>();
+      private void CreateEnemy()
+      {
+          EnemyScriptableObject enemyObj = CreateInstance<EnemyScriptableObject>();
 
-        enemyObj.enemyName = enemyName;
-        enemyObj.enemyMaxHealth = enemyHealth;
-        enemyObj.attackRate = attackRate;
-        enemyObj.moveList = moveList;
-        enemyObj.weight = weight;
-        enemyObj.weightDecreaseValue = weightDecreaseValue;
+          enemyObj.enemyName = enemyName;
+          enemyObj.enemyMaxHealth = enemyHealth;
+          enemyObj.attackRate = attackRate;
+          enemyObj.moveList = moveList;
+          enemyObj.weight = weight;
+          enemyObj.weightDecreaseValue = weightDecreaseValue;
 
-        string assetName = $"{enemyObj.enemyName}.asset";
-        string folderPath = "Assets/Resources/ScriptableObjects/EnemySO";
-        string fullPath = $"{folderPath}/{assetName}";
+          string assetName = $"{enemyObj.enemyName}.asset";
+          string folderPath = "Assets/Resources/ScriptableObjects/EnemySO";
+          string fullPath = $"{folderPath}/{assetName}";
 
-        AssetDatabase.CreateAsset(enemyObj, fullPath);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-    }
+          AssetDatabase.CreateAsset(enemyObj, fullPath);
+          AssetDatabase.SaveAssets();
+          AssetDatabase.Refresh();
+      }
 
-    private void AddMoveToList()
-    {
-        moveList.Add(moveToAdd);
-    }
+      private void AddMoveToList()
+      {
+          moveList.Add(moveToAdd);
+      }
 }
