@@ -27,7 +27,6 @@ public class OverworldPlayerMovement : MonoBehaviour
     [SerializeField] private PlayerState playerState;
 
     [Header("Invalid Direction Check Settings")]
-    [Tooltip("Set this to be about the Controller's capsule radius, plus a small margin (~0.4 - 0.6f).")]
     [SerializeField] private float invalidDirectionCheckMagnitude;
     [SerializeField] private float startingRaycastHeight;
     [SerializeField] private float raycastLength;
@@ -43,13 +42,13 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private float verticalVelocity;
 
-    private void OnEnable()
+    private void Start()
     {
         IEM = InputEventManager.Instance;
         if (IEM != null)
         {
-            IEM.onVerticalInputChanged.AddListener(ReadVerticalInput);
-            IEM.onHorizontalInputChanged.AddListener(ReadHorizontalInput);
+            IEM.onVerticalInput.AddListener(ReadVerticalInput);
+            IEM.onHorizontalInput.AddListener(ReadHorizontalInput);
         }
 
         OEM = OverworldEventManager.Instance;
@@ -62,12 +61,12 @@ public class OverworldPlayerMovement : MonoBehaviour
         cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
     }
 
-    private void OnDisable() // i stg if i forget to remove listeners properly again in this project im gonna explode
+    private void OnDestroy() // i stg if i forget to remove listeners properly again in this project im gonna explode
     {
         if (IEM != null)
         {
-            IEM.onVerticalInputChanged.RemoveListener(ReadVerticalInput);
-            IEM.onHorizontalInputChanged.RemoveListener(ReadHorizontalInput);
+            IEM.onVerticalInput.RemoveListener(ReadVerticalInput);
+            IEM.onHorizontalInput.RemoveListener(ReadHorizontalInput);
         }
 
         if(OEM != null)
@@ -91,16 +90,21 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private void Movement()
     {
-        if(IEM != null)
+        if (cam == null) Debug.Log("camera null");
+
+        if (IEM != null)
         {
-            if(IEM.canInput == false)
+            if (IEM.CanInput == false)
             {
                 verticalInputRaw = 0;
                 horizontalInputRaw = 0;
                 SetPlayerState(PlayerState.IDLE);
+                Debug.LogWarning("Input disabled");
                 return;
             }
         }
+        else
+            Debug.LogWarning("IEM null");
 
         Vector3 camForward = cam.transform.forward; camForward.y = 0; camForward.Normalize();
         Vector3 camRight = cam.transform.right; camRight.y = 0; camRight.Normalize();

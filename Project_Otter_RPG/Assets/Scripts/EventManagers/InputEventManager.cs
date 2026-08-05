@@ -5,16 +5,29 @@ using UnityEngine.InputSystem;
 public class InputEventManager : MonoBehaviour
 {
     public static InputEventManager Instance { get; private set; } // singleton instance
+    private InputActionMap actionMap;
 
-    [Header("Keyboard")]
-    [SerializeField] private InputAction verticalInput;
-    [SerializeField] private InputAction horizontalInput;
+    [Header("Actions")]
+    [SerializeField] private InputActionReference verticalInput;
+    [SerializeField] private InputActionReference horizontalInput;
+    [SerializeField] private InputActionReference interactInput;
 
     // events
-    [HideInInspector] public UnityEvent<float> onVerticalInputChanged;
-    [HideInInspector] public UnityEvent<float> onHorizontalInputChanged;
+    [HideInInspector] public UnityEvent<float> onVerticalInput;
+    [HideInInspector] public UnityEvent<float> onHorizontalInput;
+    [HideInInspector] public UnityEvent onInteract;
 
-    public bool canInput = true;
+    private bool _canInput = true;
+    public bool CanInput
+    {
+        get { return _canInput; }
+        set
+        {
+            _canInput = value;
+            if (_canInput) actionMap.Enable();
+            else actionMap.Disable();
+        }
+    }
 
     void Awake()
     {
@@ -25,23 +38,45 @@ public class InputEventManager : MonoBehaviour
             return;
         }
         Instance = this;
-
-        // bind input actions to events
-        verticalInput.started += ctx => onVerticalInputChanged.Invoke(verticalInput.ReadValue<float>());
-        horizontalInput.started += ctx => onHorizontalInputChanged.Invoke(horizontalInput.ReadValue<float>());
-        verticalInput.canceled += ctx => onVerticalInputChanged.Invoke(verticalInput.ReadValue<float>());
-        horizontalInput.canceled += ctx => onHorizontalInputChanged.Invoke(horizontalInput.ReadValue<float>());
+        actionMap = InputSystem.actions.FindActionMap("Overworld", throwIfNotFound: true);
+        actionMap.Enable();
     }
+
+    private void HandleActions(bool bind)
+    {
+        if (bind)
+        {
+            horizontalInput.action.performed += HorizontalCTX;
+            horizontalInput.action.canceled += HorizontalCTX;
+
+            verticalInput.action.performed += VerticalCTX;
+            verticalInput.action.canceled += VerticalCTX;
+
+            interactInput.action.performed += InteractCTX;
+        }
+        else
+        {
+            horizontalInput.action.performed -= HorizontalCTX;
+            horizontalInput.action.canceled -= HorizontalCTX;
+
+            verticalInput.action.performed -= VerticalCTX;
+            verticalInput.action.canceled -= VerticalCTX;
+
+            interactInput.action.performed -= InteractCTX;
+        }
+    }
+
+    private void HorizontalCTX(InputAction.CallbackContext ctx) => onHorizontalInput.Invoke(ctx.ReadValue<float>());
+    private void VerticalCTX(InputAction.CallbackContext ctx) => onVerticalInput.Invoke(ctx.ReadValue<float>());
+    private void InteractCTX(InputAction.CallbackContext ctx) => onInteract.Invoke();
 
     private void OnEnable()
     {
-        verticalInput.Enable();
-        horizontalInput.Enable();
+        HandleActions(true);
     }
 
     private void OnDisable()
     {
-        verticalInput.Disable();
-        horizontalInput.Disable();
+        HandleActions(false);
     }
 }

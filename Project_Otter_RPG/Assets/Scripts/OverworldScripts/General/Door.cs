@@ -33,7 +33,7 @@ public class Door : MonoBehaviour
 
         if(col.gameObject.tag == "Player")
         {
-            InputEventManager.Instance.canInput = false; 
+            InputEventManager.Instance.CanInput = false; 
             CharacterController CC = col.gameObject.GetComponent<CharacterController>();
             if(CC != null)
             {
@@ -49,7 +49,7 @@ public class Door : MonoBehaviour
             (fadeImage.DOFade(1, transitionTime / 2f)
                 .OnComplete(() =>
                 {
-                    InputEventManager.Instance.canInput = false;
+                    InputEventManager.Instance.CanInput = false;
                     player.enabled = false;
                     player.transform.SetPositionAndRotation(destination.arrivalPoint.position, destination.teleportRotation);
                     CameraManager.Instance.SwitchCamera(destination.cameraToSwitchTo);
@@ -59,7 +59,7 @@ public class Door : MonoBehaviour
             (fadeImage.DOFade(0, transitionTime / 2f)
                 .OnComplete(() =>
                 {
-                    InputEventManager.Instance.canInput = true;
+                    InputEventManager.Instance.CanInput = true;
                     player.enabled = true;
                 }));
         sequence

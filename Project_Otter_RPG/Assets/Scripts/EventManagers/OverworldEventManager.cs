@@ -9,6 +9,7 @@ public class OverworldEventManager : MonoBehaviour
 
     // events
     [HideInInspector] public UnityEvent<CinemachineCamera> onCameraSwitch;
+    [HideInInspector] public UnityEvent<Interactable> onInteraction;
 
     void Awake()
     {

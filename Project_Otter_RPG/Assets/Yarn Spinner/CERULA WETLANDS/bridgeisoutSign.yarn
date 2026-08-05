@@ -1,0 +1,16 @@
+title: BridgeNoMoreGoneForeverHaveToGoAnotherWay
+---
+<<declare $bridgesign = false>>
+<<if $bridgesign == true>>
+    <<jump bridgesignRead>>
+<<endif>>
+BRIDGE OUT //have this text be crooked at the same angle the sign is
+
+<<set $bridgesign = true >>
+===
+title: bridgesignRead
+position: 0,128
+---
+You can read some fine text on the sign.
+SIGN CROOKED //same effect but smaller font
+===

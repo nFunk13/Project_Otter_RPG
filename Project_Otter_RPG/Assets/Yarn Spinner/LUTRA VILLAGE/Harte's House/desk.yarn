@@ -10,7 +10,7 @@ title: desk
 <<if $searched == true>>
     <<jump searchedDesk>>
 <<endif>>
-It's your desk. Covered in ink, paint, and endless scratches.
+It's your desk.
 Look inside?
 // -------------------------------------------------------------------------
     ->Yes
@@ -29,16 +29,23 @@ Look inside?
                 <<set $noncurious = 2>>
                 You carve another mark into the desk with your claw.
                 Somewhere, you have angered something.
-                There will be no desks today.
-                <<if $noncurious == 2>>
-                    You have forsaken a powerful privilege.
-                <<endif>>
+                ...There will be no desks today.
+        <<elseif $noncurious == 2>>
+            Try as you might, the power of your noncuriosity compels you otherwise...
+            Some things cannot be reversed.
+        <<else>>
+            <<jump searchStart>>
         <<endif>>
-        <<jump searchStart>>
 // -------------------------------------------------------------------------
     ->No
-        <<set $noncurious = 1>>
-        You step away from the desk, declaring yourself as a non-curious individual.
+        <<if $noncurious == 0>>
+            <<set $noncurious = 1>>
+            You step away from the desk, declaring yourself as a non-curious individual.
+        <<elseif $noncurious == 1>>
+            You step away from the desk, feeling validated in your status as a non-curious individual.
+        <<elseif $noncurious == 2>>
+            You step away from the desk, knowing you've done all you can.
+        <<endif>>
 ===
 
 title: searchStart
@@ -50,7 +57,7 @@ Several bottles of different colored inks, used for your artistic pursuits.
 A suspiciously old Whiskerbar, half-eaten.
 A homemade thumb piano from your grandmother.
 Various loose papers, worn on all edges.
-A pocket mirror, encased in red cloth.
+A pocket mirror, encased in lilac cloth.
 ...and some other stuff.
 <<jump searchOptions>>
 <<set $searched = true>>
