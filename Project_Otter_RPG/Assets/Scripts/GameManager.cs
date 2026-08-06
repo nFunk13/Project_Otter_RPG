@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GridManager gridManager;
     [SerializeField] private float enemyActionDelayTime = 1.0f;
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private EventSystem eventSystem;
 
     [Tooltip("X = min amount of enemies, Y = Max amount of enemies")]
     [SerializeField] private Vector2 enemyRange;
@@ -170,17 +169,18 @@ public class GameManager : MonoBehaviour
     private void PerformAction(InputAction.CallbackContext ctx)
     {
         PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
-        
+        PlayerManager playerManager = GameObject.Find("Player_UI").GetComponent<PlayerManager>();
+        playerManager.SetCombatState(PlayerManager.CombatState.THINKING_COMBAT);
         // Checks to make sure list is not empty
         if (canPerformActions && playersTurn)
         {
             // What to do with the movement action
-            if (playerActionsTypes[0] == ActionTypes.MOVE /*&& actionRange*/)
+            if (playerActionsTypes[0] == ActionTypes.MOVE)
             {
                 playerMovement.MovePlayer();
             }
             // What to do with the attack action
-            else if (playerActionsTypes[0] == ActionTypes.ATTACK /*&& actionRange*/)
+            else if (playerActionsTypes[0] == ActionTypes.ATTACK)
             {
                 if (playerAttack.Attack())
                 {
@@ -201,6 +201,7 @@ public class GameManager : MonoBehaviour
         }
         if (GetPlayerActionTypesList().Count == 0)
         {
+            playerManager.SetCombatState(PlayerManager.CombatState.IDLE_COMBAT);
             GameManager.GetInstance().SetCanPerformActions(false);
         }
     }
@@ -301,11 +302,6 @@ public class GameManager : MonoBehaviour
     public List<Enemy> GetEnemyList()
     {
         return enemyList;
-    }
-
-    public EventSystem GetEventSystem()
-    {
-        return eventSystem;
     }
 
     public bool GetCanPerformActions()

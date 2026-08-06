@@ -1843,7 +1843,6 @@ MonoBehaviour:
   gridManager: {fileID: 1008754785}
   enemyActionDelayTime: 1
   enemyPrefab: {fileID: 5073077942122808807, guid: 84094b5786d2afa41b2ce946c81e900a, type: 3}
-  eventSystem: {fileID: 0}
   enemyRange: {x: 2, y: 3}
 --- !u!1 &1122105710
 GameObject:
@@ -2947,7 +2946,7 @@ MonoBehaviour:
     looping: 0
     animOnEnd: 
     name: 
-  defaultAnimation: Idle_Combat
+  defaultAnimation: idle_combat
   hasSilhouette: 0
 --- !u!212 &2396633389628644333
 SpriteRenderer:

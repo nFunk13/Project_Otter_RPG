@@ -136,6 +136,25 @@ public class SpriteInstance : MonoBehaviour
         else Play(fallback);
     }
 
+    public void Stop(GameObject character, string fallback = null)
+    {
+        if (string.IsNullOrEmpty(fallback))
+        {
+            Play("idle");
+        }
+        else
+        {
+            foreach (var anim in bundleData.animations)
+            {
+                if (character.GetComponent<SpriteInstance>().currentAnim.name == anim.name)
+                {
+                    Play(anim.animOnEnd);
+                    break;
+                }
+            }
+        }
+    }
+
     private IEnumerator AnimationTimer()
     {
         bool hasSpecificFrameDelays = currentAnim.frameDelays.Length > 0;

@@ -28,4 +28,48 @@ MonoBehaviour:
     uniformFrameDelay: 0.2
     looping: 1
     animOnEnd: 
-    name: Idle_Combat
+    name: idle_combat
+  - frameSets:
+    - frames:
+      - {fileID: 2288058752304796988, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: -8235059779154164879, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: -1610160983785411635, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: -452408697345063510, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: -7749573904660511633, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: 5032567864555696481, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+      - {fileID: 7012316520211516846, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 0
+    animOnEnd: thinking_combat_middle
+    name: thinking_combat
+  - frameSets:
+    - frames:
+      - {fileID: 6899327510486592338, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 367145907574665204, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 7291725771880232551, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: -5416580642679880718, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: -7644270327983591070, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: -1545572188676660292, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 5715961184732840106, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: -2239417174762987947, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 1889579232914424482, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: -4406992550621921983, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 6378859165446791972, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+      - {fileID: 2473401572358865890, guid: 3cb149ea7fd61ce43986aa39bd69b07b, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 1
+    animOnEnd: thinking_combat_end
+    name: thinking_combat_middle
+  - frameSets:
+    - frames:
+      - {fileID: -458647503598191675, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
+      - {fileID: 1615307087245674588, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
+      - {fileID: -1345284324395468355, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
+      - {fileID: -2066743944548913854, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 0
+    animOnEnd: idle_combat
+    name: thinking_combat_end

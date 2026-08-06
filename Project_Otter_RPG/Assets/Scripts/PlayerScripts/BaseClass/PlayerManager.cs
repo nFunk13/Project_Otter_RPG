@@ -7,6 +7,14 @@ public class PlayerManager : MonoBehaviour
     protected PlayableCharacterData characterData;
     [SerializeField] private static HealthBarUI healthBar;
     protected PlayerActions playerActions;
+    private CombatState combatState = CombatState.IDLE_COMBAT;
+
+    protected static SpriteInstance spriteInstance;
+
+    public enum CombatState
+    {
+        IDLE_COMBAT, THINKING_COMBAT
+    }
 
     public enum InputKeyNames
     {
@@ -18,6 +26,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Awake()
     {
+        spriteInstance = gameObject.GetComponent<SpriteInstance>();
         characterData = Resources.Load<PlayableCharacterData>("ScriptableObjects/PlayableCharacterData/HarteData");
         playerActions = new PlayerActions();
         characterData.characterCurrentHealth = characterData.characterMaxHealth;
@@ -58,5 +67,28 @@ public class PlayerManager : MonoBehaviour
     public PlayerActions GetPlayerActions()
     {
         return playerActions;
+    }
+
+    public void SetCombatState(CombatState newCombatState)
+    {
+        if (combatState == newCombatState)
+        {
+            return;
+        }
+        //spriteInstance.Stop(combatState.ToString().ToLower());
+        combatState = newCombatState;
+        if (spriteInstance.currentAnim.looping && !string.IsNullOrEmpty(spriteInstance.currentAnim.animOnEnd))
+        {
+            spriteInstance.Stop(this.gameObject, combatState.ToString().ToLower());
+        }
+        else
+        {
+            spriteInstance.Play(combatState.ToString().ToLower());
+        }
+    }
+
+    public CombatState GetCombatState()
+    {
+        return combatState;
     }
 }
