@@ -65,7 +65,7 @@ public class Graph
         return null;
     }
 
-    public void BFS(int startVertex, int goalVertex, out int tileKeyWant, out int weightWant, Enemy enemy)
+    public void BFS(int startVertex, int goalVertex, out List<int> keyList, out int weightWant, Enemy enemy)
     {
         Dictionary<int, int> visited = new Dictionary<int, int>();
         visited[startVertex] = startVertex;
@@ -73,7 +73,8 @@ public class Graph
         Queue<int> frontier = new Queue<int>();
         frontier.Enqueue(startVertex);
 
-        tileKeyWant = 0;
+        //tileKeyWant = 0;
+        keyList = new List<int>();
         weightWant = 0;
 
         while (frontier.Count > 0)
@@ -82,8 +83,8 @@ public class Graph
 
             if (current == goalVertex)
             {
-                pathDicToList(ref visited, ref goalVertex, out int tileKey, out int weight, enemy);
-                tileKeyWant = tileKey;
+                pathDicToList(ref visited, ref goalVertex, out List<int> tileKeys, out int weight, enemy);
+                keyList = tileKeys;
                 weightWant = weight;
             }
 
@@ -102,6 +103,71 @@ public class Graph
                 }
             }
         }
+    }
+
+    public Queue<GameObject> Dikjstra(GameObject start, GameObject goal)
+    {
+        Dictionary<int, GameObject> enemyTileDic = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
+
+        Dictionary<GameObject, GameObject> nextTileToGoal = new Dictionary<GameObject, GameObject>();
+        Dictionary<GameObject, int> costToReachTile = new Dictionary<GameObject, int>();
+        int tileIndex = 0;
+
+        PriorityQueue<GameObject> frontier = new PriorityQueue<GameObject>();
+
+        frontier.Enqueue(goal, 0);
+        costToReachTile[goal] = 0;
+
+        while (frontier.Count > 0)
+        {
+            GameObject currentTile = frontier.Dequeue();
+            if (currentTile == start)
+            {
+                break;
+            }
+
+            for (int i = 1; i <= enemyTileDic.Count; i++)
+            {
+                if (enemyTileDic[i] == currentTile)
+                {
+                    tileIndex = i;
+                    break;
+                }
+            }
+
+            var neighbors = adjacencyList.ContainsKey(tileIndex) ? adjacencyList[tileIndex] : new List<int>();
+
+            foreach (int neighbor in neighbors)
+            {
+                int newCost = costToReachTile[currentTile] + enemyTileDic[tileIndex].GetComponent<Tile>().GetTileWeight();
+
+                GameObject tile = enemyTileDic[tileIndex];
+
+                if (costToReachTile.ContainsKey(enemyTileDic[neighbor]) == false || newCost < costToReachTile[enemyTileDic[neighbor]])
+                {
+                    costToReachTile[enemyTileDic[neighbor]] = newCost;
+                    int priority = newCost;
+                    frontier.Enqueue(enemyTileDic[neighbor], priority);
+                    nextTileToGoal[enemyTileDic[neighbor]] = currentTile;
+                }
+            }
+        }
+
+        if (!nextTileToGoal.ContainsKey(start))
+        {
+            return null;
+        }
+
+        Queue<GameObject> path = new Queue<GameObject>();
+        GameObject currentPathTile = start;
+
+        while (currentPathTile != goal)
+        {
+            currentPathTile = nextTileToGoal[currentPathTile];
+            path.Enqueue(currentPathTile);
+        }
+
+        return path;
     }
 
     public void ChangeTileWeights(int startInt, bool playerGraph, int decreaseWeight)
@@ -144,7 +210,7 @@ public class Graph
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
 
-    public void ChangeTileWeights(int startInt, bool playerGraph, int desiredWeight, int decreaseWeight, ref int moveTile)
+    public void ChangeTileWeights(int startInt, bool playerGraph, int desiredWeight, int decreaseWeight, ref int lowestValueTile)
     {
         Dictionary<int, int> visited = new Dictionary<int, int>();
         visited[startInt] = startInt;
@@ -165,8 +231,6 @@ public class Graph
                 GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[current].GetComponent<Tile>().AddTileWeight(weightValue * 2);
             }
 
-            moveTile = current;
-
             var neighbors = adjacencyList.ContainsKey(current) ? adjacencyList[current] : new List<int>();
 
             foreach (var neighbor in neighbors)
@@ -179,9 +243,13 @@ public class Graph
                 {
                     frontier.Enqueue(neighbor);
                     visited[neighbor] = current;
+                    if (lowestValueTile > GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[current].GetComponent<Tile>().GetTileWeight())
+                    {
+                        lowestValueTile = current;
+                    }
                 }
             }
-            ChangeWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight, ref moveTile);
+            ChangeWeightHelpFunction(weightValue, ref frontier, ref visited, playerGraph, decreaseWeight, ref lowestValueTile);
         }
         Debug.Log("VISITED COUNT: " + visited.Count);
     }
@@ -276,13 +344,9 @@ public class Graph
         {
             foreach (int tileKey in attackTiles)
             {
-                GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().TryGetValue(tileKey + addition, out GameObject tileObj);//[tileKey/* + addition*/].gameObject.GetComponent<Tile>().GetTileWeight();
+                GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary().TryGetValue(tileKey + addition, out GameObject tileObj);
                 tempWeight += tileObj.GetComponent<Tile>().GetTileWeight();
             }
-            //for (int j = 1; j <= attackTiles.Count; j++)
-            //{
-            //    tempWeight += GameManager.GetInstance().GetGridManager().GetPlayerTileDictionary()[i/* + addition*/].gameObject.GetComponent<Tile>().GetTileWeight();
-            //}
             if (tempWeight > totalWeight)
             {
                 totalWeight = tempWeight;
@@ -307,7 +371,7 @@ public class Graph
         return pathway;
     }
 
-    private void pathDicToList(ref Dictionary<int, int> previousDic, ref int goal, out int tileKey, out int weight, Enemy enemy)
+    private void pathDicToList(ref Dictionary<int, int> previousDic, ref int goal, out List<int> tileKeys, out int weight, Enemy enemy)
     {
         Dictionary<int, GameObject> enemyTileDictionary = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
         List<int> pathway = new List<int>();
@@ -315,7 +379,7 @@ public class Graph
         current = goal;
 
         weight = 0;
-        tileKey = 0;
+        //tileKey = 0;
         bool firstTime = true;
 
         do
@@ -329,6 +393,6 @@ public class Graph
             previous = current;
             current = previousDic[current];
         } while (current != previous);
-        tileKey = pathway[0];
+        tileKeys = pathway;
     }
 }

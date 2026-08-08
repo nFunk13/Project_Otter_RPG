@@ -80,7 +80,7 @@ public class GraphBehavior : MonoBehaviour
         }
     }
 
-    public static void ChangeWeights(int start, bool playerGraph, int weight, int decreaseWeight, ref int moveTile)
+    public static void ChangeWeights(int start, bool playerGraph, int weight, int decreaseWeight, ref int lowestValueTile)
     {
         if (playerGraph)
         {
@@ -90,7 +90,7 @@ public class GraphBehavior : MonoBehaviour
         else
         {
             ConnectEnemyTiles();
-            enemyTileConnection.ChangeTileWeights(start, playerGraph, weight, decreaseWeight, ref moveTile);
+            enemyTileConnection.ChangeTileWeights(start, playerGraph, weight, decreaseWeight, ref lowestValueTile);
         }
     }
 
@@ -100,9 +100,16 @@ public class GraphBehavior : MonoBehaviour
         enemyTileConnection.enemyAttackDecision(startIndex, endIndex, moveList, out totalWeight, out tileAddition);
     }
 
-    public static void GetEnemyMoveWeight(int startIndex, int endIndex, out int tileKey, out int weight, Enemy enemyScript)
+    public static void GetEnemyMoveWeight(int startIndex, int endIndex, out List<int> listOfKeys, out int weight, Enemy enemyScript)
     {
         ConnectEnemyTiles();
-        enemyTileConnection.BFS(startIndex, enemyScript.GetTileKeyToMoveTo(), out tileKey, out weight, enemyScript);
+        enemyTileConnection.BFS(startIndex, enemyScript.GetTileKeyToMoveTo(), out listOfKeys, out weight, enemyScript);
+    }
+
+    // GetMoveWeight using dijkstra
+    public static void GetEnemyMoveWeight(GameObject startTile, GameObject endTile, out Queue<GameObject> pathway)
+    {
+        ConnectEnemyTiles();
+        pathway = enemyTileConnection.Dikjstra(startTile, endTile);
     }
 }

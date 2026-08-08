@@ -27,12 +27,15 @@ public class Enemy : MonoBehaviour
     private List<ActionTypes> enemyActionTypes = new List<ActionTypes>();
 
     private float moveTime = 0.25f;
-    private int tileKeyToMoveTo;
+    private int lowestValueTile = 1000;
     private int enemyActionCount = 0;
+    private GameObject tileToMoveTo;
 
     private float baseDecisionValue = 10000.0f;
     private float moveMultiplier;
     private float attackMultiplier;
+
+    private List<int> pathwayKeys = new List<int>();
 
     private void Awake()
     {
@@ -68,7 +71,7 @@ public class Enemy : MonoBehaviour
         this.gameObject.transform.position = new Vector3(startSpawn.transform.position.x, startSpawn.transform.position.y, -1.0f);
         startSpawn.GetComponent<Tile>().SetCharacterOn(true);
         startSpawn.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue, ref this.tileKeyToMoveTo);
+        GraphBehavior.ChangeWeights(gridManager.FindTileKey(startSpawn, false), false, instanceEnemyData.weight ,instanceEnemyData.weightDecreaseValue, ref this.lowestValueTile);
         enemyTile = new KeyValuePair<int, GameObject>(randomNumber, startSpawn);
     }
 
@@ -92,8 +95,9 @@ public class Enemy : MonoBehaviour
     {
         tilesToMoveToo.Clear();
         tilesToMoveToo = new List<int>();
+        Queue<GameObject> thePath = new Queue<GameObject>();
         Dictionary<int, GameObject> enemyGrid = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
-        KeyValuePair<int, int> wantedMove = new KeyValuePair<int, int>(1, 10000);
+        
 
         if (enemyGrid.TryGetValue(enemyTile.Key - 4, out GameObject tileObjectLeft))
         {
@@ -118,7 +122,7 @@ public class Enemy : MonoBehaviour
         {
             if (enemy != this.gameObject)
             {
-                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue, ref tileKeyToMoveTo);
+                GraphBehavior.ChangeWeights(enemy.GetComponent<Enemy>().GetEnemyTileData().Key, false, instanceEnemyData.weight, instanceEnemyData.weightDecreaseValue, ref lowestValueTile);
             }
         }
 
@@ -128,18 +132,15 @@ public class Enemy : MonoBehaviour
             {
                 foreach (var tile in tilesToMoveToo)
                 {
-                    GraphBehavior.GetEnemyMoveWeight(tile, enemy.GetComponent<Enemy>().GetEnemyTileData().Key, out int tileKey, out int weight, this);
-                    if (wantedMove.Value > weight && !gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().GetCharacterOn())
-                    {
-                        wantedMove = new KeyValuePair<int, int>(tileKey, weight);
-                    }
+                    GraphBehavior.GetEnemyMoveWeight(GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[tile], GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary()[lowestValueTile], out Queue<GameObject> path);
+                    thePath = path;
                 }
             }
         }
-        tileKeyToMoveTo = wantedMove.Key;
-        gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().SetCharacterOn(true);
-        gridManager.GetEnemyTileDictionary()[wantedMove.Key].GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
-        return baseDecisionValue - (moveMultiplier * wantedMove.Value);
+        tileToMoveTo = thePath.Dequeue();
+        tileToMoveTo.GetComponent<Tile>().SetCharacterOn(true);
+        tileToMoveTo.GetComponent<Tile>().SetCharacterOnTile(this.gameObject);
+        return baseDecisionValue - (moveMultiplier * tileToMoveTo.GetComponent<Tile>().GetTileWeight());
 
     }
 
@@ -150,15 +151,15 @@ public class Enemy : MonoBehaviour
             // Dictionary of enemy Tiles
             Dictionary<int, GameObject> enemyTiles = GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary();
 
-            enemyTiles.TryGetValue(tileKeyToMoveTo, out GameObject desiredTile);
+            //enemyTiles.TryGetValue(lowestValueTile, out GameObject desiredTile);
             
             // Moves the enemy object to the desired tile
-            Vector3 endPosition = new Vector3(desiredTile.transform.position.x, desiredTile.gameObject.transform.position.y, -1.0f);
+            Vector3 endPosition = new Vector3(tileToMoveTo.transform.position.x, tileToMoveTo.gameObject.transform.position.y, -1.0f);
             transform.DOMove(endPosition, moveTime).SetUpdate(UpdateType.Fixed);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOn(false);
             enemyTile.Value.gameObject.GetComponent<Tile>().SetCharacterOnTile(null);
-            enemyTile = new KeyValuePair<int, GameObject>(tileKeyToMoveTo, desiredTile);
-            tileKeyToMoveTo = 0;
+            //enemyTile = new KeyValuePair<int, GameObject>(lowestValueTile, desiredTile);
+            lowestValueTile = 1000;
         }
     }
 
@@ -268,6 +269,6 @@ public class Enemy : MonoBehaviour
 
     public int GetTileKeyToMoveTo()
     {
-        return tileKeyToMoveTo;
+        return lowestValueTile;
     }
 }

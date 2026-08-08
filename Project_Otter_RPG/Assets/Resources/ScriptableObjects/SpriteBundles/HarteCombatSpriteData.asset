@@ -69,7 +69,7 @@ MonoBehaviour:
       - {fileID: -1345284324395468355, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
       - {fileID: -2066743944548913854, guid: 12a8bf7dde6be1a459aca2bc63fd09eb, type: 3}
     frameDelays: []
-    uniformFrameDelay: 0.2
+    uniformFrameDelay: 0.1
     looping: 0
     animOnEnd: idle_combat
     name: thinking_combat_end
