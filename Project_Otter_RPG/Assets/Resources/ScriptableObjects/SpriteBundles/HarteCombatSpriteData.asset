@@ -15,15 +15,16 @@ MonoBehaviour:
   animations:
   - frameSets:
     - frames:
-      - {fileID: -1751681613841451667, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: -2141615253994520346, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: -3655601762182089577, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: 1201249449777869863, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: 7841550768271311691, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: -5434930579739974402, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: 2431024313760943918, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: 8372126241352318892, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
-      - {fileID: 8462325113830779001, guid: 9dfb10b90e9e32948912c019f6ede09d, type: 3}
+      - {fileID: 4306178606439078473, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: 6147045294466408775, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: -1555767846514617175, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: -8525025354875327737, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: 3071295503026678204, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: -1956203213672152234, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: 3462627647073033238, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: -1983726921502872678, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: 3248807091166450186, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
+      - {fileID: 4002759477882829386, guid: b65c731468b72ad4a835c8a88088fc39, type: 3}
     frameDelays: []
     uniformFrameDelay: 0.2
     looping: 1
@@ -39,7 +40,7 @@ MonoBehaviour:
       - {fileID: 5032567864555696481, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
       - {fileID: 7012316520211516846, guid: 0f250d2498b3d674899d2011ddd02294, type: 3}
     frameDelays: []
-    uniformFrameDelay: 0.2
+    uniformFrameDelay: 0.1
     looping: 0
     animOnEnd: thinking_combat_middle
     name: thinking_combat
@@ -73,3 +74,48 @@ MonoBehaviour:
     looping: 0
     animOnEnd: idle_combat
     name: thinking_combat_end
+  - frameSets:
+    - frames:
+      - {fileID: -3505908848300966211, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: -8931996992894045889, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: 8368977571504026008, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: -1901555101139227791, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: 412434359590374922, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: -2539593404097173561, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+      - {fileID: 4324449380937157913, guid: 32821aad8e186374f9d70fed19c7b5e2, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 0
+    animOnEnd: 
+    name: attack_combat
+  - frameSets:
+    - frames:
+      - {fileID: 4498535333871390422, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+      - {fileID: -7050581421559718450, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+      - {fileID: -1574101546193732915, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+      - {fileID: 8782742517184880664, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+      - {fileID: 8560773497678033617, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+      - {fileID: 7347822262345824684, guid: 1a5802f7ef23a7d4d920d318482b23c1, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 0
+    animOnEnd: 
+    name: hit_combat
+  - frameSets:
+    - frames:
+      - {fileID: -1423996758657236719, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -3592859746961762345, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -6107744525068163179, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -4103310493608780899, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -5025792641778538793, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -6919950319001026915, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: 8780508050674565953, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -1353365101417827598, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: 3376035729915351088, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -316266821808640503, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+      - {fileID: -6345184452118081328, guid: 2a6d806dfb944684d8797d889e9c20ec, type: 3}
+    frameDelays: []
+    uniformFrameDelay: 0.2
+    looping: 0
+    animOnEnd: 
+    name: death_combat
