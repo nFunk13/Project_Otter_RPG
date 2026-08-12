@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviour
         }
         if (GetPlayerActionTypesList().Count == 0)
         {
-            playerManager.SetCombatState(PlayerManager.CombatState.IDLE_COMBAT);
+            playerManager.SetCombatState(PlayerManager.CombatState.THINKING_COMBAT_END);
             GameManager.GetInstance().SetCanPerformActions(false);
         }
     }

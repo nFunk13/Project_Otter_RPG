@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -10,10 +11,11 @@ public class PlayerManager : MonoBehaviour
     private CombatState combatState = CombatState.IDLE_COMBAT;
 
     protected static SpriteInstance spriteInstance;
+    protected static CombatState previousAnimation;
 
     public enum CombatState
     {
-        IDLE_COMBAT, THINKING_COMBAT
+        IDLE_COMBAT, THINKING_COMBAT, THINKING_COMBAT_END, ATTACK_COMBAT, HIT_COMBAT, DEATH_COMBAT
     }
 
     public enum InputKeyNames
@@ -71,24 +73,33 @@ public class PlayerManager : MonoBehaviour
 
     public void SetCombatState(CombatState newCombatState)
     {
+        SetPreviousState(combatState);
         if (combatState == newCombatState)
         {
             return;
         }
-        //spriteInstance.Stop(combatState.ToString().ToLower());
+        
         combatState = newCombatState;
-        if (spriteInstance.currentAnim.looping && !string.IsNullOrEmpty(spriteInstance.currentAnim.animOnEnd))
-        {
-            spriteInstance.Stop(this.gameObject, combatState.ToString().ToLower());
-        }
-        else
-        {
-            spriteInstance.Play(combatState.ToString().ToLower());
-        }
+        spriteInstance.Stop(combatState.ToString().ToLower());
     }
 
     public CombatState GetCombatState()
     {
         return combatState;
+    }
+
+    public void SetPreviousState(CombatState previousState)
+    {
+        previousAnimation = previousState;
+    }
+
+    public CombatState GetPreviousState()
+    {
+        return previousAnimation;
+    }
+
+    protected IEnumerator WaitForAnimation(float animationTime)
+    {
+        yield return new WaitForSeconds(animationTime);
     }
 }

@@ -78,7 +78,6 @@ public class PAttack : PlayerManager
             }
 
             // Sets up variables for setting the correct colors
-            //int keyAddition = 0; // Added value to the base tile index
             GridManager gridManager = GameManager.GetInstance().GetGridManager();
 
             // Gets the tiles based on the mouse's position
@@ -108,6 +107,14 @@ public class PAttack : PlayerManager
     public bool Attack()
     {
         Debug.Log("Chosen Move: " + chosenMove.FirstOrDefault().name);
+
+        previousAnimation = base.GetCombatState();
+        base.SetCombatState(CombatState.ATTACK_COMBAT);
+        spriteInstance.SetAnimationOnEnd(base.GetPreviousState().ToString().ToLower());
+        //spriteInstance.SetAnimationOnEnd(previousAnimation.ToString().ToLower());
+
+        WaitForAnimation((spriteInstance.currentAnim.uniformFrameDelay * spriteInstance.currentAnim.frameSets[0].frames.Length));
+
         // Checks to make sure the tile is acceptable
         if (GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().ContainsValue(attackTiles.FirstOrDefault()))
         {

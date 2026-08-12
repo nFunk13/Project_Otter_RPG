@@ -174,4 +174,9 @@ public class SpriteInstance : MonoBehaviour
             Play(currentAnim.animOnEnd);
         }
     }
+
+    public void SetAnimationOnEnd(string endAnimation)
+    {
+        currentAnim.animOnEnd = endAnimation;
+    }
 }
