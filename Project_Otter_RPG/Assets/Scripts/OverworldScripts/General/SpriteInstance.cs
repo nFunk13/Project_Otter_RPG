@@ -62,7 +62,11 @@ public class SpriteInstance : MonoBehaviour
         int dir = (int)_currentDirection;
         if (dir >= currentAnim.frameSets.Length) return;
         var frames = currentAnim.frameSets[dir].frames;
-        if (currentFrameIndex >= frames.Length) return;
+        if (currentFrameIndex >= frames.Length)
+        {
+            currentAnim.hasEnded = true;
+            return;
+        }
 
         mainRenderer.sprite = frames[currentFrameIndex];
         foreach (var sr in additionalRenderers)

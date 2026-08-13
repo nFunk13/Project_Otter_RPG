@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour
 
         VisualizeEnemyAttacks();
 
+        EndPlayerTurn();
+
         Debug.Log("CAN PERFORM ACTION: " + canPerformActions);
     }
 
@@ -169,8 +171,6 @@ public class GameManager : MonoBehaviour
     private void PerformAction(InputAction.CallbackContext ctx)
     {
         PAttack playerAttack = GameObject.Find("Player_UI").GetComponent<PAttack>();
-        PlayerManager playerManager = GameObject.Find("Player_UI").GetComponent<PlayerManager>();
-        playerManager.SetCombatState(PlayerManager.CombatState.THINKING_COMBAT);
         // Checks to make sure list is not empty
         if (canPerformActions && playersTurn)
         {
@@ -199,9 +199,24 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void EndPlayerTurn()
+    {
         if (GetPlayerActionTypesList().Count == 0)
         {
-            playerManager.SetCombatState(PlayerManager.CombatState.THINKING_COMBAT_END);
+            PlayerManager playerManager = GameObject.Find("Player_UI").GetComponent<PlayerManager>();
+            if (!playerManager.GetSpriteInstance().currentAnim.looping)
+            {
+                if (playerManager.GetSpriteInstance().currentAnim.hasEnded)
+                {
+                    playerManager.SetCombatState(PlayerManager.CombatState.IDLE_COMBAT);
+                }
+            }
+            else
+            {
+                playerManager.GetSpriteInstance().Stop(playerManager.gameObject, PlayerManager.CombatState.IDLE_COMBAT.ToString().ToLower());
+            }
             GameManager.GetInstance().SetCanPerformActions(false);
         }
     }
@@ -276,6 +291,11 @@ public class GameManager : MonoBehaviour
         if (performedActions < playerCombatActions)
         {
             playerActionsTypes.Add(action);
+        }
+        if (playerActionsTypes.Count == 2)
+        {
+            PlayerManager playerManager = GameObject.Find("Player_UI").GetComponent<PlayerManager>();
+            playerManager.SetCombatState(PlayerManager.CombatState.THINKING_COMBAT);
         }
     }
 

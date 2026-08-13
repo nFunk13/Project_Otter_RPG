@@ -22,4 +22,7 @@ public class SpriteAnimation
     public bool looping = false;
     public string animOnEnd; // for non-looping animations
     public string name;
+
+    [HideInInspector]
+    public bool hasEnded = false;
 }

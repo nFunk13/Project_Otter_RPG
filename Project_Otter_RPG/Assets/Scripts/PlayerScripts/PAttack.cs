@@ -108,12 +108,7 @@ public class PAttack : PlayerManager
     {
         Debug.Log("Chosen Move: " + chosenMove.FirstOrDefault().name);
 
-        previousAnimation = base.GetCombatState();
-        base.SetCombatState(CombatState.ATTACK_COMBAT);
-        spriteInstance.SetAnimationOnEnd(base.GetPreviousState().ToString().ToLower());
-        //spriteInstance.SetAnimationOnEnd(previousAnimation.ToString().ToLower());
-
-        WaitForAnimation((spriteInstance.currentAnim.uniformFrameDelay * spriteInstance.currentAnim.frameSets[0].frames.Length));
+        spriteInstance.Play(PlayerManager.CombatState.ATTACK_COMBAT.ToString().ToLower());
 
         // Checks to make sure the tile is acceptable
         if (GameManager.GetInstance().GetGridManager().GetEnemyTileDictionary().ContainsValue(attackTiles.FirstOrDefault()))

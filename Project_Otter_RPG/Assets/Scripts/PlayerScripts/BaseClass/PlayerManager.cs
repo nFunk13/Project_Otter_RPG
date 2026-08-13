@@ -8,10 +8,9 @@ public class PlayerManager : MonoBehaviour
     protected PlayableCharacterData characterData;
     [SerializeField] private static HealthBarUI healthBar;
     protected PlayerActions playerActions;
-    private CombatState combatState = CombatState.IDLE_COMBAT;
+    private CombatState combatState;
 
     protected static SpriteInstance spriteInstance;
-    protected static CombatState previousAnimation;
 
     public enum CombatState
     {
@@ -25,6 +24,7 @@ public class PlayerManager : MonoBehaviour
         rightArrow,
         leftArrow
     }
+
 
     private void Awake()
     {
@@ -48,7 +48,6 @@ public class PlayerManager : MonoBehaviour
         {
             healthBar.SetHealth(characterData.characterCurrentHealth);
         }
-        Debug.Log("PLAYER ACTION MOVEMENT ENABLED: " + playerActions.Combat.AddTileMovement.enabled);
     }
 
     public virtual void FixedTick()
@@ -71,14 +70,13 @@ public class PlayerManager : MonoBehaviour
         return playerActions;
     }
 
-    public void SetCombatState(CombatState newCombatState)
+    public void SetCombatState(CombatState newCombatState, bool setPreviousAnim = false)
     {
-        SetPreviousState(combatState);
         if (combatState == newCombatState)
         {
             return;
         }
-        
+
         combatState = newCombatState;
         spriteInstance.Stop(combatState.ToString().ToLower());
     }
@@ -88,18 +86,13 @@ public class PlayerManager : MonoBehaviour
         return combatState;
     }
 
-    public void SetPreviousState(CombatState previousState)
-    {
-        previousAnimation = previousState;
-    }
-
-    public CombatState GetPreviousState()
-    {
-        return previousAnimation;
-    }
-
     protected IEnumerator WaitForAnimation(float animationTime)
     {
         yield return new WaitForSeconds(animationTime);
+    }
+
+    public SpriteInstance GetSpriteInstance()
+    {
+        return spriteInstance;
     }
 }

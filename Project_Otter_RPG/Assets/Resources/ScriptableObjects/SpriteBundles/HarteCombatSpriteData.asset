@@ -86,7 +86,7 @@ MonoBehaviour:
     frameDelays: []
     uniformFrameDelay: 0.2
     looping: 0
-    animOnEnd: idle_combat
+    animOnEnd: thinking_combat
     name: attack_combat
   - frameSets:
     - frames:
