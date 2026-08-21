@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamagingItem
   itemName: 
   damage: 0
-  itemType: 0
+  itemType: 2

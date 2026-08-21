@@ -4,6 +4,4 @@ using UnityEngine;
 public class DamagingItem : Item
 {
     public int damage;
-
-    public ItemType itemType = ItemType.HEALING;
 }

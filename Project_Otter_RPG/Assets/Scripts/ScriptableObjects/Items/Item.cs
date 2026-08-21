@@ -9,6 +9,8 @@ public abstract class Item : ScriptableObject
         DAMAGING
     }
 
+    public ItemType itemType = ItemType.DEFAULT;
+
     public string itemName;
 
 }

@@ -4,6 +4,4 @@ using UnityEngine;
 public class HealingItem : Item
 {
     public int healAmount;
-
-    public ItemType itemType = ItemType.HEALING;
 }
