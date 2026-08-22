@@ -213,9 +213,9 @@ public class GameManager : MonoBehaviour
                     playerManager.SetCombatState(PlayerManager.CombatState.IDLE_COMBAT);
                 }
             }
-            else
+            else if (playerManager.GetSpriteInstance().currentAnim.name != PlayerManager.CombatState.IDLE_COMBAT.ToString().ToLower())
             {
-                playerManager.GetSpriteInstance().Stop(playerManager.gameObject, PlayerManager.CombatState.IDLE_COMBAT.ToString().ToLower());
+                playerManager.GetSpriteInstance().Stop(PlayerManager.CombatState.IDLE_COMBAT.ToString().ToLower());
             }
             GameManager.GetInstance().SetCanPerformActions(false);
         }

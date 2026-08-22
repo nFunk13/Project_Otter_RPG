@@ -191,7 +191,7 @@ public class Enemy : MonoBehaviour
         {
             if (tile.GetComponent<Tile>().GetCharacterOn())
             {
-                tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<PlayerManager>().GetPlayableCharacterData().characterCurrentHealth -= chosenMove.FirstOrDefault().attackDamage;
+                tile.GetComponent<Tile>().GetCharacterOnTile().GetComponent<PlayerManager>().TakeDamage(chosenMove.FirstOrDefault().attackDamage);
                 hitPlayableCharacter = true;
             }
         }

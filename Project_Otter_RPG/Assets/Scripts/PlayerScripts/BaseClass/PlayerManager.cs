@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private static HealthBarUI healthBar;
     protected PlayerActions playerActions;
     private CombatState combatState;
+    private bool isDead = false;
 
     protected static SpriteInstance spriteInstance;
 
@@ -58,6 +59,12 @@ public class PlayerManager : MonoBehaviour
     public virtual void LateTick()
     {
 
+    }
+
+    public void TakeDamage(int damage)
+    {
+        spriteInstance.Play(CombatState.HIT_COMBAT.ToString().ToLower());
+        characterData.characterCurrentHealth -= damage;
     }
 
     public PlayableCharacterData GetPlayableCharacterData()
