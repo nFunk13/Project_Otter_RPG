@@ -47,6 +47,8 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+
+        Destroy(obj);
     }
 
     private void AddNewItem(ItemData newItemData)
