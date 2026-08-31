@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f63c8a63623b9e4418be0be8438e1d94, type: 3}
   m_Name: HealingItemTest
   m_EditorClassIdentifier: Assembly-CSharp::HealingItem
-  itemName: 
-  itemType: 0
-  healAmount: 0
+  itemType: 1
+  itemName: Healing25
+  healAmount: 25

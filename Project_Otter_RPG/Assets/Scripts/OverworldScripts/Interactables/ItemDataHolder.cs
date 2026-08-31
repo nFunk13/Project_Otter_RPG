@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ItemDataHolder : Item
+public class ItemDataHolder : MonoBehaviour
 {
     [SerializeField] public Item itemData;
 }
