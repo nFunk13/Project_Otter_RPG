@@ -98,31 +98,35 @@ public class Inventory : MonoBehaviour
                 // Goes through each character in the item name string
                 for (int i = 0; i < item.identifier.itemName.Length; i++)
                 {
-                    if (newItemName[i] == newItemName[newItemName.Length - 1])
+                    if (newItemName.ToLower()[i] == newItemName.ToLower()[newItemName.Length - 1])
                     {
                         // Inserts the new item before the current item in the list if the char is smaller
-                        healingItems.Insert(i, item);
+                        healingItems.Insert(inventoryIndex, newItemData);
                         itemAdded = true;
                         break;
                     }
-                    else if (item.identifier.itemName[i] == item.identifier.itemName[item.identifier.itemName.Length - 1])
+                    else if (item.identifier.itemName.ToLower()[i] == item.identifier.itemName.ToLower()[item.identifier.itemName.Length - 1])
                     {
                         // moves to the next item
                         break;
                     }
-                    else if (newItemName[i] > item.identifier.itemName[i])
+                    else if (newItemName.ToLower()[i] < item.identifier.itemName.ToLower()[i])
                     {
                         // Inserts the item before the current item
-                        healingItems.Insert(i, item);
+                        healingItems.Insert(inventoryIndex, newItemData);
                         itemAdded = true;
                         break;
                     }
-                    inventoryIndex++;
+                    else if (newItemName.ToLower()[i] > item.identifier.itemName.ToLower()[i])
+                    {
+                        break;
+                    }
                 }
                 if (itemAdded)
                 {
                     break;
                 }
+                inventoryIndex++;
             }
             if (!itemAdded)
             {
@@ -136,34 +140,38 @@ public class Inventory : MonoBehaviour
                 // Goes through each character in the item name string
                 for (int i = 0; i < item.identifier.itemName.Length; i++)
                 {
-                    if (newItemName[i] == newItemName[newItemName.Length - 1])
+                    if (newItemName.ToLower()[i] == newItemName.ToLower()[newItemName.Length - 1])
                     {
                         // Inserts the new item before the current item in the list if the char is smaller
-                        attackItems.Insert(i, item);
+                        attackItems.Insert(inventoryIndex, newItemData);
                         itemAdded = true;
                         break;
                     }
-                    else if (item.identifier.itemName[i] == item.identifier.itemName[item.identifier.itemName.Length - 1])
+                    else if (item.identifier.itemName.ToLower()[i] == item.identifier.itemName.ToLower()[item.identifier.itemName.Length - 1])
                     {
-                        // moves to the next item
-                        //inventoryIndex++;
-                        //attackItems.Insert(i, item);
-                        //itemAdded = true;
                         break;
                     }
-                    else if (newItemName[i] > item.identifier.itemName[i])
+                    else if (newItemName.ToLower()[i] < item.identifier.itemName.ToLower()[i])
                     {
                         // Inserts the item before the current item
-                        attackItems.Insert(i, item);
+                        attackItems.Insert(inventoryIndex, newItemData);
                         itemAdded = true;
                         break;
                     }
-                    inventoryIndex++;
+                    else if (newItemName.ToLower()[i] > item.identifier.itemName.ToLower()[i])
+                    {
+                        break;
+                    }
                 }
                 if (itemAdded)
                 {
                     break;
                 }
+                inventoryIndex++;
+            }
+            if (!itemAdded)
+            {
+                attackItems.Add(newItemData);
             }
         }
 
@@ -207,5 +215,10 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Dictionary<string, ItemData> GetInventory()
+    {
+        return inventory;
     }
 }
