@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -133,8 +134,15 @@ public class PAttack : PlayerManager
     {
         if (this.gameObject.GetComponent<PlayerManager>().GetPlayableCharacterData().characterCurrentHealth <= 0)
         {
-            SceneManager.LoadScene("EndScene");
+            spriteInstance.Stop(CombatState.DEATH_COMBAT.ToString().ToLower());
+            StartCoroutine(Dead(spriteInstance.currentAnim.uniformFrameDelay * spriteInstance.currentAnim.frameSets[0].frames.Length));
         }
+    }
+
+    private IEnumerator Dead(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        SceneManager.LoadScene("EndScene");
     }
 
     public void SetChosenMoveData(MoveData move)
