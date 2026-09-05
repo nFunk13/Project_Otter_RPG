@@ -16,7 +16,7 @@ public class InventoryMenu : MonoBehaviour
 
     private void Update()
     {
-        AddButtons();
+        //AddButtons();
     }
 
     public void ChangeDisplayMode(bool truthValue)
@@ -30,6 +30,19 @@ public class InventoryMenu : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonObj, buttonContainer.transform);
             newButton.transform.SetParent(buttonContainer.transform);
+        }
+    }
+
+    private void OnEnable()
+    {
+        AddButtons();
+    }
+
+    private void OnDisable()
+    {
+        foreach (Transform child in buttonContainer.transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
