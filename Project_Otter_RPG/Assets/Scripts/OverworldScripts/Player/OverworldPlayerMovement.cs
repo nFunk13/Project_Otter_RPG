@@ -1,5 +1,7 @@
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class OverworldPlayerMovement : MonoBehaviour
@@ -42,6 +44,9 @@ public class OverworldPlayerMovement : MonoBehaviour
 
     private float verticalVelocity;
 
+    private PlayerActions playerActions;
+    [SerializeField] GameObject MenuCanvas;
+
     private void Start()
     {
         IEM = InputEventManager.Instance;
@@ -58,6 +63,8 @@ public class OverworldPlayerMovement : MonoBehaviour
         }
 
         SetPlayerState(PlayerState.IDLE);
+        playerActions = new PlayerActions();
+        playerActions.Overworld.Menu.performed += MenuAccess;
         cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
     }
 
@@ -209,5 +216,10 @@ public class OverworldPlayerMovement : MonoBehaviour
     private void Update()
     {
         Movement();
+    }
+
+    private void MenuAccess(InputAction.CallbackContext context)
+    {
+        MenuCanvas.GetComponent<InventoryMenu>().ChangeDisplayMode();
     }
 }
