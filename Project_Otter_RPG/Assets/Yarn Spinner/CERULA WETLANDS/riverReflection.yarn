@@ -1,0 +1,54 @@
+title: RiverReflection
+---
+//After having defeated the Rattling Medusa, event staring into the water
+You stare into the River, now still as ever.
+Your reflection looks back at you through warm ripples.
+Your fur still stands on end.
+
+//-------------------------------
+    ->What was that?
+        <<jump Whatwasthat>>
+//-------------------------------
+    ->That was exciting
+        <<jump Thatwasexciting>>
+//-------------------------------
+    ->Who are you?
+        <<jump whoareyou1>>
+===
+
+title: Whatwasthat
+---
+You can't even hazard a guess.
+You've read about some of the local fauna-flora in books, but...
+Never had a creature like that ever crossed your mind as possible.
+Although you're not much of one to talk.
+Maybe Pepper's words hold more weight than you want to believe.
+You think of the upcoming journey...
+You imagine countless, dangerous splatters of ink...
+You groom your tail. It's time to move on.
+===
+
+title: Thatwasexciting
+---
+It was, wasn't it?
+To think earlier today you were dreading leaving the house.
+Through the unnatural cold, your blood was burning.
+Never had a creature like that ever crossed your mind as possible...
+But you overcame it.
+Those sleepy villagers can have their peace and quiet.
+This is far more interesting than farm and family!
+You imagine a world larger than you could imagine...
+You groom your tail. It's time to move on.
+===
+
+title: whoareyou1
+---
+Harte, an Otter, 18. A wanderer of some sort. More open-minded than before.
+You like flowers and fishing.
+An alligator taught you to appreciate the scenery.
+Your whiskers are soaked with riverspray.
+Your tail twitches at the thought of continuing. You don't know what that means.
+Everything is up in the air.
+...Why would you ask that?
+You groom your tail. It's time to move on.
+===

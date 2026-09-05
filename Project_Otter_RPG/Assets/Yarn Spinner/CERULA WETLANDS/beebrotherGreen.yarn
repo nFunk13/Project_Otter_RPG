@@ -5,8 +5,13 @@ title: GreenBee
 <<if $talkbeeGreen == true>>
     <<jump beebrotherGreenTalked>>
 <<endif>>
-.srehtorB eeB eht er'eW
-.tey tuo ti derugif yllaer t'nevah ew tub ,egdirb siht xif ot gniyrt neeb ev'eW
-.SenileF elines emos ekil ereh 'nittis tsuj er'ew woN
+Green Bee: .srehtorB eeB eht er'eW
+Green Bee: .tey tuo ti derugif yllaer t'nevah ew tub ,egdirb siht xif ot gniyrt neeb ev'eW
+Green Bee: .SenileF elines emos ekil ereh 'nittis tsuj er'ew woN
 <<set $talkbeeGreen = true>>
+===
+
+title: beebrotherGreenTalked
+---
+Green Bee: Desserts, sis? (Sensuousness is stressed)
 ===
