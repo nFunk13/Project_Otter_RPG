@@ -6,22 +6,19 @@ public class InventoryMenu : MonoBehaviour
 
     [SerializeField] GameObject buttonObj;
     [SerializeField] GameObject buttonContainer;
+    private bool canSee = false;
 
     private void Awake()
     {
         playersInventory = GameObject.Find("OverworldPlayer").GetComponent<Inventory>();
 
-        this.gameObject.SetActive(false);
+        this.gameObject.SetActive(canSee);
     }
 
-    private void Update()
+    public void ChangeDisplayMode()
     {
-        AddButtons();
-    }
-
-    public void ChangeDisplayMode(bool truthValue)
-    {
-        this.gameObject.SetActive(truthValue);
+        canSee = !canSee;
+        this.gameObject.SetActive(canSee);
     }
 
     private void AddButtons()
@@ -30,6 +27,19 @@ public class InventoryMenu : MonoBehaviour
         {
             GameObject newButton = Instantiate(buttonObj, buttonContainer.transform);
             newButton.transform.SetParent(buttonContainer.transform);
+        }
+    }
+
+    private void OnEnable()
+    {
+        AddButtons();
+    }
+
+    private void OnDisable()
+    {
+        foreach (Transform child in buttonContainer.transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
