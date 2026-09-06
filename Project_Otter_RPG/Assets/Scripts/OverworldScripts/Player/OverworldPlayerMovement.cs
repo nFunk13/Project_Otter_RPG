@@ -63,8 +63,6 @@ public class OverworldPlayerMovement : MonoBehaviour
         }
 
         SetPlayerState(PlayerState.IDLE);
-        playerActions = new PlayerActions();
-        playerActions.Overworld.Menu.performed += MenuAccess;
         cam = GameObject.Find("Main Camera").GetComponent<CinemachineCamera>();
     }
 
@@ -85,6 +83,10 @@ public class OverworldPlayerMovement : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+
+        playerActions = new PlayerActions();
+        playerActions.Overworld.Menu.performed += MenuAccess;
+
     }
 
     void ReadVerticalInput(float value) { verticalInputRaw = value; }
@@ -221,5 +223,15 @@ public class OverworldPlayerMovement : MonoBehaviour
     private void MenuAccess(InputAction.CallbackContext context)
     {
         MenuCanvas.GetComponent<InventoryMenu>().ChangeDisplayMode();
+    }
+
+    private void OnEnable()
+    {
+        playerActions.Overworld.Menu.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerActions.Overworld.Menu.Disable();
     }
 }
