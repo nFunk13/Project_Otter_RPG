@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InventoryMenu : MonoBehaviour
 {
@@ -26,7 +28,30 @@ public class InventoryMenu : MonoBehaviour
         foreach (var item in playersInventory.GetInventory().Values)
         {
             GameObject newButton = Instantiate(buttonObj, buttonContainer.transform);
+            TextMeshProUGUI nameText = newButton.transform.Find("Name_Text").GetComponent<TextMeshProUGUI>();
+            nameText.text = item.identifier.itemName.ToString();
+            TextMeshProUGUI amountText = newButton.transform.Find("Amount_Text").GetComponent<TextMeshProUGUI>();
+            amountText.text = item.amount.ToString();
             newButton.transform.SetParent(buttonContainer.transform);
+        }
+    }
+
+    public void GetButtonGameObject()
+    {
+        Inventory playerInventory = GameObject.Find("OverworldPlayer").GetComponent<Inventory>();
+        var button = EventSystem.current.currentSelectedGameObject;
+
+        string itemName = button.transform.Find("Name_Text").GetComponent<TextMeshProUGUI>().text;
+
+        playerInventory.RemoveItem(itemName);
+
+        if (playerInventory.GetItemAmount(itemName) > 0)
+        {
+            button.transform.Find("Amount_Text").GetComponent<TextMeshProUGUI>().text = playerInventory.GetItemAmount(itemName).ToString();
+        }
+        else
+        {
+            Destroy(button);
         }
     }
 

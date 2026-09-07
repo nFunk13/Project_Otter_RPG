@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2556002287326953432}
   - component: {fileID: 147667436817228658}
   - component: {fileID: 4680877670354682097}
+  - component: {fileID: 7314875015712178728}
   m_Layer: 0
   m_Name: OverworldPlayer
   m_TagString: Player
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 771670358136080056}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -86,6 +87,7 @@ MonoBehaviour:
   gravity: 10
   fallHeight: 0.2
   groundedVelocity: -2
+  MenuCanvas: {fileID: 0}
 --- !u!114 &4680877670354682097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,13 +100,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b24aeeea60b82da409a6240326499337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  SI: {fileID: 8831143739503616128}
   checkRadius: 0.3
   checkDistance: 0.3
-  checkPadding: 0.2
   layerMask:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &7314875015712178728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771670358136080056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7d7399f57021244c969c5074a44f9eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
 --- !u!1 &2342338353401674587
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,6 +323,7 @@ MonoBehaviour:
     looping: 0
     animOnEnd: 
     name: 
+    hasEnded: 0
   defaultAnimation: idle
   hasSilhouette: 1
 --- !u!1 &7093315078054490077

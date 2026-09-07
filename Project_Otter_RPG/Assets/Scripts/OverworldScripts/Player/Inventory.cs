@@ -195,24 +195,19 @@ public class Inventory : MonoBehaviour
     /// This can be a decrease of the amount or removed from the inventory as a whole
     /// </summary>
     /// <param name="obj"></param> The game object that the player is trying to interact with
-    public void RemoveItem(GameObject obj)
+    public void RemoveItem(string itemName)
     {
-        // Checks if the object is tagged as an item
-        if (obj.tag == "Item")
+        if (inventory.TryGetValue(itemName, out ItemData itemData))
         {
-            // Checks to make sure that the object has an ItemDataHolder script
-            if (obj.TryGetComponent<ItemDataHolder>(out ItemDataHolder itemDataHolder))
+            // If the item has more than one in the inventory, decrease the amount by 1
+            if (itemData.amount > 1)
             {
-                // If the item has more than one in the inventory, decrease the amount by 1
-                if (inventory[itemDataHolder.itemData.itemName].amount > 1)
-                {
-                    inventory[itemDataHolder.itemData.itemName].amount--;
-                }
-                // If the item only has one for the amount in the inventory, remove the item from the inventory
-                else if (inventory[itemDataHolder.itemData.itemName].amount == 1)
-                {
-                    inventory.Remove(itemDataHolder.itemData.itemName);
-                }
+                itemData.amount--;
+            }
+            // If the item only has one for the amount in the inventory, remove the item from the inventory
+            else if (itemData.amount == 1)
+            {
+                inventory.Remove(itemName);
             }
         }
     }
@@ -220,5 +215,14 @@ public class Inventory : MonoBehaviour
     public Dictionary<string, ItemData> GetInventory()
     {
         return inventory;
+    }
+
+    public int GetItemAmount(string itemName)
+    {
+        if (inventory.TryGetValue(itemName, out ItemData itemData))
+        {
+            return itemData.amount;
+        }
+        return 0;
     }
 }
